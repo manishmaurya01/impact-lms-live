@@ -1,0 +1,329 @@
+/* ==========================================================================
+   AICourseIntake & Roadmap Display: PREMIUM CSS STYLESHEET
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&display=swap');
+
+:root {
+  --bg-dark: #020617;
+  --surface-glass: rgba(15, 23, 42, 0.7);
+  --border-slate: rgba(55, 65, 81, 0.6);
+  --cyan-glow: #06B6D4;
+  --purple-glow: #8B5CF6;
+  --text-primary: #f8fafc;
+  --text-muted: #94a3b8;
+  --glass-blur: blur(20px);
+  --transition-smooth: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* --- 1. VIEWPORT & AMBIENT BACKGROUND --- */
+.centralized-prompt-matrix-viewport {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  padding: 3rem 2rem;
+  font-family: 'Inter', system-ui, sans-serif;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.cyber-ambient-grid-underlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(31, 41, 55, 0.5) 1px, transparent 1px), 
+    linear-gradient(to bottom, rgba(31, 41, 55, 0.5) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  mask-image: radial-gradient(circle at 50% 30%, #000 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 40%, transparent 80%);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* --- 2. LAYOUT & GLASS CARDS --- */
+.roadmap-master-scaffold-container {
+  max-width: 76rem;
+  width: 100%;
+  margin: 0 auto;
+  z-index: 10;
+  position: relative;
+}
+
+.interactive-glass-card {
+  background: var(--surface-glass);
+  border: 1px solid var(--border-slate);
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  margin-bottom: 2rem;
+  transition: var(--transition-smooth);
+}
+
+.interactive-glass-card:hover {
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(6, 182, 212, 0.1);
+}
+
+.gradient-heading-text {
+  font-size: 2.2rem;
+  font-weight: 900;
+  text-align: center;
+  background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--purple-glow) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0 0 2.5rem 0;
+  letter-spacing: -0.02em;
+}
+
+/* --- 3. FORM ELEMENTS & BUTTONS --- */
+.form-input-wrapper-node {
+  margin-bottom: 2rem;
+}
+
+.input-field-terminal-label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--cyan-glow);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+  font-weight: bold;
+}
+
+.form-input-wrapper-node textarea {
+  width: 100%;
+  height: 7rem;
+  background: rgba(2, 6, 23, 0.6);
+  border: 1px solid var(--border-slate);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  color: var(--text-primary);
+  resize: vertical;
+  font-size: 1rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: var(--transition-smooth);
+  box-sizing: border-box;
+}
+
+.form-input-wrapper-node textarea:focus {
+  border-color: var(--purple-glow);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.15);
+  background: rgba(2, 6, 23, 0.9);
+}
+
+.pill-selector-mesh {
+  display: flex;
+  background: rgba(2, 6, 23, 0.5);
+  border: 1px solid var(--border-slate);
+  padding: 0.35rem;
+  border-radius: 9999px;
+  gap: 0.25rem;
+}
+
+.pill-selector-item {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.pill-selector-item:hover {
+  color: var(--text-primary);
+}
+
+.pill-selector-item.is-active {
+  background: var(--border-slate);
+  color: var(--cyan-glow);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+.prompt-matrix-submit-btn {
+  padding: 1rem 2.5rem;
+  background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--purple-glow) 100%);
+  border: none;
+  color: #020617;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  border-radius: 9999px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  transition: var(--transition-smooth);
+  box-shadow: 0 10px 20px rgba(6, 182, 212, 0.2);
+}
+
+.prompt-matrix-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 25px rgba(139, 92, 246, 0.4);
+}
+
+.prompt-matrix-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* --- 4. TIMELINE ROADMAP VIEW --- */
+.module-timeline-wrapper-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  margin-top: 3rem;
+}
+
+/* The vertical connecting line */
+.module-timeline-wrapper-node::before {
+  content: '';
+  position: absolute;
+  left: 2rem;
+  top: 1rem;
+  bottom: 1rem;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--cyan-glow), var(--purple-glow));
+  opacity: 0.4;
+  border-radius: 2px;
+}
+
+.module-timeline-node-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  padding-left: 5.5rem;
+}
+
+/* Glowing Timeline Counter */
+.timeline-bullet-counter {
+  position: absolute;
+  left: 0.65rem;
+  top: 0;
+  width: 2.75rem;
+  height: 2.75rem;
+  background: #020617;
+  border: 2px solid var(--cyan-glow);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--cyan-glow);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+  z-index: 5;
+  transition: var(--transition-smooth);
+}
+
+.module-timeline-node-card:hover .timeline-bullet-counter {
+  transform: scale(1.1);
+  background: var(--cyan-glow);
+  color: #020617;
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.6);
+}
+
+.node-card-inner-box {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  border-radius: 1.25rem;
+  padding: 2.5rem;
+  transition: var(--transition-smooth);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.module-timeline-node-card:hover .node-card-inner-box {
+  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.1);
+  transform: translateX(4px);
+}
+
+/* --- 5. INNER PACKAGE PILLS (QUIZ, ASSIGNMENT, YOUTUBE) --- */
+.meta-packages-asymmetric-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 768px) {
+  .meta-packages-asymmetric-row { grid-template-columns: 1fr 1fr; }
+}
+
+@media (min-width: 1024px) {
+  .meta-packages-asymmetric-row { grid-template-columns: 1fr 1fr 1.2fr; }
+}
+
+.package-pill-box {
+  background: rgba(2, 6, 23, 0.4);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  transition: var(--transition-smooth);
+}
+
+.package-pill-box:hover {
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(55, 65, 81, 0.8);
+  transform: translateY(-2px);
+}
+
+.pill-type-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.75rem;
+}
+
+.quiz-theme { color: #38bdf8; }
+.assignment-theme { color: #fbbf24; }
+.youtube-theme { color: #f87171; }
+
+.youtube-search-embed-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #f87171;
+  text-decoration: none;
+  font-weight: 700;
+  margin-top: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(248, 113, 113, 0.1);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: 0.5rem;
+  transition: var(--transition-smooth);
+}
+
+.youtube-search-embed-link:hover {
+  background: rgba(248, 113, 113, 0.2);
+  box-shadow: 0 0 15px rgba(248, 113, 113, 0.3);
+  transform: translateX(2px);
+}
+
+/* --- 6. ANIMATIONS --- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

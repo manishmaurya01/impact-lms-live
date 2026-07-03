@@ -1,0 +1,402 @@
+/* --- PREMIUM GLOWING COGNITIVE LEARNING WORKSPACE --- */
+
+.workspace-ambient-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  background-color: #030712;
+  color: #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.workspace-dual-pane-scaffold {
+  display: grid;
+  grid-template-columns: 1fr;
+  width: 100%;
+  min-height: 100vh;
+  z-index: 10;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .workspace-dual-pane-scaffold {
+    grid-template-columns: 320px 1fr;
+  }
+}
+
+/* --- LEFT SIDEBAR PANEL --- */
+.left-pane-timeline-sidebar {
+  background: rgba(11, 17, 34, 0.9);
+  border-right: 1px solid rgba(31, 41, 55, 0.9);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.sidebar-back-button {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s;
+}
+
+.sidebar-back-button:hover {
+  color: #06b6d4;
+}
+
+.learning-status-pill {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 800;
+  background: rgba(6, 182, 212, 0.1);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  color: #06b6d4;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.course-main-title {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+}
+
+/* Sidebar progress card structure metrics */
+.sidebar-progress-card {
+  background: rgba(2, 6, 23, 0.5);
+  border: 1px solid #1e293b;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.progress-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.lbl-progress {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.val-progress {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: #06b6d4;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 0.4rem;
+  background: #020617;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar-fill-neon {
+  height: 100%;
+  background: linear-gradient(90deg, #06b6d4 0%, #8b5cf6 100%);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+  transition: width 0.3s ease;
+}
+
+.progress-counts {
+  font-size: 0.7rem;
+  color: #475569;
+  font-family: monospace;
+}
+
+/* Sidebar module accordions stack details */
+.modules-accordion-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.module-accordion-card {
+  border: 1px solid #1e293b;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.4);
+  overflow: hidden;
+}
+
+.accordion-trigger-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.accordion-trigger-row:hover {
+  background: rgba(30, 41, 59, 0.3);
+}
+
+.accordion-trigger-row.is-active {
+  border-bottom: 1px solid #1e293b;
+  background: rgba(30, 41, 59, 0.4);
+}
+
+.trigger-badge {
+  font-family: monospace;
+  font-weight: 800;
+  font-size: 0.7rem;
+  color: #06b6d4;
+  background: rgba(6, 182, 212, 0.08);
+  border: 1px solid rgba(6, 182, 212, 0.2);
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trigger-info h4 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.trigger-info p {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.accordion-nested-content-list {
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: rgba(2, 6, 23, 0.6);
+}
+
+.topic-nested-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.topic-nested-item-row:hover {
+  background: rgba(30, 41, 59, 0.5);
+}
+
+.topic-nested-item-row.is-active-highlight {
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.completion-checkbox {
+  width: 1.15rem;
+  height: 1.15rem;
+  border: 1px solid #334155;
+  border-radius: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #030712;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.completion-checkbox.is-checked {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
+}
+
+.topic-text-item {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+/* --- RIGHT PANE RICH STUDY WORKSPACE --- */
+.right-pane-rich-workspace {
+  background: #020617;
+  overflow-y: auto;
+  max-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.workspace-idle-onboarding-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem;
+  margin: auto;
+  max-width: 36rem;
+}
+
+.idle-globe-ambient-neon {
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+  border: 2px solid rgba(139, 92, 246, 0.4);
+  border-radius: 50%;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
+  animation: idleFloat 4s ease-in-out infinite;
+}
+
+.workspace-welcome-title {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.workspace-welcome-sub {
+  font-size: 0.95rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* --- STUDY CANVAS --- */
+.study-content-scrollable-canvas {
+  padding: 3rem;
+  max-width: 52rem;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.study-main-topic-headline {
+  font-size: 2.25rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.2;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.category-tag-neon {
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #06b6d4;
+}
+
+.mark-done-btn-badge {
+  background: transparent;
+  border: 1px solid #1e293b;
+  color: #94a3b8;
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mark-done-btn-badge:hover {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.mark-done-btn-badge.is-done-active {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.study-takeaways-glowing-card {
+  background: rgba(6, 182, 212, 0.02);
+  border: 1px solid rgba(6, 182, 212, 0.15);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+.section-sub-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+/* --- EMBEDDED IFRAME TERMINAL --- */
+.code-block-workspace-terminal {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.terminal-header-top {
+  background: #0b1122;
+  border-bottom: 1px solid #1e293b;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.terminal-bullets {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.terminal-bullets::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0.85rem 0 0 #eab308, 1.7rem 0 0 #22c55e;
+  display: inline-block;
+}
+
+.terminal-lbl {
+  font-family: monospace;
+  font-size: 0.7rem;
+  color: #475569;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes idleFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
