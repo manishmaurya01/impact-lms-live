@@ -263,6 +263,40 @@ const workspaceCtrl = {
     } catch (err) {
       res.status(500).json({ success: false, message: "Workspace internal engine crash." });
     }
+  },
+  generateAINote: async (req, res) => {
+    const { topicName, prompt, courseLevel } = req.body;
+    if (!prompt) {
+      return res.status(400).json({ success: false, message: "Prompt is required." });
+    }
+
+    try {
+      const schema = {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          contentHtml: { type: "string" }
+        },
+        required: ["title", "contentHtml"]
+      };
+
+      const sysPrompt = `You are an elite academic note writer. Create structured, high-quality, formatted study notes in clean HTML based on the user's prompt. 
+      Use clean HTML tags like <h1>, <h2>, <p>, <ul>, <li>, <strong>, <em>, and tables if helpful.
+      Avoid markdown syntax blocks or wrapper tags. Return the output in strict JSON conforming to the schema.`;
+
+      const raw = await callGeminiAPI(
+        GEMINI_SECONDARY_KEY,
+        `Generate comprehensive notes for the topic: "${topicName || 'General Topic'}". Specific instruction request: "${prompt}". Course depth level: "${courseLevel || 'Beginner'}".`,
+        sysPrompt,
+        schema
+      );
+
+      const parsed = JSON.parse(raw.trim());
+      res.status(200).json({ success: true, note: parsed });
+    } catch (err) {
+      console.error("AI notes generation error:", err);
+      res.status(500).json({ success: false, message: "Failed to generate notes via AI." });
+    }
   }
 };
 

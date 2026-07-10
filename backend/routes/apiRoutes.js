@@ -41,6 +41,7 @@ router.delete('/courses/:id', authorizeToken, pedagogyCtrl.deleteCourse || fallb
 // 4. NOTEBOOK WORKSPACE ENGINE (SAVED NOTES)
 // =========================================================================
 router.post('/notes/save', authorizeToken, workspaceCtrl.saveNote || fallbackHandler);
+router.post('/notes/generate-ai', authorizeToken, workspaceCtrl.generateAINote || fallbackHandler);
 router.get('/notes/course/:courseId', authorizeToken, workspaceCtrl.getNotesByCourse || fallbackHandler);
 router.delete('/notes/:noteId', authorizeToken, workspaceCtrl.deleteNote || fallbackHandler);
 

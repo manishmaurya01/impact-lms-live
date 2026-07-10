@@ -1,5 +1,5 @@
 /* ==========================================================================
-   LuminaLearn Studio - High-Fidelity Production Design System Matrix
+   LuminaLearn Studio - High-Fidelity Notes & Canvas Design System
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
@@ -38,8 +38,8 @@
   width: 94vw;
   max-width: 1540px;
   height: 88vh;
-  background: rgba(15, 23, 42, 0.85); /* Dark Obsidian Slate with glassmorphism */
-  border: 1px solid #1e293b; /* Sharp tech borders */
+  background: rgba(7, 10, 18, 0.95);
+  border: 1px solid #1e293b;
   border-radius: 16px;
   box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
   z-index: 2;
@@ -59,9 +59,9 @@
 
 /* 💻 Futuristic Cinematic Header Module */
 .notes-workspace-header {
-  height: 76px;
+  height: 74px;
   padding: 0 2rem;
-  background: rgba(15, 23, 42, 0.95);
+  background: #090d16;
   border-bottom: 1px solid #1e293b;
   display: flex;
   justify-content: space-between;
@@ -70,20 +70,20 @@
 }
 
 .notes-workspace-header h2 {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 700;
   margin: 0;
-  letter-spacing: -0.02em; /* Tight premium product look */
+  letter-spacing: -0.02em;
   color: #f8fafc;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .notes-workspace-header .badge {
   font-size: 0.68rem;
   font-family: 'Fira Code', monospace;
-  background: rgba(139, 92, 246, 0.12); /* AI Processing Secondary */
+  background: rgba(139, 92, 246, 0.12);
   color: #8B5CF6;
   border: 1px solid rgba(139, 92, 246, 0.3);
   padding: 0.25rem 0.6rem;
@@ -100,37 +100,37 @@
 }
 
 .header-actions button {
-  height: 40px;
+  height: 38px;
   padding: 0 1.25rem;
   font-size: 0.85rem;
   font-weight: 600;
-  border-radius: 8px; /* Control geometry */
+  border-radius: 8px;
   border: 1px solid transparent;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  transition: all 250ms ease-in-out;
+  transition: all 200ms ease-in-out;
 }
 
 .btn-primary { 
-  background: #06B6D4; /* High Energy Cyan Accent */
+  background: #06b6d4;
   color: #020617; 
   font-weight: 700;
 }
 .btn-primary:hover { 
   background: #22d3ee;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); /* Subtle glowing anomaly on active state */
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
 }
 
 .btn-secondary { 
-  background: rgba(30, 41, 59, 0.5); 
+  background: rgba(30, 41, 59, 0.3); 
   color: #f8fafc; 
   border: 1px solid #1e293b !important; 
 }
 .btn-secondary:hover { 
-  background: rgba(51, 65, 85, 0.6); 
-  border-color: #06B6D4 !important;
+  background: rgba(30, 41, 59, 0.6); 
+  border-color: #06b6d4 !important;
 }
 
 .btn-close { 
@@ -143,16 +143,70 @@
   color: #fff;
 }
 
-/* 📐 3-COLUMN PROFESSIONAL IDE GRID MATRIX OVERHAUL */
+.btn-header-back {
+  height: 36px;
+  padding: 0 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #94a3b8;
+  background: rgba(30, 41, 59, 0.4);
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  box-sizing: border-box;
+  transition: all 200ms ease-in-out;
+}
+.btn-header-back:hover {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: #06b6d4;
+  color: #fff;
+}
+
+/* 👤 RIGHT USER IDENTITY ZONE */
+.header-user-profile-zone {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.user-meta-details {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid #1e293b;
+  padding: 0 1rem;
+  border-radius: 8px;
+  height: 38px;
+  box-sizing: border-box;
+}
+.user-status-dot {
+  width: 6px;
+  height: 6px;
+  background: #06B6D4;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #06B6D4;
+}
+.user-profile-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+}
+
+/* 📐 3-COLUMN WORKSPACE GEOMETRY */
 .notes-workspace-body {
   flex: 1;
   display: flex;
-  height: calc(100% - 76px);
+  height: calc(100% - 74px);
   box-sizing: border-box;
   overflow: hidden;
 }
 
-/* --- COLUMN 1: LEFT TELEMETRY CONTROLLER PANEL --- */
+/* --- COLUMN 1: LEFT CONTROLLERS & AI ARCHITECT --- */
 .notes-sidebar-controls {
   width: 320px;
   min-width: 320px;
@@ -164,17 +218,14 @@
   gap: 1.5rem;
   box-sizing: border-box;
 }
-
 .notes-sidebar-controls label {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #94a3b8; /* Text Secondary */
+  color: #94a3b8;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin-bottom: -0.5rem;
 }
-
-/* Transparent backgrounds layered over dark slate inputs */
 .notes-sidebar-controls select {
   width: 100%;
   height: 42px;
@@ -188,18 +239,16 @@
   box-sizing: border-box;
   transition: all 250ms ease-in-out;
 }
-
 .notes-sidebar-controls select:focus {
   border-color: #06B6D4;
   box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
 }
-
 .notes-sidebar-controls select:disabled {
   opacity: 0.25;
   cursor: not-allowed;
 }
 
-/* --- COLUMN 2: CENTER MATRIX PROCESSING TEXT CANVAS --- */
+/* --- COLUMN 2: CENTER CANVAS ENVIRONMENT --- */
 .notes-word-editor-arena {
   flex: 1;
   background: rgba(2, 6, 23, 0.3);
@@ -209,7 +258,6 @@
   box-sizing: border-box;
   overflow: hidden;
 }
-
 .note-title-field {
   background: transparent;
   border: none;
@@ -225,24 +273,23 @@
   box-sizing: border-box;
   transition: border-color 250ms ease-in-out;
 }
-
 .note-title-field:focus {
   border-color: #06B6D4;
 }
 
-/* Minimalist Integrated Command Bar Toolbar Layout */
+/* Integrated Rich Text Editor Toolbar */
 .word-processor-toolbar {
   background: #0f172a;
   border: 1px solid #1e293b;
-  padding: 0.45rem;
+  padding: 0.45rem 0.75rem;
   border-radius: 8px;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin-bottom: 1.25rem;
   box-sizing: border-box;
 }
-
 .word-processor-toolbar button {
   background: transparent;
   border: none;
@@ -255,21 +302,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.88rem;
   transition: all 200ms ease-in-out;
 }
-
 .word-processor-toolbar button:hover {
   background: rgba(6, 182, 212, 0.08);
-  color: #06B6D4;
+  color: #06b6d4;
 }
-
 .word-processor-toolbar .separator {
   color: #1e293b;
-  margin: 0 0.4rem;
+  margin: 0 0.3rem;
+  font-weight: 300;
 }
 
-/* Cyber Edit Matrix Room Canvas Layer */
+/* Edit Matrix Rich Text Area */
 .word-editable-canvas {
   flex: 1;
   background: rgba(15, 23, 42, 0.5);
@@ -284,6 +329,22 @@
   box-sizing: border-box;
 }
 
+/* Rich text note elements styling */
+.word-editable-canvas h1, .word-editable-canvas h2 {
+  color: #fff;
+  margin: 1.5rem 0 0.75rem 0;
+  font-weight: 700;
+}
+.word-editable-canvas h1 { font-size: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.5rem; }
+.word-editable-canvas h2 { font-size: 1.2rem; }
+.word-editable-canvas p { margin: 0 0 1rem 0; }
+.word-editable-canvas ul, .word-editable-canvas ol {
+  margin: 0 0 1rem 1.5rem;
+  padding: 0;
+}
+.word-editable-canvas li {
+  margin-bottom: 0.4rem;
+}
 .word-editable-canvas pre {
   background: #020617;
   padding: 1.25rem;
@@ -293,9 +354,35 @@
   color: #34d399;
   overflow-x: auto;
   border: 1px solid rgba(52, 211, 153, 0.15);
+  margin-bottom: 1rem;
 }
 
-/* --- COLUMN 3: RIGHT LEDGER NOTEBOOK VAULT --- */
+/* Neon Table Grid Look */
+.word-editable-canvas table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  border: 1px solid #1e293b;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.word-editable-canvas th, .word-editable-canvas td {
+  border: 1px solid #1e293b;
+  padding: 12px;
+  text-align: left;
+}
+.word-editable-canvas th {
+  background: rgba(6, 182, 212, 0.05);
+  color: #06b6d4;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.word-editable-canvas td {
+  color: #cbd5e1;
+  font-size: 0.88rem;
+}
+
+/* --- COLUMN 3: RIGHT NOTEBOOK HISTORY VAULT --- */
 .history-vault-section {
   width: 300px;
   min-width: 300px;
@@ -307,16 +394,14 @@
   overflow: hidden;
   box-sizing: border-box;
 }
-
 .history-vault-section h4 {
   font-size: 0.72rem;
-  color: #06B6D4; /* High Energy Accent header */
+  color: #06B6D4;
   margin: 0 0 1.25rem 0;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-weight: 700;
 }
-
 .history-list {
   flex: 1;
   overflow-y: auto;
@@ -325,43 +410,42 @@
   gap: 0.75rem;
 }
 
-/* Professional High Fidelity Cards Matrix */
+/* Premium High Fidelity Cards */
 .note-history-card {
   background: rgba(15, 23, 42, 0.8);
   border: 1px solid #1e293b;
-  padding: 1rem;
+  padding: 1.2rem;
   border-radius: 10px;
   cursor: pointer;
   box-sizing: border-box;
   transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
-
 .note-history-card:hover {
   background: rgba(30, 41, 59, 0.6);
   border-color: rgba(6, 182, 212, 0.3);
   transform: translateY(-1px);
 }
-
 .note-history-card.active-track {
   background: rgba(6, 182, 212, 0.05);
-  border-color: #06B6D4;
+  border-color: #06b6d4;
   box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
 }
-
 .note-history-card h5 { 
-  margin: 0 0 0.4rem 0; 
+  margin: 0; 
   font-size: 0.9rem; 
   color: #f8fafc; 
   font-weight: 600;
   letter-spacing: -0.01em;
+  line-height: 1.3;
 }
-
 .note-history-card span { 
   font-size: 0.72rem; 
-  color: #94a3b8; /* Text Secondary */
+  color: #94a3b8;
   display: block; 
 }
-
 .empty-alert { 
   font-size: 0.8rem; 
   color: #94a3b8; 
@@ -370,7 +454,7 @@
   font-style: italic; 
 }
 
-/* --- TELEMETRY SLIDER SCROLLBAR CONTROL ENGINE --- */
+/* Custom Scrollbar Styles */
 .history-list::-webkit-scrollbar, .word-editable-canvas::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -383,736 +467,15 @@
   border-radius: 10px;
 }
 .history-list::-webkit-scrollbar-thumb:hover, .word-editable-canvas::-webkit-scrollbar-thumb:hover {
-  background: #06B6D4;
+  background: #06b6d4;
 }
 
 @keyframes modalScaleReveal {
   from { opacity: 0; transform: scale(0.97) translateY(10px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
-/* ==========================================================================
-   LuminaLearn Studio - Symmetrical 1-Line Vertical Alignment Grid
-   ========================================================================== */
 
-.notes-workspace-header {
-  height: 74px;
-  min-height: 74px;
-  padding: 0 2rem;
-  background: #090d16; /* Deep Slate Black Base */
-  border-bottom: 1px solid #1e293b; /* Sharp Tech Slate Gray Border */
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* 👈 Isko absolute center line par block kiya */
-  box-sizing: border-box;
-  position: relative;
-  z-index: 10;
+@keyframes workspaceCoreSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
-
-/* Left Group Block Alignment */
-.header-identity-block {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-}
-
-.notes-workspace-header h2 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin: 0;
-  line-height: 1.2; /* Line-height lock to prevent shift */
-  letter-spacing: -0.02em;
-  color: #f8fafc;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.icon-telemetry {
-  color: #06B6D4;
-  display: flex;
-  align-items: center;
-}
-
-.sub-telemetry-text {
-  font-size: 0.72rem;
-  color: #94a3b8;
-  margin: 0.15rem 0 0 0;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1;
-}
-
-/* ⚙️ CENTER GROUP CONTROLS (Strictly Locked on a Single Row) */
-.header-actions {
-  display: flex;
-  flex-direction: row; /* Force absolute single row */
-  align-items: center;  /* 👈 Dono buttons ek line me centers par rahenge */
-  justify-content: center;
-  gap: 0.75rem; 
-  height: 100%;
-}
-
-.header-actions button {
-  height: 38px;
-  min-height: 38px;
-  max-height: 38px;
-  padding: 0 1.25rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border-radius: 6px; 
-  cursor: pointer;
-  display: flex;
-  flex-direction: row;
-  align-items: center;    /* Icons aur texts ko button ke andar vertical align karega */
-  justify-content: center;
-  gap: 0.4rem; 
-  box-sizing: border-box;
-  transition: all 200ms ease-in-out;
-}
-
-/* Primary Action: Commit Sync Node */
-.btn-primary { 
-  background: #06B6D4; 
-  color: #020617; 
-  font-weight: 700;
-  border: 1px solid #06B6D4;
-}
-.btn-primary:hover { 
-  background: #22d3ee;
-  border-color: #22d3ee;
-  box-shadow: 0 0 12px rgba(6, 182, 212, 0.3); 
-}
-
-/* Secondary Action: New Workspace Node */
-.btn-secondary { 
-  background: rgba(30, 41, 59, 0.3); 
-  color: #f8fafc; 
-  border: 1px solid #1e293b !important; 
-}
-.btn-secondary:hover { 
-  background: rgba(30, 41, 59, 0.6);
-  border-color: #06B6D4 !important; 
-  color: #fff;
-}
-
-/* 👤 RIGHT USER IDENTITY ZONE */
-.header-user-profile-zone {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  height: 100%;
-}
-
-.user-meta-details {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid #1e293b;
-  padding: 0 1rem;
-  border-radius: 8px;
-  height: 38px;
-  box-sizing: border-box;
-}
-
-.user-status-dot {
-  width: 6px;
-  height: 6px;
-  background: #06B6D4;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #06B6D4;
-}
-
-.user-profile-name {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #f8fafc;
-  letter-spacing: -0.01em;
-  line-height: 1;
-}
-
-/* Symmetrical Tech Close Button Alignment */
-.notes-workspace-header .btn-close {
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  border-radius: 6px;
-  background: rgba(239, 68, 68, 0.08);
-  border: 1px solid rgba(239, 68, 68, 0.2) !important;
-  color: #f87171;
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: all 200ms ease-in-out;
-}
-.notes-workspace-header .btn-close:hover {
-  background: #ef4444;
-  color: #fff;
-  border-color: #ef4444 !important;
-}
-
-/* ⚡ In rules ko apni CSS file ke top/header segment me append karlein */
-
-.header-left-cluster {
-  display: flex;
-  align-items: center; /* Strict vertical center alignment mapping */
-  gap: 1.25rem; /* Precise spacing between back button and branding text */
-  height: 100%;
-}
-
-/* 💻 ULTRA-PREMIUM SLATE BLACK BACK BUTTON STYLE */
-.btn-header-back {
-  height: 36px;
-  padding: 0 1rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #94a3b8; /* Text Secondary Muted Slate */
-  background: rgba(30, 41, 59, 0.4); /* Transparent Obsidian Slate */
-  border: 1px solid #1e293b; /* Sharp Tech Border Token */
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  box-sizing: border-box;
-  transition: all 200ms ease-in-out;
-}
-
-.btn-header-back .arrow-glyph {
-  font-size: 0.95rem;
-  line-height: 1;
-  color: #94a3b8;
-  transition: transform 200ms ease-in-out;
-}
-
-/* Premium High Fidelity Interactive Hover Trace */
-.btn-header-back:hover {
-  background: rgba(30, 41, 59, 0.7);
-  border-color: #06B6D4; /* Primary Energy Cyan outline trace */
-  color: #fff;
-}
-
-.btn-header-back:hover .arrow-glyph {
-  color: #06B6D4;
-  transform: translateX(-2px); /* Smooth micro-interaction on hover state */
-}
-/* ==========================================================================
-   LuminaLearn Studio - Full Production Ready Architecture Symmetrical Matrix
-   ========================================================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
-
-.notes-system-wrapper {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: #e2e8f0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  box-sizing: border-box;
-  background: #020617;
-  overflow: hidden;
-}
-
-.notes-system-wrapper.modal-view {
-  position: fixed;
-  inset: 0;
-  align-items: center;
-  justify-content: center;
-  z-index: 999999;
-}
-
-.notes-system-wrapper.modal-view .notes-blur-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(2, 6, 23, 0.75);
-  backdrop-filter: blur(12px);
-  z-index: 1;
-}
-
-.notes-system-wrapper.modal-view .notes-panel-container {
-  position: relative;
-  width: 94vw;
-  max-width: 1540px;
-  height: 88vh;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid #1e293b;
-  border-radius: 16px;
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: modalScaleReveal 300ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.notes-system-wrapper.fullscreen-view .notes-panel-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: #020617;
-}
-
-/* 💻 HEADER GRID ENGINE ROW CONTROLS */
-.notes-workspace-header {
-  height: 74px;
-  min-height: 74px;
-  padding: 0 2rem;
-  background: #090d16;
-  border-bottom: 1px solid #1e293b;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 10;
-}
-
-.header-left-cluster {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  height: 100%;
-}
-
-.btn-header-back {
-  height: 36px;
-  padding: 0 1rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #94a3b8;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  box-sizing: border-box;
-  transition: all 200ms ease-in-out;
-}
-
-.btn-header-back .arrow-glyph {
-  font-size: 0.95rem;
-  line-height: 1;
-  color: #94a3b8;
-  transition: transform 200ms ease-in-out;
-}
-
-.btn-header-back:hover {
-  background: rgba(30, 41, 59, 0.7);
-  border-color: #06B6D4;
-  color: #fff;
-}
-
-.btn-header-back:hover .arrow-glyph {
-  color: #06B6D4;
-  transform: translateX(-2px);
-}
-
-.header-identity-block {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-}
-
-.notes-workspace-header h2 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  margin: 0;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: #f8fafc;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.icon-telemetry { color: #06B6D4; display: flex; align-items: center; }
-.sub-telemetry-text { font-size: 0.72rem; color: #94a3b8; margin: 0.15rem 0 0 0; font-weight: 500; letter-spacing: 0.02em; line-height: 1; }
-
-.header-actions { display: flex; align-items: center; gap: 0.75rem; height: 100%; }
-.header-actions button {
-  height: 38px; padding: 0 1.25rem; font-size: 0.85rem; font-weight: 600; border-radius: 6px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 0.4rem; box-sizing: border-box; transition: all 200ms ease-in-out;
-}
-
-.btn-primary { background: #06B6D4; color: #020617; font-weight: 700; border: 1px solid #06B6D4; }
-.btn-primary:hover { background: #22d3ee; border-color: #22d3ee; box-shadow: 0 0 12px rgba(6, 182, 212, 0.3); }
-
-.btn-secondary { background: rgba(30, 41, 59, 0.3); color: #f8fafc; border: 1px solid #1e293b !important; }
-.btn-secondary:hover { background: rgba(30, 41, 59, 0.6); border-color: #06B6D4 !important; color: #fff; }
-
-.header-user-profile-zone { display: flex; align-items: center; gap: 0.75rem; height: 100%; }
-.user-meta-details { display: flex; align-items: center; justify-content: center; gap: 0.6rem; background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; padding: 0 1rem; border-radius: 8px; height: 38px; box-sizing: border-box; }
-.user-status-dot { width: 6px; height: 6px; background: #06B6D4; border-radius: 50%; box-shadow: 0 0 8px #06B6D4; }
-.user-profile-name { font-size: 0.82rem; font-weight: 600; color: #f8fafc; letter-spacing: -0.01em; line-height: 1; }
-
-.notes-workspace-header .btn-close {
-  width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border-radius: 6px;
-  background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2) !important; color: #f87171; cursor: pointer; box-sizing: border-box; transition: all 200ms ease-in-out;
-}
-.notes-workspace-header .btn-close:hover { background: #ef4444; color: #fff; border-color: #ef4444 !important; }
-
-/* 📐 3-COLUMN WORKSPACE GEOMETRY */
-.notes-workspace-body { flex: 1; display: flex; height: calc(100% - 74px); box-sizing: border-box; overflow: hidden; }
-
-/* --- COLUMN 1: LEFT CONTROLLERS --- */
-.notes-sidebar-controls { width: 320px; min-width: 320px; background: rgba(15, 23, 42, 0.4); border-right: 1px solid #1e293b; padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; box-sizing: border-box; }
-.notes-sidebar-controls label { font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: -0.5rem; }
-.notes-sidebar-controls select { width: 100%; height: 42px; background: rgba(2, 6, 23, 0.5); border: 1px solid #1e293b; color: #f8fafc; padding: 0 1rem; border-radius: 8px; outline: none; font-size: 0.88rem; box-sizing: border-box; transition: all 250ms ease-in-out; }
-.notes-sidebar-controls select:focus { border-color: #06B6D4; box-shadow: 0 0 10px rgba(6, 182, 212, 0.15); }
-.notes-sidebar-controls select:disabled { opacity: 0.25; cursor: not-allowed; }
-
-/* --- COLUMN 2: CENTER CANVAS TEXT ENVIRONMENT --- */
-.notes-word-editor-arena { flex: 1; background: rgba(2, 6, 23, 0.3); display: flex; flex-direction: column; padding: 2rem; box-sizing: border-box; overflow: hidden; }
-.note-title-field { background: transparent; border: none; border-bottom: 1px solid #1e293b; font-size: 1.5rem; font-weight: 800; color: #f8fafc; padding-bottom: 0.75rem; margin-bottom: 1.25rem; outline: none; width: 100%; letter-spacing: -0.02em; box-sizing: border-box; transition: border-color 250ms ease-in-out; }
-.note-title-field:focus { border-color: #06B6D4; }
-
-.word-processor-toolbar { background: #0f172a; border: 1px solid #1e293b; padding: 0.45rem; border-radius: 8px; display: flex; align-items: center; gap: 0.25rem; margin-bottom: 1.25rem; box-sizing: border-box; }
-.word-processor-toolbar button { background: transparent; border: none; color: #94a3b8; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; font-size: 0.88rem; transition: all 200ms ease-in-out; }
-.word-processor-toolbar button:hover { background: rgba(6, 182, 212, 0.08); color: #06B6D4; }
-.word-processor-toolbar .separator { color: #1e293b; margin: 0 0.4rem; }
-
-.word-editable-canvas { flex: 1; background: rgba(15, 23, 42, 0.5); border: 1px solid #1e293b; border-radius: 12px; padding: 1.75rem; outline: none; overflow-y: auto; color: #cbd5e1; font-size: 1rem; line-height: 1.75; box-sizing: border-box; }
-.word-editable-canvas pre { background: #020617; padding: 1.25rem; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #34d399; overflow-x: auto; border: 1px solid rgba(52, 211, 153, 0.15); }
-
-/* --- COLUMN 3: RIGHT HISTORY VAULT & PURGE GRID CARDS --- */
-.history-vault-section { width: 300px; min-width: 300px; background: rgba(15, 23, 42, 0.2); border-left: 1px solid #1e293b; padding: 2rem 1.25rem; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; }
-.history-vault-section h4 { font-size: 0.72rem; color: #06B6D4; margin: 0 0 1.25rem 0; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
-.history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
-
-/* 🔒 SYMMETRICAL COMPACT CONTAINER CARD GRID FOR DELETE BUTTON HOOKS */
-.note-history-card-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid #1e293b;
-  border-radius: 10px;
-  overflow: hidden;
-  box-sizing: border-box;
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.note-history-card-wrapper:hover {
-  background: rgba(30, 41, 59, 0.6);
-  border-color: rgba(6, 182, 212, 0.25);
-}
-
-.wrapper-active-glow {
-  border-color: #06B6D4;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
-}
-
-/* Clickable segment bounds */
-.note-history-card-clickable {
-  flex: 1;
-  padding: 1rem 2.5rem 1rem 1rem; /* Precise padding right isolates room for absolute close button placement */
-  cursor: pointer;
-  box-sizing: border-box;
-}
-
-.note-history-card-clickable h5 { margin: 0 0 0.4rem 0; font-size: 0.9rem; color: #f8fafc; font-weight: 600; letter-spacing: -0.01em; }
-.note-history-card-clickable span { font-size: 0.72rem; color: #94a3b8; display: block; }
-
-/* 🗑️ HIGH-FIDELITY NOTE CARD PURGE ACTIONS BUTTON */
-.btn-note-card-purge {
-  position: absolute;
-  right: 10px;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #64748b; /* Muted tech gray default tone */
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid #1e293b;
-  border-radius: 4px;
-  cursor: pointer;
-  z-index: 5;
-  transition: all 200ms ease-in-out;
-}
-
-.btn-note-card-purge:hover {
-  background: #ef4444; /* Clean solid warning indicator on active focus */
-  color: #fff;
-  border-color: #ef4444;
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
-}
-
-.empty-alert { font-size: 0.8rem; color: #94a3b8; text-align: center; padding-top: 2rem; font-style: italic; }
-
-/* SCROLLBAR CORE PACKETS */
-.history-list::-webkit-scrollbar, .word-editable-canvas::-webkit-scrollbar { width: 5px; height: 5px; }
-.history-list::-webkit-scrollbar-track, .word-editable-canvas::-webkit-scrollbar-track { background: transparent; }
-.history-list::-webkit-scrollbar-thumb, .word-editable-canvas::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-.history-list::-webkit-scrollbar-thumb:hover, .word-editable-canvas::-webkit-scrollbar-thumb:hover { background: #06B6D4; }
-
-@keyframes modalScaleReveal { from { opacity: 0; transform: scale(0.97) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-
-
-/* ==========================================================================
-   LuminaLearn Studio - Full Production Ready Architecture Symmetrical Matrix
-   ========================================================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
-
-.notes-system-wrapper {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  color: #e2e8f0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  box-sizing: border-box;
-  background: #020617;
-  overflow: hidden;
-}
-
-.notes-system-wrapper.modal-view {
-  position: fixed;
-  inset: 0;
-  align-items: center;
-  justify-content: center;
-  z-index: 999999;
-}
-
-.notes-system-wrapper.modal-view .notes-blur-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(2, 6, 23, 0.75);
-  backdrop-filter: blur(12px);
-  z-index: 1;
-}
-
-.notes-system-wrapper.modal-view .notes-panel-container {
-  position: relative;
-  width: 94vw;
-  max-width: 1540px;
-  height: 88vh;
-  background: rgba(15, 23, 42, 0.85);
-  border: 1px solid #1e293b;
-  border-radius: 16px;
-  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  animation: modalScaleReveal 300ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.notes-system-wrapper.fullscreen-view .notes-panel-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: #020617;
-}
-
-/* 💻 HEADER GRID ENGINE ROW CONTROLS */
-.notes-workspace-header {
-  height: 74px;
-  min-height: 74px;
-  padding: 0 2rem;
-  background: #090d16;
-  border-bottom: 1px solid #1e293b;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 10;
-}
-
-.header-left-cluster {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  height: 100%;
-}
-
-.btn-header-back {
-  height: 36px;
-  padding: 0 1rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: #94a3b8;
-  background: rgba(30, 41, 59, 0.4);
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  box-sizing: border-box;
-  transition: all 200ms ease-in-out;
-}
-
-.btn-header-back .arrow-glyph {
-  font-size: 0.95rem;
-  line-height: 1;
-  color: #94a3b8;
-  transition: transform 200ms ease-in-out;
-}
-
-.btn-header-back:hover {
-  background: rgba(30, 41, 59, 0.7);
-  border-color: #06B6D4;
-  color: #fff;
-}
-
-.btn-header-back:hover .arrow-glyph {
-  color: #06B6D4;
-  transform: translateX(-2px);
-}
-
-.header-identity-block { display: flex; flex-direction: column; justify-content: center; height: 100%; }
-.notes-workspace-header h2 { font-size: 1.15rem; font-weight: 700; margin: 0; line-height: 1.2; letter-spacing: -0.02em; color: #f8fafc; display: flex; align-items: center; gap: 0.5rem; }
-.icon-telemetry { color: #06B6D4; display: flex; align-items: center; }
-.sub-telemetry-text { font-size: 0.72rem; color: #94a3b8; margin: 0.15rem 0 0 0; font-weight: 500; letter-spacing: 0.02em; line-height: 1; }
-
-.header-actions { display: flex; align-items: center; gap: 0.75rem; height: 100%; }
-.header-actions button {
-  height: 38px; padding: 0 1.25rem; font-size: 0.85rem; font-weight: 600; border-radius: 6px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; gap: 0.4rem; box-sizing: border-box; transition: all 200ms ease-in-out;
-}
-
-.btn-primary { background: #06B6D4; color: #020617; font-weight: 700; border: 1px solid #06B6D4; }
-.btn-primary:hover { background: #22d3ee; border-color: #22d3ee; box-shadow: 0 0 12px rgba(6, 182, 212, 0.3); }
-
-.btn-secondary { background: rgba(30, 41, 59, 0.3); color: #f8fafc; border: 1px solid #1e293b !important; }
-.btn-secondary:hover { background: rgba(30, 41, 59, 0.6); border-color: #06B6D4 !important; color: #fff; }
-
-.header-user-profile-zone { display: flex; align-items: center; gap: 0.75rem; height: 100%; }
-.user-meta-details { display: flex; align-items: center; justify-content: center; gap: 0.6rem; background: rgba(15, 23, 42, 0.6); border: 1px solid #1e293b; padding: 0 1rem; border-radius: 8px; height: 38px; box-sizing: border-box; }
-.user-status-dot { width: 6px; height: 6px; background: #06B6D4; border-radius: 50%; box-shadow: 0 0 8px #06B6D4; }
-.user-profile-name { font-size: 0.82rem; font-weight: 600; color: #f8fafc; letter-spacing: -0.01em; line-height: 1; }
-
-.notes-workspace-header .btn-close {
-  width: 32px; height: 32px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border-radius: 6px;
-  background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.2) !important; color: #f87171; cursor: pointer; box-sizing: border-box; transition: all 200ms ease-in-out;
-}
-.notes-workspace-header .btn-close:hover { background: #ef4444; color: #fff; border-color: #ef4444 !important; }
-
-/* 📐 3-COLUMN WORKSPACE GEOMETRY */
-.notes-workspace-body { flex: 1; display: flex; height: calc(100% - 74px); box-sizing: border-box; overflow: hidden; }
-
-/* --- COLUMN 1: LEFT CONTROLLERS --- */
-.notes-sidebar-controls { width: 320px; min-width: 320px; background: rgba(15, 23, 42, 0.4); border-right: 1px solid #1e293b; padding: 2rem 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; box-sizing: border-box; }
-.notes-sidebar-controls label { font-size: 0.72rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: -0.5rem; }
-.notes-sidebar-controls select { width: 100%; height: 42px; background: rgba(2, 6, 23, 0.5); border: 1px solid #1e293b; color: #f8fafc; padding: 0 1rem; border-radius: 8px; outline: none; font-size: 0.88rem; box-sizing: border-box; transition: all 250ms ease-in-out; }
-.notes-sidebar-controls select:focus { border-color: #06B6D4; box-shadow: 0 0 10px rgba(6, 182, 212, 0.15); }
-.notes-sidebar-controls select:disabled { opacity: 0.25; cursor: not-allowed; }
-
-/* --- COLUMN 2: CENTER CANVAS TEXT ENVIRONMENT --- */
-.notes-word-editor-arena { flex: 1; background: rgba(2, 6, 23, 0.3); display: flex; flex-direction: column; padding: 2rem; box-sizing: border-box; overflow: hidden; }
-.note-title-field { background: transparent; border: none; border-bottom: 1px solid #1e293b; font-size: 1.5rem; font-weight: 800; color: #f8fafc; padding-bottom: 0.75rem; margin-bottom: 1.25rem; outline: none; width: 100%; letter-spacing: -0.02em; box-sizing: border-box; transition: border-color 250ms ease-in-out; }
-.note-title-field:focus { border-color: #06B6D4; }
-
-.word-processor-toolbar { background: #0f172a; border: 1px solid #1e293b; padding: 0.45rem; border-radius: 8px; display: flex; align-items: center; gap: 0.25rem; margin-bottom: 1.25rem; box-sizing: border-box; }
-.word-processor-toolbar button { background: transparent; border: none; color: #94a3b8; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-weight: 600; display: flex; align-items: center; justify-content: center; font-size: 0.88rem; transition: all 200ms ease-in-out; }
-.word-processor-toolbar button:hover { background: rgba(6, 182, 212, 0.08); color: #06B6D4; }
-.word-processor-toolbar .separator { color: #1e293b; margin: 0 0.4rem; }
-
-.word-editable-canvas { flex: 1; background: rgba(15, 23, 42, 0.5); border: 1px solid #1e293b; border-radius: 12px; padding: 1.75rem; outline: none; overflow-y: auto; color: #cbd5e1; font-size: 1rem; line-height: 1.75; box-sizing: border-box; }
-.word-editable-canvas pre { background: #020617; padding: 1.25rem; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: 0.85rem; color: #34d399; overflow-x: auto; border: 1px solid rgba(52, 211, 153, 0.15); }
-
-/* --- COLUMN 3: RIGHT HISTORY VAULT --- */
-.history-vault-section { width: 300px; min-width: 300px; background: rgba(15, 23, 42, 0.2); border-left: 1px solid #1e293b; padding: 2rem 1.25rem; display: flex; flex-direction: column; overflow: hidden; box-sizing: border-box; }
-.history-vault-section h4 { font-size: 0.72rem; color: #06B6D4; margin: 0 0 1.25rem 0; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; }
-.history-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem; }
-
-/* Professional Dashboard Card Component */
-.note-history-card {
-  background: rgba(15, 23, 42, 0.8);
-  border: 1px solid #1e293b;
-  padding: 1rem;
-  border-radius: 10px;
-  cursor: pointer;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.note-history-card:hover {
-  background: rgba(30, 41, 59, 0.6);
-  border-color: rgba(6, 182, 212, 0.3);
-}
-
-.note-history-card.active-track {
-  background: rgba(6, 182, 212, 0.05);
-  border-color: #06B6D4;
-  box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
-}
-
-/* 🛠️ INLINE TITLE + DELETE BUTTON GRID ROW HOOK */
-.note-card-title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* Straight vertical center lock alignment */
-  gap: 0.5rem;
-  width: 100%;
-}
-
-.note-card-title-row h5 {
-  margin: 0;
-  font-size: 0.9rem;
-  color: #f8fafc;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-  flex: 1; /* Title text consumes remaining space */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* Inline aligned modern trash layout */
-.btn-note-inline-purge {
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: #475569; /* Unfocused clean low-energy gray state */
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 150ms ease-in-out;
-}
-
-.btn-note-inline-purge:hover {
-  background: #ef4444; /* Alert color block on targeted focus state */
-  color: #fff;
-  border-color: #ef4444;
-}
-
-.note-history-card span {
-  font-size: 0.72rem;
-  color: #94a3b8;
-  display: block;
-}
-
-.empty-alert { font-size: 0.8rem; color: #94a3b8; text-align: center; padding-top: 2rem; font-style: italic; }
-
-/* SCROLLBAR REPOSITORIES */
-.history-list::-webkit-scrollbar, .word-editable-canvas::-webkit-scrollbar { width: 5px; height: 5px; }
-.history-list::-webkit-scrollbar-track, .word-editable-canvas::-webkit-scrollbar-track { background: transparent; }
-.history-list::-webkit-scrollbar-thumb, .word-editable-canvas::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-.history-list::-webkit-scrollbar-thumb:hover, .word-editable-canvas::-webkit-scrollbar-thumb:hover { background: #06B6D4; }
-
-@keyframes modalScaleReveal { from { opacity: 0; transform: scale(0.97) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
