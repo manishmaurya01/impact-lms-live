@@ -14,6 +14,7 @@ const pedagogyCtrl = mainControllers.pedagogyCtrl || {};
 const workspaceCtrl = mainControllers.workspaceCtrl || {};
 const evaluationCtrl = mainControllers.evaluationCtrl || {};
 const quizCtrl = mainControllers.quizCtrl || {};
+const doubtCtrl = mainControllers.doubtCtrl || {};
 
 const fallbackHandler = (req, res) => res.status(501).json({ success: false, message: "Route handler not implemented in controller yet." });
 
@@ -75,5 +76,10 @@ router.post('/interview/conversation-step', authorizeToken, interviewCtrl.proces
 
 // D. Background Security Watchdog Sync Hook
 router.post('/interview/sync-proctor', authorizeToken, interviewCtrl.syncProctorMetrics || fallbackHandler);
+
+// =========================================================================
+// 8. AI DENSE COGNITIVE DOUBT SOLVER CHANNELS
+// =========================================================================
+router.post('/doubt/ask', authorizeToken, doubtCtrl.askDoubt || fallbackHandler);
 
 module.exports = router;

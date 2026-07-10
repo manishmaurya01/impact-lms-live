@@ -372,4 +372,78 @@ const quizCtrl = {
   }
 };
 
-module.exports = { authCtrl, dashboardCtrl, pedagogyCtrl, workspaceCtrl, evaluationCtrl, quizCtrl };
+const doubtCtrl = {
+  askDoubt: async (req, res) => {
+    const { courseId, moduleId, moduleName, topicName, doubtText, chatHistory } = req.body;
+    if (!doubtText) {
+      return res.status(400).json({ success: false, message: "Doubt payload is required." });
+    }
+
+    try {
+      const schema = {
+        type: "object",
+        properties: {
+          answer: { type: "string" },
+          shouldSaveNote: { type: "boolean" },
+          noteTitle: { type: "string" },
+          noteContent: { type: "string" }
+        },
+        required: ["answer", "shouldSaveNote"]
+      };
+
+      const formattedHistory = (chatHistory || [])
+        .map(msg => `${msg.role.toUpperCase()}: ${msg.content}`)
+        .join("\n");
+
+      const sysPrompt = `You are LuminaLearn's elite Academic Doubt Solver. Explain technical or non-technical doubts in clear, well-structured, clean HTML (styled matching dark mode text wrapper, no markdown blocks).
+      Keep your answer engaging, highly accurate, and precise.
+      
+      CRITICAL INSTRUCTIONS FOR NOTES SAVING:
+      If the user explicitly asks you to "save this to notes", "add to notes", "notes me save karo", or similar expressions:
+      1. Set 'shouldSaveNote' to true.
+      2. Construct a brief descriptive 'noteTitle' (e.g. "Doubt: [Topic Name]").
+      3. Construct the clean HTML note content under 'noteContent' (summarizing the explanation).
+      Otherwise, set 'shouldSaveNote' to false and omit/empty noteTitle and noteContent.`;
+
+      const promptText = `
+Topic Context: "${topicName}"
+Conversation Logs:
+${formattedHistory}
+User's New Question: "${doubtText}"
+`;
+
+      const raw = await callGeminiAPI(GEMINI_SECONDARY_KEY, promptText, sysPrompt, schema);
+      const parsed = JSON.parse(raw.trim());
+
+      let autoSavedNote = null;
+      if (parsed.shouldSaveNote && parsed.noteContent) {
+        try {
+          const noteObj = new Note({
+            userId: req.user.userId,
+            courseId,
+            moduleId: moduleId || 1,
+            moduleName: moduleName || topicName || "General doubts",
+            title: parsed.noteTitle || `Doubt: ${topicName || "Topic Overview"}`,
+            contentHtml: parsed.noteContent
+          });
+          autoSavedNote = await noteObj.save();
+        } catch (dbErr) {
+          console.error("Doubt auto-save note error:", dbErr);
+        }
+      }
+
+      res.status(200).json({
+        success: true,
+        answer: parsed.answer,
+        autoSaved: !!autoSavedNote,
+        note: autoSavedNote
+      });
+
+    } catch (err) {
+      console.error("Doubt solver backend crash:", err);
+      res.status(500).json({ success: false, message: "AI Doubt Solver pipeline failed." });
+    }
+  }
+};
+
+module.exports = { authCtrl, dashboardCtrl, pedagogyCtrl, workspaceCtrl, evaluationCtrl, quizCtrl, doubtCtrl };

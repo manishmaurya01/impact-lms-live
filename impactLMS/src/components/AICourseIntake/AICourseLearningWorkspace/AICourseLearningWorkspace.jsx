@@ -4,6 +4,7 @@ import ModuleSidebarTree from './modules/ModuleSidebarTree';
 import MainResourceCanvas from './modules/MainResourceCanvas';
 import TakeQuizView from '../../quiz/TakeQuizView'; 
 import TakeAssignmentView from '../../Asignment/TakeAssignmentView'; 
+import DoubtSolverWidget from './modules/DoubtSolverWidget'; 
 
 export default function AICourseLearningWorkspace({ courseData, onBack }) {
   const [activeModuleId, setActiveModuleId] = useState(courseData?.modules[0]?.moduleId || 1);
@@ -234,6 +235,13 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
           moduleId={activeModuleId}
           activeQuizResult={quizResultsCache[trackKey]} 
           activeAssignmentResult={assignmentLocksCache[trackKey]}
+        />
+
+        <DoubtSolverWidget 
+          courseId={courseData?._id}
+          moduleId={activeModuleId}
+          moduleName={currentModule?.title}
+          topicName={currentTopicName}
         />
       </div>
     </div>
