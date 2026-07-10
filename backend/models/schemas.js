@@ -29,9 +29,9 @@ const ModuleSchema = new mongoose.Schema({
       duration: { type: String, default: "10 min" }
     },
     assignment: {
-      name: { type: String, default: "Symmetric Practice Assignment" },
-      assignmentObjective: { type: String, default: "Implement concepts learned today." },
-      complexity: { type: String, default: "Medium" }
+      name: { type: String },
+      assignmentObjective: { type: String },
+      complexity: { type: String }
     }
   }
 });
@@ -50,6 +50,19 @@ const MaterialSchema = new mongoose.Schema({
   topicName: { type: String, required: true },
   htmlContent: { type: String, required: true }, 
   videoLink: { type: String, default: "https://www.youtube.com" },
+  videoReferences: [
+    {
+      title: { type: String },
+      url: { type: String },
+      embedUrl: { type: String }
+    }
+  ],
+  docReferences: [
+    {
+      title: { type: String },
+      url: { type: String }
+    }
+  ],
   createdAt: { type: Date, default: Date.now }
 });
 

@@ -169,9 +169,11 @@ export default function MainResourceCanvas({
           <button onClick={() => setActiveTab('quiz')} style={{ background: activeTab === 'quiz' ? 'rgba(245,158,11,0.05)' : 'transparent', border: 'none', color: activeTab === 'quiz' ? '#f59e0b' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>
             ⚡ Quiz Evaluation
           </button>
-          <button onClick={() => setActiveTab('assignment')} style={{ background: activeTab === 'assignment' ? 'rgba(16,185,129,0.05)' : 'transparent', border: 'none', color: activeTab === 'assignment' ? '#10b981' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>
-            🛠️ Assignment Challenge
-          </button>
+          {assignment && assignment.assignmentObjective && assignment.assignmentObjective.trim() !== "" && assignment.assignmentObjective !== "Implement concepts learned today." && (
+            <button onClick={() => setActiveTab('assignment')} style={{ background: activeTab === 'assignment' ? 'rgba(16,185,129,0.05)' : 'transparent', border: 'none', color: activeTab === 'assignment' ? '#10b981' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>
+              🛠️ Assignment Challenge
+            </button>
+          )}
         </div>
 
         {/* 📚 NEW POPUP TRIGGER: Is button par click karte hi popup open ho jayega */}
@@ -317,6 +319,91 @@ export default function MainResourceCanvas({
             ) : (
               <div style={{ color: '#475569', textAlign: 'center', padding: '4rem', border: '1px dashed #1e293b', borderRadius: '8px' }}>
                 {"\uD83D\uDCC4"} Compiling raw concept blueprints logs from server mesh...
+              </div>
+            )}
+
+            {/* 📚 DYNAMIC VIDEO & DOCUMENTATION REFERENCES PANEL */}
+            {materialNotes && (
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+                
+                {/* Video References Column */}
+                <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ fontSize: '0.75rem', color: '#06b6d4', fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Play size={14}/> <span>Video Lectures & Masterclasses</span>
+                  </div>
+                  
+                  {materialNotes.videoReferences && materialNotes.videoReferences.length > 0 ? (
+                    materialNotes.videoReferences.map((video, idx) => (
+                      <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderBottom: idx < materialNotes.videoReferences.length - 1 ? '1px solid rgba(30, 41, 59, 0.5)' : 'none', paddingBottom: idx < materialNotes.videoReferences.length - 1 ? '1rem' : '0' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>{video.title}</div>
+                        
+                        {/* Video Embed Player */}
+                        {video.embedUrl && (
+                          <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', borderRadius: '6px', border: '1px solid #1e293b', marginTop: '0.25rem' }}>
+                            <iframe 
+                              src={video.embedUrl} 
+                              title={video.title} 
+                              frameBorder="0" 
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                              allowFullScreen 
+                              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                            ></iframe>
+                          </div>
+                        )}
+                        
+                        <a href={video.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#06b6d4', fontSize: '0.8rem', fontWeight: '600', textDecoration: 'none', marginTop: '0.25rem' }}>
+                          Open Video on YouTube &rarr;
+                        </a>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>Topic Demonstration</div>
+                      
+                      {/* Fallback Single Video embed */}
+                      {materialNotes.videoLink && (materialNotes.videoLink.includes('youtube.com/embed') || materialNotes.videoLink.includes('youtube.com/watch') || materialNotes.videoLink.includes('youtu.be')) ? (
+                        <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', borderRadius: '6px', border: '1px solid #1e293b' }}>
+                          <iframe 
+                            src={materialNotes.videoLink.replace('watch?v=', 'embed/').split('&')[0]} 
+                            title="YouTube Player" 
+                            frameBorder="0" 
+                            allowFullScreen 
+                            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                          ></iframe>
+                        </div>
+                      ) : (
+                        <a href={materialNotes.videoLink || "https://www.youtube.com"} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#06b6d4', fontSize: '0.85rem', fontWeight: '600', textDecoration: 'none' }}>
+                          Open Search Resources on YouTube &rarr;
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Documentation References Column */}
+                <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ fontSize: '0.75rem', color: '#8b5cf6', fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <BookOpen size={14}/> <span>Documentation & GeeksforGeeks Links</span>
+                  </div>
+
+                  {materialNotes.docReferences && materialNotes.docReferences.length > 0 ? (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {materialNotes.docReferences.map((doc, idx) => (
+                        <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', border: '1px solid #1e293b', padding: '0.75rem 1rem', borderRadius: '8px', color: '#cbd5e1', textDecoration: 'none', transition: 'all 0.2s' }}
+                           onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#8b5cf6'; e.currentTarget.style.background = 'rgba(139, 92, 246, 0.03)'; }}
+                           onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1e293b'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}>
+                          <span style={{ fontSize: '0.85rem', fontWeight: '500' }}>{doc.title}</span>
+                          <span style={{ fontSize: '0.75rem', color: '#8b5cf6' }}>Read Reference &rarr;</span>
+                        </a>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ color: '#475569', fontSize: '0.85rem', textAlign: 'center', padding: '1.5rem 0' }}>
+                      No additional reading links specified for this topic node.
+                    </div>
+                  )}
+                </div>
+
               </div>
             )}
 

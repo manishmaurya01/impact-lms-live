@@ -95,7 +95,7 @@ const pedagogyCtrl = {
                   quiz: { type: "object", properties: { name: { type: "string" }, quizTopic: { type: "string" }, duration: { type: "string" } }, required: ["name", "quizTopic", "duration"] },
                   assignment: { type: "object", properties: { name: { type: "string" }, assignmentObjective: { type: "string" }, complexity: { type: "string" } }, required: ["name", "assignmentObjective", "complexity"] }
                 },
-                required: ["quiz", "assignment"]
+                required: ["quiz"]
               }
             },
             required: ["dayId", "title", "duration", "objective", "topics", "curatedSearchQuery", "schedules"]
@@ -105,7 +105,7 @@ const pedagogyCtrl = {
       required: ["title", "level", "modules"]
     };
 
-    const sysPrompt = "You are LuminaLearn's core engine. Output strict Day-wise nested mapping frameworks aligned perfectly with the targeted schema constraints.";
+    const sysPrompt = "You are LuminaLearn's core engine. Output strict Day-wise nested mapping frameworks aligned perfectly with the targeted schema constraints. If the topic/prompt is for a non-technical course (e.g. leadership, art, public speaking, drawing, management, history, meditation, etc.) where hands-on coding or technical assignments are not applicable, omit the 'assignment' block inside 'schedules' entirely.";
     try {
       const raw = await callGeminiAPI(GEMINI_PRIMARY_KEY, `Build roadmap context: ${prompt}. Mode Depth: ${level || 'Beginner'}`, sysPrompt, schema);
       const parsed = JSON.parse(raw.trim());
@@ -120,21 +120,78 @@ const pedagogyCtrl = {
     const { courseId, moduleId, topicName } = req.body;
     try {
       let existing = await Material.findOne({ courseId, moduleId, topicName });
-      if (existing) return res.status(200).json({ success: true, data: existing });
+      if (existing) {
+        if (!existing.videoReferences || existing.videoReferences.length === 0) {
+          try {
+            const { getVerifiedVideos } = require('../utils/videoSearch');
+            const realVideos = await getVerifiedVideos(topicName);
+            if (realVideos && realVideos.length > 0) {
+              existing.videoReferences = realVideos;
+              existing.videoLink = realVideos[0].embedUrl || realVideos[0].url;
+              await existing.save();
+            }
+          } catch (searchErr) {
+            console.error("Failed to dynamically fill missing videos for existing content:", searchErr);
+          }
+        }
+        return res.status(200).json({ success: true, data: existing });
+      }
 
       const target = await Course.findById(courseId);
       const currentLevel = target ? target.level : "Beginner";
 
       const schema = {
         type: "object",
-        properties: { htmlContent: { type: "string" }, videoLink: { type: "string" } },
-        required: ["htmlContent", "videoLink"]
+        properties: {
+          htmlContent: { type: "string" },
+          videoLink: { type: "string" },
+          videoReferences: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                title: { type: "string" },
+                url: { type: "string" },
+                embedUrl: { type: "string" }
+              },
+              required: ["title", "url", "embedUrl"]
+            }
+          },
+          docReferences: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                title: { type: "string" },
+                url: { type: "string" }
+              },
+              required: ["title", "url"]
+            }
+          }
+        },
+        required: ["htmlContent", "videoLink", "videoReferences", "docReferences"]
       };
 
-      const sysPrompt = `You are an elite master technical educator. Explain the topic deeply inside clean HTML markup styles wrappers tailored for target experience layer: [${currentLevel}]. Avoid markdown syntax blocks.`;
-      const raw = await callGeminiAPI(GEMINI_SECONDARY_KEY, `Generate deep study guide block elements for topic: "${topicName}".`, sysPrompt, schema);
+      const sysPrompt = `You are an elite master educator. Explain the topic deeply inside clean HTML markup styles wrappers tailored for target experience layer: [${currentLevel}]. Avoid markdown syntax blocks.
+      You must also provide exactly 1-2 relevant video references and 2 documentation references for the topic.
+      For video references, suggest high-qualityrelevant YouTube video links. Provide standard watch URLs (e.g., https://www.youtube.com/watch?v=dQw4w9WgXcQ) and their corresponding embed URLs (e.g., https://www.youtube.com/embed/dQw4w9WgXcQ).
+      For documentation references, include official technology documentation links or high-quality articles like GeeksforGeeks (e.g., https://www.geeksforgeeks.org/topic-name/) with descriptive titles.`;
+
+      const raw = await callGeminiAPI(GEMINI_SECONDARY_KEY, `Generate deep study guide block elements and references for topic: "${topicName}".`, sysPrompt, schema);
       
       const parsed = JSON.parse(raw.trim());
+
+      try {
+        const { getVerifiedVideos } = require('../utils/videoSearch');
+        const realVideos = await getVerifiedVideos(topicName);
+        if (realVideos && realVideos.length > 0) {
+          parsed.videoReferences = realVideos;
+          parsed.videoLink = realVideos[0].embedUrl || realVideos[0].url;
+        }
+      } catch (searchErr) {
+        console.error("Dynamic video lookup failed:", searchErr);
+      }
+
       const material = new Material({ courseId, moduleId, topicName, ...parsed });
       await material.save();
       res.status(200).json({ success: true, data: material });
