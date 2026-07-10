@@ -126,9 +126,17 @@ const pedagogyCtrl = {
             const { getVerifiedVideos } = require('../utils/videoSearch');
             const realVideos = await getVerifiedVideos(topicName);
             if (realVideos && realVideos.length > 0) {
+              await Material.updateOne(
+                { _id: existing._id },
+                {
+                  $set: {
+                    videoReferences: realVideos,
+                    videoLink: realVideos[0].embedUrl || realVideos[0].url
+                  }
+                }
+              );
               existing.videoReferences = realVideos;
               existing.videoLink = realVideos[0].embedUrl || realVideos[0].url;
-              await existing.save();
             }
           } catch (searchErr) {
             console.error("Failed to dynamically fill missing videos for existing content:", searchErr);
