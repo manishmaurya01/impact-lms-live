@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { 
   Bold, Italic, Underline, Undo, Redo, HelpCircle, Trash2, Check, FileText, Loader2, 
   Sparkles, Palette, RefreshCw, PenTool, Eraser, Save, BookOpen, User, ArrowLeft, 
-  Image, Grid, AlignLeft, AlignCenter, AlignRight, List, ListOrdered
+  Image, Grid, AlignLeft, AlignCenter, AlignRight, List, ListOrdered, Code
 } from 'lucide-react';
 import "./NotesPage.css";
 
