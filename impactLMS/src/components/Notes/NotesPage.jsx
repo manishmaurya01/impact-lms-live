@@ -128,7 +128,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
     setActiveNoteId(note._id);
     setNoteTitle(note.title);
     if (editorRef.current) editorRef.current.innerHTML = note.contentHtml;
-    const modMatch = selectedCourse.modules.find(m => m.moduleId === note.moduleId);
+    const modMatch = selectedCourse?.modules?.find(m => m.moduleId === note.moduleId);
     setSelectedModule(modMatch || null);
     setActiveTab("editor");
   };
@@ -449,13 +449,13 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
             <select 
               value={selectedModule ? selectedModule.moduleId : ""} 
               onChange={(e) => {
-                const m = selectedCourse?.modules.find(item => item.moduleId === parseInt(e.target.value));
+                const m = selectedCourse?.modules?.find(item => item.moduleId === parseInt(e.target.value));
                 setSelectedModule(m || null);
               }}
               disabled={!selectedCourse}
             >
               <option value="">-- Select Module --</option>
-              {selectedCourse?.modules.map(m => (
+              {(selectedCourse?.modules || []).map(m => (
                 <option key={m.moduleId} value={m.moduleId}>M{m.moduleId}: {m.moduleName}</option>
               ))}
             </select>
