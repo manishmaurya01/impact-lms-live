@@ -4,16 +4,16 @@ export default function CourseTimeline({ activeViewportCourse, onLaunchWorkspace
   return (
     <div className="roadmap-master-scaffold-container animate-fadeIn">
       <div className="interactive-glass-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', borderBottom: '1px solid #1e293b', paddingBottom: '1.5rem' }}>
+        <div className="timeline-header-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', borderBottom: '1px solid #1e293b', paddingBottom: '1.5rem' }}>
           <div>
             <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#06b6d4', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
               Cloud Storage Engine Registry Identity Verified [Sync_OK]
             </span>
-            <h1 style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff', margin: '0.2rem 0 0 0' }}>
+            <h1 className="timeline-course-title" style={{ fontSize: '2.2rem', fontWeight: 900, color: '#fff', margin: '0.2rem 0 0 0' }}>
               {activeViewportCourse?.title}
             </h1>
           </div>
-          <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.75rem' }}>
+          <div className="timeline-header-buttons" style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
             <button 
               onClick={onLaunchWorkspace} 
               className="prompt-matrix-submit-btn" 

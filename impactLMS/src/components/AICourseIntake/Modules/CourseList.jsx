@@ -23,7 +23,7 @@ export default function CourseList({ savedCoursesList, onSelectCourse, onDeleteC
               key={course._id} 
               onClick={() => onSelectCourse(course)}
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem', background: 'rgba(15,23,42,0.6)', border: '1px solid #1e293b', borderRadius: '0.75rem', cursor: 'pointer' }}
-              className="hover:border-cyan-500/40"
+              className="hover:border-cyan-500/40 course-list-row"
             >
               <div>
                 <h4 style={{ color: '#fff', fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>{course.title}</h4>

@@ -662,7 +662,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
 
         {/* VIEW D: NEXT LEVEL 10 MCQS LIVE EVALUATION DESK LAYOUT */}
         {assessmentPhase === 'ACTIVE_QUIZ' && generatedQuestions.length > 0 && (
-          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '320px 1fr', height: '100%' }}>
+          <div className="quiz-workspace-grid" style={{ flex: 1, display: 'grid', gridTemplateColumns: '320px 1fr', height: '100%' }}>
             
             {/* LEFT COLUMN PANEL: DYNAMIC USER METADATA METRICS GRAPH */}
             <div style={{ 
@@ -1188,6 +1188,18 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
         @keyframes fade-in {
           from { opacity: 0; }
           to { opacity: 1; }
+        }
+        @media (max-width: 900px) {
+          .quiz-workspace-grid {
+            grid-template-columns: 1fr !important;
+            overflow-y: auto !important;
+            height: auto !important;
+          }
+          .quiz-workspace-grid > div {
+            height: auto !important;
+            border-right: none !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+          }
         }
       `}</style>
     </div>

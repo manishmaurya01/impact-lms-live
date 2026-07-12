@@ -247,7 +247,7 @@ export default function InterviewPage() {
           </header>
 
           {/* SPLIT SCREEN VIDEO FEEDS */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+          <div className="interview-video-split-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
             
             {/* LEFT: AI INTERVIEWER */}
             <div style={{ background: '#0f172a', borderRadius: '1rem', border: '1px solid rgba(30, 41, 59, 0.8)', height: '380px', position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
@@ -293,7 +293,7 @@ export default function InterviewPage() {
             </div>
 
             {currentQuestionIndex < generatedQuestions.length ? (
-              <div style={{ display: 'flex', gap: '1rem' }}>
+              <div className="interview-submit-row" style={{ display: 'flex', gap: '1rem' }}>
                 <input 
                   type="text"
                   value={userAnswer}
@@ -321,6 +321,27 @@ export default function InterviewPage() {
           </div>
         </div>
       )}
+      {/* Live Room responsive styling overrides */}
+      <style>{`
+        @media (max-width: 768px) {
+          .interview-video-split-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+          }
+          .interview-video-split-grid > div {
+            height: 280px !important;
+          }
+          .interview-submit-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0.75rem !important;
+          }
+          .interview-submit-row button {
+            padding: 0.85rem !important;
+            justify-content: center !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

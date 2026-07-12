@@ -59,8 +59,10 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
         )}
         
         <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+          {/* Collapse/Expand toggle button - Desktop only */}
           <button 
             onClick={() => setIsExpanded(!isExpanded)} 
+            className="hidden md:flex"
             style={{ 
               background: 'rgba(255,255,255,0.03)', 
               border: '1px solid rgba(255,255,255,0.05)', 
@@ -68,7 +70,6 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
               padding: '0.5rem', 
               color: '#cbd5e1', 
               cursor: 'pointer', 
-              display: 'flex', 
               alignItems: 'center', 
               justifyContent: 'center', 
               outline: 'none',
@@ -79,9 +80,10 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
             {isExpanded ? <X size={18} /> : <Menu size={18} />}
           </button>
           
+          {/* Mobile slide close button - Mobile only */}
           <button
             onClick={onCloseMobile}
-            className="md:hidden"
+            className="flex md:hidden"
             style={{
               background: 'rgba(239, 68, 68, 0.08)',
               border: '1px solid rgba(239, 68, 68, 0.2)',
@@ -89,7 +91,6 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
               padding: '0.5rem',
               color: '#f87171',
               cursor: 'pointer',
-              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               outline: 'none',
