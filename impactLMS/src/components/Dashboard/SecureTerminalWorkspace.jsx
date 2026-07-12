@@ -18,18 +18,22 @@ export default function SecureTerminalWorkspace({ targetParams, onReturn }) {
 
   const triggerScreenShare = async () => {
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { displaySurface: "monitor" },
-        audio: false
-      });
-      setScreenStream(stream);
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 900;
+      
+      if (!isMobile && navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+        const stream = await navigator.mediaDevices.getDisplayMedia({
+          video: { displaySurface: "monitor" },
+          audio: false
+        });
+        setScreenStream(stream);
+        
+        stream.getVideoTracks()[0].onended = () => {
+          setScreenStream(null);
+          setStep('lockdown');
+          alert("SECURITY ALERT: Monitor stream disconnected. Environment locked.");
+        };
+      }
       setStep('workspace');
-
-      stream.getVideoTracks()[0].onended = () => {
-        setScreenStream(null);
-        setStep('lockdown');
-        alert("SECURITY ALERT: Monitor stream disconnected. Environment locked.");
-      };
     } catch (err) {
       alert("SECURITY MATRIX: Monitor stream mapping required to proceed.");
     }

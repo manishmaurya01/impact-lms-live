@@ -134,18 +134,25 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
   const initiateSecureProctorStream = async () => {
     setStreamError("");
     try {
-      // 1. Desktop Screen Capture Check
-      const screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: false
-      });
-      setMediaStreamInstance(screenStream);
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 900;
       
-      const screenTrack = screenStream.getVideoTracks()[0];
-      screenTrack.onended = () => {
-        alert("🚨 CRITICAL TELEMETRY FAULT: Screen share connection terminated. Security rules active.");
-        window.location.reload();
-      };
+      // 1. Desktop Screen Capture Check (Skip on mobile)
+      if (!isMobile && navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+        addProctorLog("Requesting hardware proctor desktop screen capture channel...");
+        const screenStream = await navigator.mediaDevices.getDisplayMedia({
+          video: true,
+          audio: false
+        });
+        setMediaStreamInstance(screenStream);
+        
+        const screenTrack = screenStream.getVideoTracks()[0];
+        screenTrack.onended = () => {
+          alert("🚨 CRITICAL TELEMETRY FAULT: Screen share connection terminated. Security rules active.");
+          window.location.reload();
+        };
+      } else {
+        addProctorLog("Mobile client or screen sharing unsupported. Skipping screen capture check.");
+      }
 
       // 2. Front Webcam Camera Capture Check
       addProctorLog("Requesting hardware proctor camera channels...");
@@ -163,7 +170,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
       compileAndPersistQuizMatrix();
     } catch (err) {
       console.error("Telemetry streams startup failed:", err);
-      setStreamError("⚠️ Hardware access denied. Please grant BOTH Screen-share and Camera permissions to authenticate.");
+      setStreamError("⚠️ Hardware access denied. Please grant Camera permissions to authenticate.");
       addProctorLog("Error: Security environment initialization aborted.");
     }
   };

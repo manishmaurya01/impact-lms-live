@@ -165,11 +165,15 @@ export default function TakeAssignmentView({ assignment, topicName, courseId, mo
 
   const initializeSecureWorkspaceSession = async () => {
     try {
-      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
-      setStreamInstance(stream);
-      stream.getVideoTracks()[0].onended = () => {
-        processImmediatePanicAutoSubmit();
-      };
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 900;
+      
+      if (!isMobile && navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
+        setStreamInstance(stream);
+        stream.getVideoTracks()[0].onended = () => {
+          processImmediatePanicAutoSubmit();
+        };
+      }
       
       if (workspaceContainerRef.current) {
         await workspaceContainerRef.current.requestFullscreen();
