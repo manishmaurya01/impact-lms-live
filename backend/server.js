@@ -1,5 +1,6 @@
 const dns = require('dns');
 dns.setDefaultResultOrder('ipv4first'); // Fix local IPv4 resolution lags inside Windows hosts
+dns.setServers(["1.1.1.1", "8.8.8.8"]); // Resolve MongoDB Atlas SRV querySrv connection issues
 
 const express = require('express');
 const cors = require('cors');
