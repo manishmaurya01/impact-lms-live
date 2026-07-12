@@ -5,9 +5,26 @@ dns.setServers(["1.1.1.1", "8.8.8.8"]); // Resolve MongoDB Atlas SRV querySrv co
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
-const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
+
+// Custom safe NoSQL Injection sanitizer compatible with Express 5
+const sanitizeObject = (obj) => {
+  if (obj && typeof obj === 'object') {
+    for (const key in obj) {
+      if (key.startsWith('$')) {
+        delete obj[key];
+      } else {
+        sanitizeObject(obj[key]);
+      }
+    }
+  }
+};
+const customMongoSanitize = (req, res, next) => {
+  if (req.body) sanitizeObject(req.body);
+  if (req.params) sanitizeObject(req.params);
+  next();
+};
 
 const connectDB = require('./config/db');
 const apiRoutes = require('./routes/apiRoutes');
@@ -16,7 +33,7 @@ const app = express();
 
 // 🛡️ SECURITY MIDDLEWARE PROTOCOLS
 app.use(helmet()); // Secure HTTP response headers
-app.use(mongoSanitize()); // Prevent NoSQL Injection attacks
+app.use(customMongoSanitize); // Prevent NoSQL Injection attacks
 
 // Rate Limiting (Defend against Brute Force & DoS attacks)
 const apiLimiter = rateLimit({
