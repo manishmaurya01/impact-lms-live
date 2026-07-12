@@ -1,7 +1,7 @@
 import React from 'react';
-import { ArrowLeft, Award, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Award, CheckCircle2, Menu } from 'lucide-react';
 
-export default function WorkspaceHeader({ courseTitle, modules = [], completedTracks = {}, onBack }) {
+export default function WorkspaceHeader({ courseTitle, modules = [], completedTracks = {}, onBack, onToggleSidebar }) {
   
   // 🚀 DYNAMIC ACCURATE PROGRESS CALCULATOR
   // Pehle system total topics calculate karega pure modules me se
@@ -26,7 +26,19 @@ export default function WorkspaceHeader({ courseTitle, modules = [], completedTr
       padding: '1rem 2rem', background: '#090d16', borderBottom: '1px solid rgba(255,255,255,0.05)',
       fontFamily: '"Inter", sans-serif'
     }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <button
+          onClick={onToggleSidebar}
+          className="workspace-sidebar-toggle-btn"
+          style={{
+            padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: '#94a3b8', background: 'transparent', border: '1px solid #1e293b',
+            borderRadius: '0.5rem', cursor: 'pointer', transition: 'all 200ms ease'
+          }}
+        >
+          <Menu size={16} />
+        </button>
+
         <button 
           onClick={onBack} 
           style={{ 

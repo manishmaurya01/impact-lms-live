@@ -161,8 +161,8 @@ export default function MainResourceCanvas({
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#02040a', padding: '2rem', overflowY: 'auto', color: '#fff', fontFamily: '"Inter", sans-serif', position: 'relative' }}>
       
       {/* 🚀 Dynamic Navigation Tabs Navbar Header Element */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '2rem' }}>
-        <div style={{ display: 'flex', gap: '1rem' }}>
+      <div className="canvas-tabs-header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '2rem' }}>
+        <div className="canvas-tabs-buttons-row" style={{ display: 'flex', gap: '1rem' }}>
           <button onClick={() => setActiveTab('video')} style={{ background: activeTab === 'video' ? 'rgba(6,182,212,0.05)' : 'transparent', border: 'none', color: activeTab === 'video' ? '#06b6d4' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>
             By-Topic Smart Lecture Masterclass
           </button>
@@ -205,10 +205,10 @@ export default function MainResourceCanvas({
             </div>
             
             {/* 🤖 NATURAL PROCTOR CLASSROOM INTERFACE MONITOR PANEL */}
-            <div style={{ height: '380px', background: 'linear-gradient(180deg, #090d16 0%, #030509 100%)', border: '1px solid #1e293b', borderRadius: '12px', display: 'flex', overflow: 'hidden', position: 'relative' }}>
+            <div className="ai-classroom-panel" style={{ height: '380px', background: 'linear-gradient(180deg, #090d16 0%, #030509 100%)', border: '1px solid #1e293b', borderRadius: '12px', display: 'flex', overflow: 'hidden', position: 'relative' }}>
               
               {/* Left Column: Avatar Graphic Box */}
-              <div style={{ width: '30%', borderRight: '1px solid rgba(30, 41, 59, 0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#040710', position: 'relative' }}>
+              <div className="ai-avatar-column" style={{ width: '30%', borderRight: '1px solid rgba(30, 41, 59, 0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#040710', position: 'relative' }}>
                 <div style={{ position: 'absolute', top: '10px', left: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <span style={{ width: '8px', height: '8px', background: isPlaying ? '#10b981' : '#64748b', borderRadius: '50%', display: 'inline-block', animation: isPlaying ? 'pulse 1.5s infinite' : 'none' }} />
                   <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase' }}>{isPlaying ? 'LECTURING' : 'PAUSED'}</span>
@@ -236,7 +236,7 @@ export default function MainResourceCanvas({
               </div>
 
               {/* Right Column: Audio Blackboard Timeline Controller Display */}
-              <div style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#020408' }}>
+              <div className="ai-blackboard-column" style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#020408' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748b', fontSize: '0.75rem', borderBottom: '1px solid rgba(30,41,59,0.4)', paddingBottom: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Monitor size={14}/> <span>AI ACTIVE BROADCAST MONITOR</span></div>
                   <div>Sentence Matrix: {currentPhraseIndex + 1} / {phrases.length}</div>
@@ -324,7 +324,7 @@ export default function MainResourceCanvas({
 
             {/* 📚 DYNAMIC VIDEO & DOCUMENTATION REFERENCES PANEL */}
             {materialNotes && (
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+              <div className="canvas-video-doc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
                 
                 {/* Video References Column */}
                 <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -590,6 +590,42 @@ export default function MainResourceCanvas({
         @keyframes pulse {
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.4; transform: scale(1.08); }
+        }
+
+        /* Responsive Masterclass Adaptability styles */
+        @media (max-width: 1024px) {
+          .canvas-tabs-header-container {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 1rem !important;
+          }
+          .canvas-tabs-buttons-row {
+            flex-wrap: wrap !important;
+            gap: 0.5rem !important;
+          }
+          .canvas-tabs-buttons-row button {
+            flex: 1 1 auto !important;
+            text-align: center !important;
+            font-size: 0.8rem !important;
+            padding: 0.5rem !important;
+          }
+          .ai-classroom-panel {
+            flex-direction: column !important;
+            height: auto !important;
+          }
+          .ai-avatar-column {
+            width: 100% !important;
+            border-right: none !important;
+            border-bottom: 1px solid rgba(30, 41, 59, 0.5) !important;
+            padding: 1.5rem !important;
+          }
+          .ai-blackboard-column {
+            padding: 1.5rem !important;
+          }
+          .canvas-video-doc-grid {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+          }
         }
       `}</style>
 

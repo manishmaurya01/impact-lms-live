@@ -10,6 +10,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   const [activeModuleId, setActiveModuleId] = useState(courseData?.modules[0]?.dayId || 1);
   const [activeTopicIndex, setActiveTopicIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('video'); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
 
   // CORE STATE REPOSITORIES
   const [activeMaterial, setActiveMaterial] = useState(null);
@@ -193,15 +194,28 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
         modules={modulesArray}
         completedTracks={completedTracks}
         onBack={onBack} 
+        onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
       />
 
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden', position: 'relative' }}>
+        
+        {/* Mobile Sidebar dimming backdrop */}
+        {isSidebarOpen && (
+          <div 
+            onClick={() => setIsSidebarOpen(false)}
+            style={{ position: 'absolute', inset: 0, background: 'rgba(2, 4, 10, 0.75)', backdropFilter: 'blur(3px)', zIndex: 98 }}
+          />
+        )}
+
         <ModuleSidebarTree 
           modules={modulesArray} 
           activeModuleId={activeModuleId}
           activeTopicIndex={activeTopicIndex}
           completedTracks={completedTracks}
-          onSelectTopic={handleTopicSelection}
+          onSelectTopic={(modId, topicIdx) => {
+            setIsSidebarOpen(false); // Auto close sidebar on mobile topic select
+            handleTopicSelection(modId, topicIdx);
+          }}
         />
 
         {isSyncingMaterial && (
@@ -216,7 +230,21 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
 
               <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0', lineHeight: '1.4' }}>Loading dynamic learning paths and looking up server lock verification database logs...</p>
             </div>
-            <style>{`@keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+            <style>{`
+              @keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+              @media (max-width: 1024px) {
+                .workspace-sidebar-container {
+                  position: absolute !important;
+                  left: ${isSidebarOpen ? '0' : '-320px'} !important;
+                  top: 0;
+                  bottom: 0;
+                  height: 100% !important;
+                  z-index: 100 !important;
+                  transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+                  box-shadow: 10px 0 30px rgba(0,0,0,0.5) !important;
+                }
+              }
+            `}</style>
           </div>
         )}
 

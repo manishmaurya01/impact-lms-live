@@ -25,7 +25,7 @@ export default function ModuleSidebarTree({ modules, activeModuleId, activeTopic
   };
 
   return (
-    <div style={{ width: '320px', background: '#070a12', borderRight: '1px solid rgba(255,255,255,0.03)', display: 'flex', flexDirection: 'column', overflowY: 'auto', padding: '1rem' }}>
+    <div className="workspace-sidebar-container" style={{ width: '320px', background: '#070a12', borderRight: '1px solid rgba(255,255,255,0.03)', display: 'flex', flexDirection: 'column', overflowY: 'auto', padding: '1rem' }}>
       <h3 style={{ fontSize: '0.75rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem' }}>Course Syllabus Directory</h3>
       
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

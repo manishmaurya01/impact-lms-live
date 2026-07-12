@@ -327,3 +327,44 @@
 .animate-fadeIn {
   animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* ==========================================================================
+   MOBILE & TABLET TIMELINE ROADMAP ADAPTATIONS
+   ========================================================================== */
+@media (max-width: 768px) {
+  .centralized-prompt-matrix-viewport {
+    padding: 1.5rem 1rem !important;
+  }
+  .interactive-glass-card {
+    padding: 1.5rem !important;
+    border-radius: 1rem !important;
+  }
+  .gradient-heading-text {
+    font-size: 1.6rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  .module-timeline-node-card {
+    padding-left: 3rem !important;
+  }
+  .module-timeline-wrapper-node::before {
+    left: 1.25rem !important;
+  }
+  .timeline-bullet-counter {
+    left: 0.25rem !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    font-size: 0.9rem !important;
+  }
+  .node-card-inner-box {
+    padding: 1.25rem !important;
+  }
+  .pill-selector-mesh {
+    flex-wrap: wrap !important;
+    border-radius: 12px !important;
+    padding: 0.5rem !important;
+  }
+  .pill-selector-item {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.75rem !important;
+  }
+}

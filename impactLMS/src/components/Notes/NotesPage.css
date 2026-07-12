@@ -479,3 +479,63 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ==========================================================================
+   RESPONSIVE DESIGN ADAPTABILITY
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .notes-workspace-body {
+    flex-direction: column !important;
+    overflow-y: auto !important;
+  }
+  .notes-sidebar-controls, .history-vault-section {
+    width: 100% !important;
+    min-width: 100% !important;
+    border: none !important;
+    padding: 1.5rem !important;
+  }
+  .notes-sidebar-controls {
+    border-bottom: 1px solid #1e293b !important;
+  }
+  .history-vault-section {
+    border-top: 1px solid #1e293b !important;
+    height: auto !important;
+    max-height: 400px;
+  }
+  .notes-word-editor-arena {
+    padding: 1.5rem !important;
+    height: auto !important;
+    min-height: 450px !important;
+    overflow: visible !important;
+  }
+  .word-editable-canvas {
+    min-height: 350px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .notes-workspace-header {
+    flex-direction: column !important;
+    height: auto !important;
+    padding: 1rem !important;
+    gap: 0.75rem !important;
+    align-items: stretch !important;
+  }
+  .header-left-cluster {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+  .header-actions {
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+  }
+  .word-processor-toolbar {
+    padding: 0.25rem !important;
+    gap: 0.2rem !important;
+  }
+  .word-processor-toolbar button {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}

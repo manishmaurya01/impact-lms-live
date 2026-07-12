@@ -9,7 +9,8 @@ import {
   Layers, 
   FileText, 
   CheckCircle2, 
-  TrendingUp 
+  TrendingUp,
+  Menu
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -25,6 +26,7 @@ export default function Dashboard() {
   // Navigation & UI States
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   
   // 100% Real-Time MongoDB Unified Telemetry States
   const [mongoSavedHistory, setMongoSavedHistory] = useState([]);
@@ -99,10 +101,34 @@ export default function Dashboard() {
         onLogout={handleLogout} 
         currentActiveTab={activeTab}
         onTabChange={(tabName) => setActiveTab(tabName)} 
+        isMobileOpen={isMobileSidebarOpen}
+        onCloseMobile={() => setIsMobileSidebarOpen(false)}
       />
+
+      {/* Mobile Drawer Backdrop Overlay */}
+      {isMobileSidebarOpen && (
+        <div 
+          onClick={() => setIsMobileSidebarOpen(false)}
+          style={{ position: 'fixed', inset: 0, background: 'rgba(2, 6, 23, 0.75)', backdropFilter: 'blur(4px)', zIndex: 998 }}
+        />
+      )}
 
       {/* 🚀 Dynamic Content Core Stage */}
       <div className="lms-content-window">
+        
+        {/* Mobile Header Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#0f172a', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '0.8rem 1.5rem', width: '100%', boxSizing: 'border-box' }} className="md:hidden">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <span style={{ color: '#06b6d4', fontWeight: 900, fontSize: '1rem' }}>LuminaLearn</span>
+          </div>
+          <button 
+            onClick={() => setIsMobileSidebarOpen(true)}
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0.5rem', padding: '0.5rem', color: '#cbd5e1', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <Menu size={18} />
+          </button>
+        </div>
+
         <main className={`lms-workspace-stage ${activeTab !== 'dashboard' ? 'fullscreen-tab' : ''}`}>
           
           {/* === 📊 ANALYTICS DASHBOARD LAYOUT === */}

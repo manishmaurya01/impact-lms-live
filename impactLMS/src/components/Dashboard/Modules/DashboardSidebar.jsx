@@ -5,7 +5,7 @@ import {
   BookOpen, LogOut, BadgeCheck, MessageSquareCode 
 } from 'lucide-react';
 
-export default function DashboardSidebar({ onLogout }) {
+export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   
@@ -17,7 +17,7 @@ export default function DashboardSidebar({ onLogout }) {
 
   return (
     <aside 
-      className={`lms-sidebar-container ${isExpanded ? 'expanded' : 'collapsed'}`} 
+      className={`lms-sidebar-container ${isExpanded ? 'expanded' : 'collapsed'} ${isMobileOpen ? 'mobile-open' : ''}`} 
       style={{
         width: isExpanded ? '280px' : '78px',
         transition: 'width 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
@@ -57,25 +57,49 @@ export default function DashboardSidebar({ onLogout }) {
             </div>
           </div>
         )}
-        <button 
-          onClick={() => setIsExpanded(!isExpanded)} 
-          style={{ 
-            background: 'rgba(255,255,255,0.03)', 
-            border: '1px solid rgba(255,255,255,0.05)', 
-            borderRadius: '0.5rem', 
-            padding: '0.5rem', 
-            color: '#cbd5e1', 
-            cursor: 'pointer', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            outline: 'none',
-            width: '38px',
-            height: '38px'
-          }}
-        >
-          {isExpanded ? <X size={18} /> : <Menu size={18} />}
-        </button>
+        
+        <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+          <button 
+            onClick={() => setIsExpanded(!isExpanded)} 
+            style={{ 
+              background: 'rgba(255,255,255,0.03)', 
+              border: '1px solid rgba(255,255,255,0.05)', 
+              borderRadius: '0.5rem', 
+              padding: '0.5rem', 
+              color: '#cbd5e1', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              outline: 'none',
+              width: '38px',
+              height: '38px'
+            }}
+          >
+            {isExpanded ? <X size={18} /> : <Menu size={18} />}
+          </button>
+          
+          <button
+            onClick={onCloseMobile}
+            className="md:hidden"
+            style={{
+              background: 'rgba(239, 68, 68, 0.08)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              borderRadius: '0.5rem',
+              padding: '0.5rem',
+              color: '#f87171',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              outline: 'none',
+              width: '38px',
+              height: '38px'
+            }}
+          >
+            <X size={18} />
+          </button>
+        </div>
       </div>
 
       {/* 🚀 ALL DYNAMIC CORE NAVIGATION LINKS */}

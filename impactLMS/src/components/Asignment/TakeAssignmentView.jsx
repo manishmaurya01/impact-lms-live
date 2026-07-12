@@ -354,7 +354,7 @@ export default function TakeAssignmentView({ assignment, topicName, courseId, mo
 
         {/* PHASE 3: LEETCODE GRID */}
         {labPhase === 'LAB_WORKSPACE' && !isWorkspacePaused && (
-          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '500px 1fr', height: '100%', background: '#02040a' }}>
+          <div className="assignment-workspace-grid" style={{ flex: 1, display: 'grid', gridTemplateColumns: '500px 1fr', height: '100%', background: '#02040a' }}>
             
             {/* LEFT PROBLEM DETAILS COLUMN */}
             <div style={{ borderRight: '1px solid #1e293b', display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto', background: '#0f172a' }}>
@@ -514,6 +514,17 @@ export default function TakeAssignmentView({ assignment, topicName, courseId, mo
               @keyframes toastFadeIn {
                 from { opacity: 0; transform: translateY(10px); }
                 to { opacity: 1; transform: translateY(0); }
+              }
+              @media (max-width: 900px) {
+                .assignment-workspace-grid {
+                  grid-template-columns: 1fr !important;
+                  overflow-y: auto !important;
+                }
+                .assignment-workspace-grid > div {
+                  height: auto !important;
+                  min-height: 400px;
+                  border: none !important;
+                }
               }
             `}</style>
           </div>
