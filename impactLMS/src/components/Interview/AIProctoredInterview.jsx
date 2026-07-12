@@ -26,6 +26,7 @@ const AIProctoredInterview = () => {
   const recognitionRef = useRef(null);
   const silenceTimeoutRef = useRef(null);
   const internalSilenceWarningTimerRef = useRef(null);
+  const consecutiveMissingRef = useRef(0);
 
   const BACKEND_URL = `${window.API_URL}/api`;
   const token = localStorage.getItem('token');
@@ -111,9 +112,33 @@ const AIProctoredInterview = () => {
           const predictions = await model.estimateFaces(videoRef.current, false, false, false);
           if (predictions && predictions.length > 0) {
             setFaceDetected(true);
+            consecutiveMissingRef.current = 0; // Reset missing frames count when face is detected
           } else {
             setFaceDetected(false);
             addProctorLog("Proctor Alert: User face not detected in stream.");
+            
+            consecutiveMissingRef.current += 1;
+            // Every 4 ticks (~5 seconds), trigger a violation/warning
+            if (consecutiveMissingRef.current % 4 === 0) {
+              setViolations(prev => {
+                const nextCount = prev + 1;
+                addProctorLog(`Proctor Alert: Face not detected. Warning ${nextCount}/3`);
+                
+                fetch(`${BACKEND_URL}/interview/sync-proctor`, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                  body: JSON.stringify({ interviewId, tabSwitchDetected: false, faceMissingDetected: true })
+                });
+
+                if (nextCount >= 3) {
+                  alert("🚨 CRITICAL TELEMETRY FAULT: User face missing repeatedly. Terminating session.");
+                  terminateSessionForCheating();
+                } else {
+                  alert(`⚠️ WATCHDOG PROCTOR FLAG: User face not detected! (Warning ${nextCount}/3)`);
+                }
+                return nextCount;
+              });
+            }
           }
         } catch (err) {
           console.warn("Face proctor frame capture error:", err);
@@ -123,7 +148,7 @@ const AIProctoredInterview = () => {
     return () => {
       if (intervalId) clearInterval(intervalId);
     };
-  }, [model]);
+  }, [model, interviewId, token]);
 
   useEffect(() => {
     enforceFullscreenAndHardwareAccess();
