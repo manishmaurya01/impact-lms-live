@@ -31,7 +31,7 @@ function Register() {
         try {
           // Backend call: aap access_token bhej sakte ho ya id_token. 
           // Note: Token Client default me access_token deta hai.
-          const backendResponse = await fetch('http://localhost:5000/api/auth/google', {
+          const backendResponse = await fetch(`${window.API_URL}/api/auth/google`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ token: tokenResponse.access_token }) 
@@ -93,7 +93,7 @@ function Register() {
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(`${window.API_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

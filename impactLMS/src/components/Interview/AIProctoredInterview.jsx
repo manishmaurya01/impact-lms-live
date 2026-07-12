@@ -27,7 +27,7 @@ const AIProctoredInterview = () => {
   const silenceTimeoutRef = useRef(null);
   const internalSilenceWarningTimerRef = useRef(null);
 
-  const BACKEND_URL = 'http://localhost:5000/api';
+  const BACKEND_URL = `${window.API_URL}/api`;
   const token = localStorage.getItem('token');
 
   const addProctorLog = (msg) => {

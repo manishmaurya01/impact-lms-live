@@ -59,7 +59,7 @@ export default function Dashboard() {
       };
 
       // 📡 Request Node 1: Get Aggregated Real-Time Metrics Counters
-      const analyticsResponse = await fetch('http://localhost:5000/api/dashboard/analytics', {
+      const analyticsResponse = await fetch(`${window.API_URL}/api/dashboard/analytics`, {
         method: 'GET',
         headers: headers
       });
@@ -70,7 +70,7 @@ export default function Dashboard() {
       }
 
       // 📡 Request Node 2: Get Recent Active Roadmap Logs for History Grid
-      const courseResponse = await fetch('http://localhost:5000/api/courses', {
+      const courseResponse = await fetch(`${window.API_URL}/api/courses`, {
         method: 'GET',
         headers: headers
       });

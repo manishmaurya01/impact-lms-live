@@ -60,7 +60,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
       const currentTrackKey = `mod-${modId}-topic-${topicIdx}`;
       
       // 1. Fetch Concept Materials Layer
-      const response = await fetch('http://localhost:5000/api/courses/fetch-material', {
+      const response = await fetch(`${window.API_URL}/api/courses/fetch-material`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ courseId: courseData._id, moduleId: modId, topicName: specificTopicName })
@@ -71,7 +71,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
       }
 
       // 2. LIVE DATABASE QUIZ LOCK CHECK
-      const lockRes = await fetch('http://localhost:5000/api/quiz/check-lock-state', {
+      const lockRes = await fetch(`${window.API_URL}/api/quiz/check-lock-state`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ courseId: courseData._id, moduleId: modId, topicName: specificTopicName })
@@ -82,7 +82,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
       }
 
       // 3. LIVE DATABASE ASSIGNMENT LOCK CHECK
-      const assignRes = await fetch('http://localhost:5000/api/assignment/check-lock', {
+      const assignRes = await fetch(`${window.API_URL}/api/assignment/check-lock`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ courseId: courseData._id, moduleId: modId, topicName: specificTopicName })

@@ -38,7 +38,7 @@ export default function DoubtSolverWidget({ courseId, moduleId, moduleName, topi
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/doubt/ask', {
+      const response = await fetch(`${window.API_URL}/api/doubt/ask`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export default function DoubtSolverWidget({ courseId, moduleId, moduleName, topi
   const handleSaveToNotesManual = async (msgId, textContent) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/notes/save', {
+      const response = await fetch(`${window.API_URL}/api/notes/save`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

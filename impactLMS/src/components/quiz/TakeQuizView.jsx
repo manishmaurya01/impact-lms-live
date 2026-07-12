@@ -174,7 +174,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
     setIsProcessing(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/quiz/generate-and-save', {
+      const response = await fetch(`${window.API_URL}/api/quiz/generate-and-save`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ courseId, moduleId, topicName, quizName: quiz?.name || "Sprint Evaluation Matrix" })
@@ -222,7 +222,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
       });
 
       // Overwrite current tracking logs dynamically on every user click gesture
-      await fetch('http://localhost:5000/api/quiz/record-results', {
+      await fetch(`${window.API_URL}/api/quiz/record-results`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({

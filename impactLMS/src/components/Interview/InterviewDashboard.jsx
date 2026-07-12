@@ -17,7 +17,7 @@ const InterviewDashboard = () => {
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
-  const BACKEND_URL = 'http://localhost:5000/api';
+  const BACKEND_URL = `${window.API_URL}/api`;
   const token = localStorage.getItem('token');
 
   useEffect(() => {

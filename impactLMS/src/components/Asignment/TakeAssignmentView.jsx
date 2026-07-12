@@ -141,7 +141,7 @@ export default function TakeAssignmentView({ assignment, topicName, courseId, mo
     if (timerRef.current) clearInterval(timerRef.current);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/assignment/evaluate-via-ai', {
+      const response = await fetch(`${window.API_URL}/api/assignment/evaluate-via-ai`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({
@@ -239,7 +239,7 @@ export default function TakeAssignmentView({ assignment, topicName, courseId, mo
     setIsProcessing(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/assignment/evaluate-via-ai', {
+      const response = await fetch(`${window.API_URL}/api/assignment/evaluate-via-ai`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({

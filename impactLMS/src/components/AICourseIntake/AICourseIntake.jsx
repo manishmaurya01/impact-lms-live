@@ -20,7 +20,7 @@ export default function AICourseIntake() {
   const [activeViewportCourse, setActiveViewportCourse] = useState(null);
   const [isWorkspaceActive, setIsWorkspaceActive] = useState(false);
 
-  const getApiUrl = (endpoint) => `http://${window.location.hostname}:5000${endpoint}`;
+  const getApiUrl = (endpoint) => `${window.API_URL}${endpoint}`;
 
   useEffect(() => {
     fetchSavedCoursesFromDatabase();
