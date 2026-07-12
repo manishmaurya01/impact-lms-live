@@ -94,7 +94,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
   const fetchCourses = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("/api/courses", { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${window.API_URL}/api/courses`, { headers: { Authorization: `Bearer ${token}` } });
       const result = await res.json();
       if (result.success) setCourses(result.data);
     } catch (err) { console.error("Error loading courses:", err); }
@@ -103,7 +103,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
   const fetchNotesForCourse = async (courseId) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`/api/notes/course/${courseId}`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(`${window.API_URL}/api/notes/course/${courseId}`, { headers: { Authorization: `Bearer ${token}` } });
       const result = await res.json();
       if (result.success) setNotes(result.data);
     } catch (err) { console.error("Error loading notes:", err); }
@@ -143,7 +143,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("/api/notes/save", {
+      const res = await fetch(`${window.API_URL}/api/notes/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
@@ -173,7 +173,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`/api/notes/${noteId}`, {
+      const res = await fetch(`${window.API_URL}/api/notes/${noteId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -290,7 +290,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
     setIsGeneratingAI(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("/api/notes/generate-ai", {
+      const res = await fetch(`${window.API_URL}/api/notes/generate-ai`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
