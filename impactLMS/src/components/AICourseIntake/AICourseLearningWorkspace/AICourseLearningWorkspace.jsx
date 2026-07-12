@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import WorkspaceHeader from './Modules/WorkspaceHeader';
-import ModuleSidebarTree from './Modules/ModuleSidebarTree';
-import MainResourceCanvas from './Modules/MainResourceCanvas';
+import WorkspaceHeader from './modules/WorkspaceHeader';
+import ModuleSidebarTree from './modules/ModuleSidebarTree';
+import MainResourceCanvas from './modules/MainResourceCanvas';
 import TakeQuizView from '../../quiz/TakeQuizView'; 
 import TakeAssignmentView from '../../Asignment/TakeAssignmentView'; 
-import DoubtSolverWidget from './Modules/DoubtSolverWidget'; 
+import DoubtSolverWidget from './modules/DoubtSolverWidget'; 
 
 export default function AICourseLearningWorkspace({ courseData, onBack }) {
   const [activeModuleId, setActiveModuleId] = useState(courseData?.modules[0]?.dayId || 1);

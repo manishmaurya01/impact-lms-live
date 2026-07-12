@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import './AICourseIntake.css';
 
-import CourseForm from './Modules/CourseForm';
-import CourseList from './Modules/CourseList';
-import CourseTimeline from './Modules/CourseTimeline';
+import CourseForm from './modules/CourseForm';
+import CourseList from './modules/CourseList';
+import CourseTimeline from './modules/CourseTimeline';
 import AICourseLearningWorkspace from './AICourseLearningWorkspace/AICourseLearningWorkspace';
 
 export default function AICourseIntake() {

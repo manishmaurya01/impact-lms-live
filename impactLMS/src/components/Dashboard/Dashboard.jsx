@@ -15,7 +15,7 @@ import {
 import './Dashboard.css';
 
 // Component Imports
-import DashboardSidebar from './Modules/DashboardSidebar';
+import DashboardSidebar from './modules/DashboardSidebar';
 import AICourseIntake from '../AICourseIntake/AICourseIntake';
 import AIAssignmentEngine from '../Asignment/AIAssignmentEngine';
 import NotesPage from '../Notes/NotesPage';
