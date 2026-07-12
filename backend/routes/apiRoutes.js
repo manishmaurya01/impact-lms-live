@@ -67,6 +67,7 @@ router.post('/quiz/record-results', authorizeToken, quizCtrl.recordQuizResults |
 // A. Telemetry Aggregation & Course Filtering
 router.get('/interview/dashboard-meta', authorizeToken, interviewCtrl.getInterviewDashboardMeta || fallbackHandler);
 router.get('/interview/history-logs', authorizeToken, interviewCtrl.historyLogs || fallbackHandler);
+router.get('/interview/session-detail/:interviewId', authorizeToken, interviewCtrl.getInterviewSessionDetail || fallbackHandler);
 
 // B. Session Scheduling Slots Deploys
 router.post('/interview/schedule', authorizeToken, interviewCtrl.scheduleInterview || fallbackHandler);

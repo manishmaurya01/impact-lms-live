@@ -105,7 +105,7 @@ const pedagogyCtrl = {
       required: ["title", "level", "modules"]
     };
 
-    const sysPrompt = "You are LuminaLearn's core engine. Output strict Day-wise nested mapping frameworks aligned perfectly with the targeted schema constraints. If the topic/prompt is for a non-technical course (e.g. leadership, art, public speaking, drawing, management, history, meditation, etc.) where hands-on coding or technical assignments are not applicable, omit the 'assignment' block inside 'schedules' entirely.";
+    const sysPrompt = "You are LuminaLearn's core engine. Output strict Day-wise nested mapping frameworks aligned perfectly with the targeted schema constraints. If the topic/prompt is for a non-technical course (e.g. leadership, art, public speaking, drawing, management, history, meditation, etc.) where hands-on coding or technical assignments are not applicable, omit the 'assignment' block inside 'schedules' entirely. CRITICAL: Generate all content (titles, objectives, topics, quiz and assignment names) in the same language as the user's input prompt (e.g. if prompt is in Hindi, output text in Hindi; if Gujarati, output text in Gujarati; if Spanish, output text in Spanish). However, the JSON keys (title, level, modules, etc.) must remain exactly in English as specified in the schema.";
     try {
       const raw = await callGeminiAPI(GEMINI_PRIMARY_KEY, `Build roadmap context: ${prompt}. Mode Depth: ${level || 'Beginner'}`, sysPrompt, schema);
       const parsed = JSON.parse(raw.trim());
@@ -282,7 +282,8 @@ const workspaceCtrl = {
 
       const sysPrompt = `You are an elite academic note writer. Create structured, high-quality, formatted study notes in clean HTML based on the user's prompt. 
       Use clean HTML tags like <h1>, <h2>, <p>, <ul>, <li>, <strong>, <em>, and tables if helpful.
-      Avoid markdown syntax blocks or wrapper tags. Return the output in strict JSON conforming to the schema.`;
+      Avoid markdown syntax blocks or wrapper tags. Return the output in strict JSON conforming to the schema.
+      CRITICAL: Write the note content (title and contentHtml) in the same language as the user's prompt or topicName (e.g. if user writes in Hindi or asks for Hindi, generate the content in Hindi).`;
 
       const raw = await callGeminiAPI(
         GEMINI_SECONDARY_KEY,
@@ -334,7 +335,7 @@ const evaluationCtrl = {
         required: ["approachScore", "complexityAnalysis", "architecturalCritique", "betterAlternativeTemplate"]
       };
 
-      const sysPrompt = "You are core compiler critic evaluation review engine. Compute structural score outputs 1-100 analytics graphs patterns.";
+      const sysPrompt = "You are core compiler critic evaluation review engine. Compute structural score outputs 1-100 analytics graphs patterns. CRITICAL: Generate the critique, explanations, and reviews in the same language as the submission text (codeOrText) or topicName (e.g. if the submission or topic is in Hindi, Spanish, or Gujarati, write the feedback in that language).";
       const raw = await callGeminiAPI(GEMINI_SECONDARY_KEY, `Evaluate runtime submission context: "${codeOrText}" for topic: "${topicName}"`, sysPrompt, schema);
       const parsed = JSON.parse(raw.trim());
 
@@ -392,7 +393,7 @@ const quizCtrl = {
         required: ["questions"]
       };
 
-      const raw = await callGeminiAPI(GEMINI_SECONDARY_KEY, `Create 10 hard MCQs about: ${topicName}`, "You are automated test writer engine module.", schema);
+      const raw = await callGeminiAPI(GEMINI_SECONDARY_KEY, `Create 10 hard MCQs about: ${topicName}`, "You are automated test writer engine module. CRITICAL: Generate all quiz questions, options, and texts in the same language as the topicName (e.g., if the topicName is in Hindi/Gujarati/Spanish, the MCQs must be generated in that language).", schema);
       const parsed = JSON.parse(raw.trim());
 
       const newQuiz = new QuizData({ courseId, moduleId, topicName, quizName: quizName || "Sprint Evaluation Track", questions: parsed.questions });
@@ -440,11 +441,13 @@ const doubtCtrl = {
       const sysPrompt = `You are LuminaLearn's elite Academic Doubt Solver. Explain technical or non-technical doubts in clear, well-structured, clean HTML (styled matching dark mode text wrapper, no markdown blocks).
       Keep your answer engaging, highly accurate, and precise.
       
+      CRITICAL: Always answer the doubt in the same language as the user's query/doubtText (e.g. if user asks in Hindi/Hinglish/Gujarati/Spanish, respond in Hindi/Hinglish/Gujarati/Spanish using the appropriate script).
+      
       CRITICAL INSTRUCTIONS FOR NOTES SAVING:
       If the user explicitly asks you to "save this to notes", "add to notes", "notes me save karo", or similar expressions:
       1. Set 'shouldSaveNote' to true.
-      2. Construct a brief descriptive 'noteTitle' (e.g. "Doubt: [Topic Name]").
-      3. Construct the clean HTML note content under 'noteContent' (summarizing the explanation).
+      2. Construct a brief descriptive 'noteTitle' (e.g. "Doubt: [Topic Name]" in the query language).
+      3. Construct the clean HTML note content under 'noteContent' (summarizing the explanation in the query language).
       Otherwise, set 'shouldSaveNote' to false and omit/empty noteTitle and noteContent.`;
 
       const promptText = `

@@ -30,11 +30,11 @@ export default function CourseTimeline({ activeViewportCourse, onLaunchWorkspace
 
         <div className="module-timeline-wrapper-node">
           {(activeViewportCourse?.modules || []).map((moduleItem, idx) => (
-            <div key={moduleItem.moduleId || idx} className="module-timeline-node-card">
+            <div key={moduleItem.dayId || idx} className="module-timeline-node-card">
               <div className="timeline-bullet-counter">{idx + 1}</div>
               <div className="node-card-inner-box">
-                <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#fff', margin: '0 0 0.5rem 0' }}>{moduleItem.moduleName}</h2>
-                <p style={{ fontSize: '0.9rem', color: '#9ca3af', lineHeight: '1.6', margin: '0 0 1.25rem 0' }}>{moduleItem.shortSummary}</p>
+                <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#fff', margin: '0 0 0.5rem 0' }}>{moduleItem.title}</h2>
+                <p style={{ fontSize: '0.9rem', color: '#9ca3af', lineHeight: '1.6', margin: '0 0 1.25rem 0' }}>{moduleItem.objective}</p>
 
                 <div style={{ marginBottom: '1.25rem' }}>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -52,11 +52,11 @@ export default function CourseTimeline({ activeViewportCourse, onLaunchWorkspace
                 <div className="meta-packages-asymmetric-row">
                   <div className="package-pill-box">
                     <div className="pill-type-header quiz-theme">⚡ Scheduled Quiz Evaluation</div>
-                    <h4>{moduleItem.quiz?.name}</h4>
+                    <h4>{moduleItem.schedules?.quiz?.name}</h4>
                   </div>
                   <div className="package-pill-box">
                     <div className="pill-type-header assignment-theme">🛠️ Core Module Assignment</div>
-                    <h4>{moduleItem.assignment?.name}</h4>
+                    <h4>{moduleItem.schedules?.assignment?.name}</h4>
                   </div>
                 </div>
               </div>

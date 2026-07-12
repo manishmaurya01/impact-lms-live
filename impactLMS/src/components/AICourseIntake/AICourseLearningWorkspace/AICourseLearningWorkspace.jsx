@@ -7,7 +7,7 @@ import TakeAssignmentView from '../../Asignment/TakeAssignmentView';
 import DoubtSolverWidget from './modules/DoubtSolverWidget'; 
 
 export default function AICourseLearningWorkspace({ courseData, onBack }) {
-  const [activeModuleId, setActiveModuleId] = useState(courseData?.modules[0]?.moduleId || 1);
+  const [activeModuleId, setActiveModuleId] = useState(courseData?.modules[0]?.dayId || 1);
   const [activeTopicIndex, setActiveTopicIndex] = useState(0);
   const [activeTab, setActiveTab] = useState('video'); 
 
@@ -26,7 +26,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   const [assignmentModeActive, setAssignmentModeActive] = useState(false); 
 
   const modulesArray = courseData?.modules || [];
-  const currentModuleIndex = modulesArray.findIndex(m => m.moduleId === activeModuleId);
+  const currentModuleIndex = modulesArray.findIndex(m => m.dayId === activeModuleId);
   const currentModule = modulesArray[currentModuleIndex] || modulesArray[0];
   
   const currentTopicName = currentModule?.topics?.[activeTopicIndex] || "No Content Available";
@@ -114,7 +114,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
     setActiveTab('video');
     setQuizModeActive(false); 
     setAssignmentModeActive(false); 
-    const targetModule = modulesArray.find(m => m.moduleId === modId);
+    const targetModule = modulesArray.find(m => m.dayId === modId);
     const targetTopicName = targetModule?.topics?.[topicIdx] || "";
     loadTopicMaterialOnDemand(modId, topicIdx, targetTopicName);
   };
@@ -128,7 +128,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
       handleTopicSelection(activeModuleId, activeTopicIndex + 1);
     } else if (currentModuleIndex + 1 < modulesArray.length) {
       const nextModuleObj = modulesArray[currentModuleIndex + 1];
-      handleTopicSelection(nextModuleObj.moduleId, 0);
+      handleTopicSelection(nextModuleObj.dayId, 0);
     } else {
       alert("🎉 Dynamic curriculum paths completely verified!");
     }
@@ -150,7 +150,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
 
   // Safe Guardrail Interceptor Rule to Lock Finished Sessions completely
   const triggerAssignmentWorkspaceActivation = () => {
-    const activeAssignment = currentModule?.assignment;
+    const activeAssignment = currentModule?.schedules?.assignment;
     if (!activeAssignment || !activeAssignment.assignmentObjective || activeAssignment.assignmentObjective.trim() === "" || activeAssignment.assignmentObjective === "Implement concepts learned today.") {
       return alert("⚠️ This topic does not require a technical assignment.");
     }
@@ -163,7 +163,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   if (quizModeActive) {
     return (
       <TakeQuizView 
-        quiz={currentModule?.quiz} 
+        quiz={currentModule?.schedules?.quiz} 
         topicName={currentTopicName}
         courseId={courseData?._id}
         moduleId={activeModuleId}
@@ -176,7 +176,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   if (assignmentModeActive) {
     return (
       <TakeAssignmentView 
-        assignment={currentModule?.assignment}
+        assignment={currentModule?.schedules?.assignment}
         topicName={currentTopicName}
         courseId={courseData?._id}
         moduleId={activeModuleId}
@@ -226,8 +226,8 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
           setActiveTab={setActiveTab}
           videoSearchQuery={activeMaterial?.videoLink || "https://www.youtube.com"}
           materialNotes={activeMaterial} 
-          quiz={currentModule?.quiz} 
-          assignment={currentModule?.assignment} 
+          quiz={currentModule?.schedules?.quiz} 
+          assignment={currentModule?.schedules?.assignment} 
           onComplete={markTopicAsCompleted} 
           onLaunchQuiz={() => setQuizModeActive(true)}
           onLaunchAssignment={triggerAssignmentWorkspaceActivation} 

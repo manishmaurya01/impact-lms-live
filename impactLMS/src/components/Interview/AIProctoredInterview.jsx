@@ -12,6 +12,16 @@ const AIProctoredInterview = () => {
   const [processingPipeline, setProcessingPipeline] = useState(false);
   const [violations, setViolations] = useState(0);
 
+  // Dynamic Languages & Fallbacks
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [keyboardMode, setKeyboardMode] = useState(false);
+  const [typedAnswer, setTypedAnswer] = useState('');
+  const [conversationHistory, setConversationHistory] = useState([]);
+  const [voices, setVoices] = useState([]);
+  const [proctorLogs, setProctorLogs] = useState(["[INFO]: Secure proctoring initialized."]);
+  const [model, setModel] = useState(null);
+  const [faceDetected, setFaceDetected] = useState(true);
+
   const videoRef = useRef(null);
   const recognitionRef = useRef(null);
   const silenceTimeoutRef = useRef(null);
@@ -19,6 +29,101 @@ const AIProctoredInterview = () => {
 
   const BACKEND_URL = 'http://localhost:5000/api';
   const token = localStorage.getItem('token');
+
+  const addProctorLog = (msg) => {
+    setProctorLogs(prev => [
+      `[${new Date().toLocaleTimeString()}]: ${msg}`,
+      ...prev.slice(0, 19)
+    ]);
+  };
+
+  // Load voices & BlazeFace proctoring scripts dynamically
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      const loadVoices = () => {
+        setVoices(window.speechSynthesis.getVoices());
+      };
+      loadVoices();
+      window.speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    let active = true;
+    const loadScripts = async () => {
+      try {
+        if (window.blazeface) {
+          if (active) {
+            addProctorLog("BlazeFace libraries detected. Loading weights...");
+            const loadedModel = await window.blazeface.load();
+            if (active) {
+              setModel(loadedModel);
+              addProctorLog("AI Face Detection compiled successfully.");
+            }
+          }
+          return;
+        }
+
+        const tfScript = document.createElement('script');
+        tfScript.src = "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js";
+        tfScript.async = true;
+        
+        tfScript.onload = () => {
+          if (!active) return;
+          const faceScript = document.createElement('script');
+          faceScript.src = "https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface@0.0.7/dist/blazeface.min.js";
+          faceScript.async = true;
+          
+          faceScript.onload = async () => {
+            if (!active) return;
+            addProctorLog("Webcam verification algorithms loaded. Checking camera feed...");
+            try {
+              const loadedModel = await window.blazeface.load();
+              if (active) {
+                setModel(loadedModel);
+                addProctorLog("AI Face Detection model compiled.");
+              }
+            } catch (err) {
+              console.error("BlazeFace load error:", err);
+              if (active) addProctorLog("Error: Face tracking weight compilation failed.");
+            }
+          };
+          document.head.appendChild(faceScript);
+        };
+        document.head.appendChild(tfScript);
+      } catch (err) {
+        console.error("TF script load error:", err);
+      }
+    };
+    loadScripts();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  // Real-time Face Detection Loop
+  useEffect(() => {
+    let intervalId;
+    if (model && videoRef.current) {
+      addProctorLog("Real-time facial surveillance grid active.");
+      intervalId = setInterval(async () => {
+        if (!videoRef.current || videoRef.current.paused || videoRef.current.ended) return;
+        try {
+          const predictions = await model.estimateFaces(videoRef.current, false, false, false);
+          if (predictions && predictions.length > 0) {
+            setFaceDetected(true);
+          } else {
+            setFaceDetected(false);
+            addProctorLog("Proctor Alert: User face not detected in stream.");
+          }
+        } catch (err) {
+          console.warn("Face proctor frame capture error:", err);
+        }
+      }, 1200);
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [model]);
 
   useEffect(() => {
     enforceFullscreenAndHardwareAccess();
@@ -44,7 +149,9 @@ const AIProctoredInterview = () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
       clearAllTimers();
       window.speechSynthesis?.cancel();
-      if (recognitionRef.current) recognitionRef.current.stop();
+      if (recognitionRef.current) {
+        try { recognitionRef.current.stop(); } catch(e) {}
+      }
     };
   }, []);
 
@@ -81,7 +188,11 @@ const AIProctoredInterview = () => {
 
       if (data.success) {
         setCurrentQuestion(data.nextMessage);
-        executeSpeechSynthesisOutput(data.nextMessage);
+        if (data.language) {
+          setSelectedLanguage(data.language);
+        }
+        setConversationHistory([{ role: 'interviewer', text: data.nextMessage, timestamp: new Date() }]);
+        executeSpeechSynthesisOutput(data.nextMessage, data.language || selectedLanguage);
       }
     } catch (err) {
       setProcessingPipeline(false);
@@ -89,19 +200,29 @@ const AIProctoredInterview = () => {
     }
   };
 
-  const executeSpeechSynthesisOutput = (text) => {
+  const executeSpeechSynthesisOutput = (text, langName) => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
       
-      if (/[\u0900-\u097F]/.test(text)) {
-        utterance.lang = 'hi-IN';
-      } else if (/[\u0A80-\u0AFF]/.test(text)) {
-        utterance.lang = 'gu-IN';
-      } else if (/[áéíóúñÁÉÍÓÚÑ]/.test(text)) {
-        utterance.lang = 'es-ES';
-      } else {
-        utterance.lang = 'en-US';
+      const langMap = {
+        'English': 'en-US',
+        'Hindi': 'hi-IN',
+        'Hinglish': 'hi-IN',
+        'Gujarati': 'gu-IN',
+        'Spanish': 'es-ES',
+        'French': 'fr-FR'
+      };
+      
+      const targetLangLocale = langMap[langName || selectedLanguage] || 'en-US';
+      utterance.lang = targetLangLocale;
+      
+      // Bind native high-quality voice packs
+      const browserVoices = window.speechSynthesis.getVoices();
+      const matchedVoice = browserVoices.find(v => v.lang.toLowerCase() === targetLangLocale.toLowerCase()) ||
+                           browserVoices.find(v => v.lang.toLowerCase().startsWith(targetLangLocale.split('-')[0].toLowerCase()));
+      if (matchedVoice) {
+        utterance.voice = matchedVoice;
       }
       
       utterance.rate = 1.0;
@@ -109,21 +230,28 @@ const AIProctoredInterview = () => {
       utterance.onstart = () => {
         setBotSpeakingState(true);
         clearAllTimers();
-        if (recognitionRef.current) recognitionRef.current.stop();
+        if (recognitionRef.current) {
+          try { recognitionRef.current.stop(); } catch(e) {}
+        }
       };
 
       utterance.onend = () => {
         setBotSpeakingState(false);
-        activateMicrophoneSpeechStream();
+        if (!keyboardMode) {
+          activateMicrophoneSpeechStream();
+        }
       };
 
       window.speechSynthesis.speak(utterance);
     } else {
-      activateMicrophoneSpeechStream();
+      if (!keyboardMode) {
+        activateMicrophoneSpeechStream();
+      }
     }
   };
 
   const activateMicrophoneSpeechStream = () => {
+    if (keyboardMode) return;
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) return;
     if (processingPipeline) return;
@@ -132,12 +260,15 @@ const AIProctoredInterview = () => {
     rec.continuous = true;
     rec.interimResults = true;
     
-    rec.lang = 'en-US';
-    if (currentQuestion) {
-      if (/[\u0900-\u097F]/.test(currentQuestion)) rec.lang = 'hi-IN';
-      else if (/[\u0A80-\u0AFF]/.test(currentQuestion)) rec.lang = 'gu-IN';
-      else if (/[áéíóúñÁÉÍÓÚÑ]/.test(currentQuestion)) rec.lang = 'es-ES';
-    }
+    const langMap = {
+      'English': 'en-US',
+      'Hindi': 'hi-IN',
+      'Hinglish': 'hi-IN',
+      'Gujarati': 'gu-IN',
+      'Spanish': 'es-ES',
+      'French': 'fr-FR'
+    };
+    rec.lang = langMap[selectedLanguage] || 'en-US';
 
     let localSpeechAccumulator = '';
     clearAllTimers();
@@ -187,34 +318,40 @@ const AIProctoredInterview = () => {
 
   const dispatchAudioPayloadToBackend = async (payload) => {
     if (!payload.trim()) {
-      activateMicrophoneSpeechStream(); 
+      if (!keyboardMode) activateMicrophoneSpeechStream(); 
       return;
     }
+
+    // Append to local history log immediately
+    setConversationHistory(prev => [...prev, { role: 'candidate', text: payload, timestamp: new Date() }]);
 
     try {
       setProcessingPipeline(true);
       const res = await fetch(`${BACKEND_URL}/interview/conversation-step`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ sessionId, userVerbalAnswer: payload })
+        body: JSON.stringify({ sessionId, userVerbalAnswer: payload, language: selectedLanguage })
       });
       const data = await res.json();
       setProcessingPipeline(false);
 
       if (data.success) {
         if (data.isCompleted) {
-          executeSpeechSynthesisOutput("Assessment completely extracted. Re-directing back to main console panel.");
+          executeSpeechSynthesisOutput("Assessment completely extracted. Re-directing back to main console panel.", selectedLanguage);
           setTimeout(() => { cleanlyExitToMainDashboard(); }, 4000);
         } else {
           setCurrentQuestion(data.nextMessage);
           setLiveSpeechBuffer('');
-          executeSpeechSynthesisOutput(data.nextMessage);
+          setTypedAnswer('');
+          // Append dynamic AI question to history
+          setConversationHistory(prev => [...prev, { role: 'interviewer', text: data.nextMessage, timestamp: new Date() }]);
+          executeSpeechSynthesisOutput(data.nextMessage, selectedLanguage);
         }
       }
     } catch (err) {
       setProcessingPipeline(false);
       console.error("Payload computation step array error mapping:", err);
-      activateMicrophoneSpeechStream();
+      if (!keyboardMode) activateMicrophoneSpeechStream();
     }
   };
 
@@ -230,7 +367,9 @@ const AIProctoredInterview = () => {
     }
     clearAllTimers();
     window.speechSynthesis?.cancel();
-    if (recognitionRef.current) recognitionRef.current.stop();
+    if (recognitionRef.current) {
+      try { recognitionRef.current.stop(); } catch(e) {}
+    }
     navigate('/interview');
   };
 
@@ -254,14 +393,48 @@ const AIProctoredInterview = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch flex-1 my-6">
         
+        {/* LEFT COLUMN: AI INTERVIEW PANEL */}
         <div className={`p-8 rounded-2xl border transition-all flex flex-col justify-between shadow-2xl ${botSpeakingState ? 'bg-slate-900 border-blue-500/50 shadow-blue-900/10' : 'bg-slate-900/40 border-slate-800'}`}>
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className={`w-1.5 h-1.5 rounded-full ${botSpeakingState ? 'bg-blue-400 animate-pulse' : 'bg-slate-600'}`} />
-              <span className="text-[10px] font-black font-mono tracking-widest text-slate-400 uppercase">AI INTERVIEW PANEL PANEL</span>
+            <div className="flex items-center justify-between gap-2 mb-6 border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <span className={`w-1.5 h-1.5 rounded-full ${botSpeakingState ? 'bg-blue-400 animate-pulse' : 'bg-slate-600'}`} />
+                <span className="text-[10px] font-black font-mono tracking-widest text-slate-400 uppercase">AI INTERVIEWER CHANNEL</span>
+              </div>
+              
+              {/* Language Switcher Selector */}
+              <div className="flex items-center gap-2">
+                <label className="text-[9px] font-bold text-slate-500 uppercase tracking-wider font-mono">LANG:</label>
+                <select
+                  value={selectedLanguage}
+                  onChange={(e) => {
+                    const nextLang = e.target.value;
+                    setSelectedLanguage(nextLang);
+                    addProctorLog(`Changed interviewer language target: ${nextLang}`);
+                    window.speechSynthesis?.cancel();
+                    setBotSpeakingState(false);
+                    setTimeout(() => {
+                      if (recognitionRef.current) {
+                        try { recognitionRef.current.stop(); } catch(e) {}
+                      }
+                      if (!keyboardMode) {
+                        activateMicrophoneSpeechStream();
+                      }
+                    }, 200);
+                  }}
+                  className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-[11px] font-bold text-blue-400 focus:outline-none cursor-pointer hover:border-slate-700 transition-colors"
+                >
+                  <option value="English">English (US)</option>
+                  <option value="Hinglish">Hinglish (Hindi + English)</option>
+                  <option value="Hindi">Hindi (हिन्दी)</option>
+                  <option value="Gujarati">Gujarati (ગુજરાતી)</option>
+                  <option value="Spanish">Spanish (Español)</option>
+                  <option value="French">French (Français)</option>
+                </select>
+              </div>
             </div>
             
-            <p className="text-xl md:text-2xl font-medium leading-relaxed text-slate-100">
+            <p className="text-xl md:text-2xl font-medium leading-relaxed text-slate-100 min-h-[140px]">
               {processingPipeline ? "Computing telemetry query array..." : (currentQuestion || "Formulating metrics context criteria...")}
             </p>
           </div>
@@ -275,24 +448,119 @@ const AIProctoredInterview = () => {
           )}
         </div>
 
+        {/* RIGHT COLUMN: CANDIDATE VIDEO FEED & SPEECH CONTROLLER */}
         <div className={`p-4 bg-slate-900 border rounded-2xl flex flex-col justify-between shadow-2xl ${isListening ? 'border-emerald-500/40' : 'border-slate-800'}`}>
-          <div className="w-full aspect-video md:flex-1 bg-slate-950 rounded-xl overflow-hidden border border-slate-950">
+          <div className="w-full aspect-video md:flex-1 bg-slate-950 rounded-xl overflow-hidden border border-slate-950 relative">
             <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]" />
+            
+            {/* Ambient scanning indicators */}
+            <div className="absolute top-3 left-3 bg-slate-900/80 border border-slate-800 px-2.5 py-1 rounded text-[9px] font-bold text-slate-400 font-mono flex items-center gap-1.5 backdrop-blur-sm">
+              <span className={`w-1.5 h-1.5 rounded-full ${isListening ? 'bg-emerald-500 animate-ping' : 'bg-slate-600'}`} />
+              PROCTOR_STATUS: ACTIVE
+            </div>
+
+            {!faceDetected && (
+              <div className="absolute inset-0 bg-red-950/85 backdrop-blur-sm flex flex-col items-center justify-center text-center p-4 animate-pulse z-20">
+                <span className="w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-bold text-lg mb-2 shadow-lg shadow-red-900 animate-bounce">⚠️</span>
+                <p className="text-xs font-mono font-black text-red-400 tracking-wider uppercase mb-1">Face Not Detected</p>
+                <p className="text-[10px] text-slate-300 max-w-[200px] leading-relaxed">Face is not being detected. Please look directly at the screen to continue.</p>
+              </div>
+            )}
           </div>
           
-          <div className="mt-4 p-4 bg-slate-950 border border-slate-800/80 rounded-xl min-h-[72px] flex items-center">
-            <div className="w-full">
-              <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest block mb-0.5">
-                {isListening ? '🎙️ CAPTURE STREAM ENGINE ACTIVE (TALK NOW):' : '🔒 PROCESS COGNITION SHIELD BLOCK (AI PROCESSING)'}
-              </span>
-              <p className="text-xs text-slate-300 italic font-medium leading-relaxed transition-all">
-                {liveSpeechBuffer || (processingPipeline ? "Awaiting calculation cycle loops..." : "Speak freely, silence detection lock mapped...")}
-              </p>
+          {/* Dual Input modes: Speech Recognition vs Fallback Text keyboard */}
+          {keyboardMode ? (
+            <div className="mt-4 p-4 bg-slate-950 border border-emerald-500/30 rounded-xl flex flex-col gap-2.5 shadow-lg">
+              <div className="flex justify-between items-center border-b border-slate-900 pb-1.5">
+                <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest font-mono">
+                  ⌨️ Keyboard Response Mode Active
+                </span>
+                <button 
+                  onClick={() => {
+                    setKeyboardMode(false);
+                    setTypedAnswer('');
+                    setTimeout(() => activateMicrophoneSpeechStream(), 100);
+                  }} 
+                  className="text-[9px] bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 px-2 py-0.5 rounded uppercase font-bold hover:text-white transition-colors"
+                >
+                  Switch to Speech
+                </button>
+              </div>
+              <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (typedAnswer.trim() && !processingPipeline) {
+                    dispatchAudioPayloadToBackend(typedAnswer);
+                  }
+                }}
+                className="flex gap-2"
+              >
+                <input
+                  type="text"
+                  value={typedAnswer}
+                  onChange={(e) => setTypedAnswer(e.target.value)}
+                  placeholder="Type your answer and press Enter..."
+                  disabled={processingPipeline}
+                  className="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-emerald-500 font-sans transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={processingPipeline || !typedAnswer.trim()}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-4 py-2 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed uppercase tracking-wider"
+                >
+                  Send
+                </button>
+              </form>
             </div>
-          </div>
+          ) : (
+            <div className="mt-4 p-4 bg-slate-950 border border-slate-800/80 rounded-xl min-h-[72px] flex items-center justify-between gap-4">
+              <div className="flex-1">
+                <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest block mb-1 font-mono">
+                  {isListening ? '🎙️ Capture Stream Active (Speak Now):' : '🔒 System Muted (Interviewer Speaking)'}
+                </span>
+                <p className="text-xs text-slate-300 italic font-medium leading-relaxed transition-all">
+                  {liveSpeechBuffer || (processingPipeline ? "Awaiting calculation cycle loops..." : "Silence detection initialized. Please speak...")}
+                </p>
+              </div>
+              <button 
+                onClick={() => {
+                  setKeyboardMode(true);
+                  if (recognitionRef.current) {
+                    try { recognitionRef.current.stop(); } catch(e) {}
+                  }
+                  clearAllTimers();
+                }}
+                className="text-[9px] bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-400 px-3 py-2 rounded uppercase font-bold hover:text-white shrink-0 transition-colors"
+              >
+                Type Answer
+              </button>
+            </div>
+          )}
         </div>
 
       </div>
+
+      {/* TRANSCRIPT TIMELINE LOGS */}
+      {conversationHistory.length > 0 && (
+        <div className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 mb-4 flex flex-col gap-2 max-h-[140px] overflow-y-auto shadow-inner">
+          <span className="text-[9px] font-black tracking-widest text-slate-500 uppercase font-mono border-b border-slate-800/60 pb-1.5">Interview Dialogue Transcript Log</span>
+          <div className="flex flex-col gap-2">
+            {conversationHistory.map((item, index) => {
+              const isAi = item.role === 'interviewer';
+              return (
+                <div key={index} className="flex items-start gap-2.5 text-xs animate-[fade-in_0.2s_ease-out]">
+                  <span className={`font-mono text-[9px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded shrink-0 ${isAi ? 'bg-blue-950/80 text-blue-400 border border-blue-900/40' : 'bg-emerald-950/80 text-emerald-400 border border-emerald-900/40'}`}>
+                    {isAi ? 'AI' : 'YOU'}
+                  </span>
+                  <div className="flex-1 text-slate-300 font-sans leading-relaxed pt-0.5">
+                    {item.text}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="bg-slate-900 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-xs text-slate-400 font-mono">
         <p>Telemetry Node Key Stream Sequence: #{sessionId?.slice(-6).toUpperCase()}</p>

@@ -22,6 +22,9 @@ const InterviewSessionSchema = new mongoose.Schema({
     role: { type: String, enum: ['interviewer', 'candidate'], required: true },
     text: { type: String, required: true },
     accuracyScore: { type: Number, default: null }, // Null for interviewer, 0-100 for candidate answers
+    feedback: { type: String, default: "" },
+    suggestions: { type: String, default: "" },
+    keyPointsMissed: [{ type: String }],
     timestamp: { type: Date, default: Date.now }
   }]
 }, { timestamps: true });

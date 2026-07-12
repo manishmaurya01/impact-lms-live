@@ -70,7 +70,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
       if (match) {
         setSelectedCourse(match);
         if (activeCourseContext.moduleId !== undefined) {
-          const modMatch = match.modules.find(m => m.moduleId === activeCourseContext.moduleId);
+          const modMatch = match.modules.find(m => m.dayId === activeCourseContext.moduleId);
           setSelectedModule(modMatch || null);
         }
       }
@@ -128,7 +128,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
     setActiveNoteId(note._id);
     setNoteTitle(note.title);
     if (editorRef.current) editorRef.current.innerHTML = note.contentHtml;
-    const modMatch = selectedCourse?.modules?.find(m => m.moduleId === note.moduleId);
+    const modMatch = selectedCourse?.modules?.find(m => m.dayId === note.moduleId);
     setSelectedModule(modMatch || null);
     setActiveTab("editor");
   };
@@ -149,8 +149,8 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
         body: JSON.stringify({
           noteId: activeNoteId,
           courseId: selectedCourse._id,
-          moduleId: selectedModule.moduleId,
-          moduleName: selectedModule.moduleName,
+          moduleId: selectedModule.dayId,
+          moduleName: selectedModule.title,
           title: noteTitle.trim() || "Untitled Note",
           contentHtml: htmlContent
         })
@@ -297,7 +297,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
           "Authorization": `Bearer ${token}`
         },
         body: JSON.stringify({
-          topicName: selectedModule.moduleName,
+          topicName: selectedModule.title,
           prompt: aiPrompt,
           courseLevel: selectedCourse.level
         })
@@ -447,16 +447,16 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
 
             <label>📑 Module Hierarchy</label>
             <select 
-              value={selectedModule ? selectedModule.moduleId : ""} 
+              value={selectedModule ? selectedModule.dayId : ""} 
               onChange={(e) => {
-                const m = selectedCourse?.modules?.find(item => item.moduleId === parseInt(e.target.value));
+                const m = selectedCourse?.modules?.find(item => item.dayId === parseInt(e.target.value));
                 setSelectedModule(m || null);
               }}
               disabled={!selectedCourse}
             >
               <option value="">-- Select Module --</option>
               {(selectedCourse?.modules || []).map(m => (
-                <option key={m.moduleId} value={m.moduleId}>M{m.moduleId}: {m.moduleName}</option>
+                <option key={m.dayId} value={m.dayId}>M{m.dayId}: {m.title}</option>
               ))}
             </select>
 
