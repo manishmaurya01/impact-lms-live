@@ -41,7 +41,7 @@ function Register() {
           
           if (backendResponse.ok) {
             alert("🔓 Google Authentication Handshake Successful!");
-            localStorage.setItem('userToken', data.token);
+            localStorage.setItem('token', data.token);
             
             if (data.isNewUser) {
               setFormData(prev => ({ ...prev, fullName: data.user.name, email: data.user.email }));
@@ -62,7 +62,7 @@ function Register() {
     // Initialize the token client
     if (typeof google !== 'undefined') {
       googleClientRef.current = google.accounts.oauth2.initTokenClient({
-        client_id: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com", // <-- Apni Client ID lagayein
+        client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
         scope: "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
         callback: handleGoogleSignInResponse,
       });

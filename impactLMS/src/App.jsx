@@ -8,25 +8,24 @@ import AICourseIntake from './components/AICourseIntake/AICourseIntake.jsx';
 import NotesPage from './components/Notes/NotesPage.jsx';
 import InterviewDashboard from './components/Interview/InterviewDashboard.jsx';
 import AIProctoredInterview from './components/Interview/AIProctoredInterview.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Base / Onboarding Landing Configurations */}
+        {/* Public Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         
-        {/* Core Control Center Hubs */}
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/assignments" element={<AICourseIntake />} />
-        <Route path="/courses" element={<AICourseIntake />} />
-        <Route path="/notes" element={<NotesPage />} />
-        
-        {/* AI Voice-Driven Proctored Interview Matrix Engine Routes */}
-        <Route path="/interview" element={<InterviewDashboard />} />
-        <Route path="/interview/live/:interviewId/:sessionId" element={<AIProctoredInterview />} />
+        {/* Protected Routes — require authentication */}
+        <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+        <Route path="/assignments" element={<ProtectedRoute><AICourseIntake /></ProtectedRoute>} />
+        <Route path="/courses" element={<ProtectedRoute><AICourseIntake /></ProtectedRoute>} />
+        <Route path="/notes" element={<ProtectedRoute><NotesPage /></ProtectedRoute>} />
+        <Route path="/interview" element={<ProtectedRoute><InterviewDashboard /></ProtectedRoute>} />
+        <Route path="/interview/live/:interviewId/:sessionId" element={<ProtectedRoute><AIProctoredInterview /></ProtectedRoute>} />
       </Routes>
     </Router>
   );

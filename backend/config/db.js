@@ -2,11 +2,15 @@ const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    const dbURI = process.env.MONGO_URI || "mongodb+srv://mindmasters5167_db_user:r02VzCsxlIcdrSBQ@cluster0.4vnuwks.mongodb.net/impact-lms?retryWrites=true&w=majority&appName=Cluster0";
+    const dbURI = process.env.MONGO_URI;
+    if (!dbURI) {
+      console.error('❌ [DATABASE_ERROR]: MONGO_URI is not set in .env file. Cannot connect to database.');
+      process.exit(1);
+    }
     const conn = await mongoose.connect(dbURI);
-    console.log(`📡 [DATABASE_CONNECTED]: Cloud Atlas tunnel mapped at: ${conn.connection.host}`);
+    console.log(`📡 [DATABASE_CONNECTED]: MongoDB connected at: ${conn.connection.host}`);
   } catch (err) {
-    console.error('❌ [DATABASE_OFFLINE]: Cloud handshake pipeline crashed:', err);
+    console.error('❌ [DATABASE_ERROR]: Failed to connect to MongoDB:', err.message);
     process.exit(1);
   }
 };

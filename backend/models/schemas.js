@@ -37,7 +37,7 @@ const ModuleSchema = new mongoose.Schema({
 });
 
 const CourseSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
   title: { type: String, required: true },
   level: { type: String, required: true },
   modules: [ModuleSchema],
@@ -45,7 +45,7 @@ const CourseSchema = new mongoose.Schema({
 });
 
 const MaterialSchema = new mongoose.Schema({
-  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true, index: true },
   moduleId: { type: Number, required: true },
   topicName: { type: String, required: true },
   htmlContent: { type: String, required: true }, 
@@ -66,8 +66,11 @@ const MaterialSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// Compound index for material lookups
+MaterialSchema.index({ courseId: 1, moduleId: 1, topicName: 1 });
+
 const QuizDataSchema = new mongoose.Schema({
-  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true, index: true },
   moduleId: { type: Number, required: true },
   topicName: { type: String, required: true },
   quizName: { type: String, required: true },
@@ -80,9 +83,12 @@ const QuizDataSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// Compound index for quiz lookups
+QuizDataSchema.index({ courseId: 1, moduleId: 1, topicName: 1 });
+
 const QuizResultsSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  quizDataId: { type: mongoose.Schema.Types.ObjectId, ref: 'QuizData', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  quizDataId: { type: mongoose.Schema.Types.ObjectId, ref: 'QuizData', required: true, index: true },
   totalQuestions: { type: Number, required: true },
   correctAnswers: { type: Number, required: true },
   scorePercentage: { type: Number, required: true },
@@ -91,7 +97,7 @@ const QuizResultsSchema = new mongoose.Schema({
 });
 
 const AssignmentSubmissionSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
   courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
   moduleId: { type: Number, required: true },
   topicName: { type: String, required: true },
@@ -109,9 +115,12 @@ const AssignmentSubmissionSchema = new mongoose.Schema({
   submittedAt: { type: Date, default: Date.now }
 });
 
+// Compound index for assignment lock checks
+AssignmentSubmissionSchema.index({ userId: 1, courseId: 1, moduleId: 1, topicName: 1 });
+
 const NoteSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', required: true, index: true },
   moduleId: { type: Number, required: true }, 
   moduleName: { type: String, required: true },
   title: { type: String, required: true, default: "Untitled Note" },

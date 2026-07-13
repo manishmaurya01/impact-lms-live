@@ -57,8 +57,11 @@ const interviewCtrl = {
     try {
       const { interviewId } = req.body;
       
-      // Clear out older sessions for this specific interview to avoid data collision state
-      await InterviewSession.deleteMany({ interviewId });
+      // Mark any older sessions for this interview as completed (archive, don't delete)
+      await InterviewSession.updateMany(
+        { interviewId, isCompleted: false },
+        { $set: { isCompleted: true } }
+      );
 
       const session = new InterviewSession({
         interviewId,
