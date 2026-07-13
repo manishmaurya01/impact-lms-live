@@ -40,7 +40,7 @@ function Register() {
           const data = await backendResponse.json();
           
           if (backendResponse.ok) {
-            alert("🔓 Google Authentication Handshake Successful!");
+            alert("✅ Google sign-in successful!");
             localStorage.setItem('token', data.token);
             
             if (data.isNewUser) {
@@ -54,7 +54,7 @@ function Register() {
           }
         } catch (err) {
           console.error("Google sync failed:", err);
-          alert("Backend server connection failed during OAuth sequence.");
+          alert("Backend server connection failed. Please try again.");
         }
       }
     };
@@ -74,7 +74,7 @@ function Register() {
     if (googleClientRef.current) {
       googleClientRef.current.requestAccessToken(); // Google Popup Open karega
     } else {
-      alert("OAuth SDK loading state incomplete. Retry in a moment.");
+      alert("Google sign-in is loading. Please try again in a moment.");
     }
   };
 
@@ -101,7 +101,7 @@ function Register() {
 
       const data = await response.json();
       if (response.ok) {
-        alert(`✨ Workspace initialized! Welcome to the cluster, ${formData.fullName}.`);
+        alert(`✅ Account created! Welcome, ${formData.fullName}.`);
         navigate('/login');
       } else {
         alert(`❌ Error: ${data.message}`);
@@ -113,7 +113,7 @@ function Register() {
   };
 
   const handleSocialAuth = (provider) => {
-    alert(`🔐 Initializing secure ${provider} OAuth Handshake sequence...`);
+    alert(`🔐 ${provider} sign-in coming soon!`);
   };
 
   // --- THREE.JS LIVE ENGINE (Aapka purana bilkul sahi code) ---
@@ -253,7 +253,7 @@ function Register() {
                 <form onSubmit={handleNext} className="capsule-inputs-mesh-layout">
                   <div className="auth-panel-header">
                     <h1>Create Account</h1>
-                    <p>Initialize your identity profile metadata node across our distributed clusters.</p>
+                    <p>Enter your details to get started with personalized AI-powered learning.</p>
                   </div>
 
                   <div className="capsule-field-container">
@@ -299,8 +299,8 @@ function Register() {
             {step === 2 && (
               <form onSubmit={handleNext} className="capsule-inputs-mesh-layout animate-slide">
                 <div className="auth-panel-header">
-                  <h1>System Preferences</h1>
-                  <p>Fine-tune your learning velocity parameters and target academic track maps.</p>
+                  <h1>Your Preferences</h1>
+                  <p>Help us personalize your learning path and daily study plan.</p>
                 </div>
                 <div className="capsule-field-container dropdown-select-box">
                   <i className="fa-solid fa-briefcase field-leading-icon"></i>
@@ -336,32 +336,32 @@ function Register() {
             {step === 3 && (
               <form onSubmit={handleFinalSubmit} className="capsule-inputs-mesh-layout animate-slide">
                 <div className="auth-panel-header">
-                  <h1>AI Path Curation</h1>
-                  <p>Configure internal cognitive models tuning strategies for vector syllabus indexing.</p>
+                  <h1>Learning Style</h1>
+                  <p>Choose how you learn best so we can tailor your experience.</p>
                 </div>
                 <div className="capsule-field-container dropdown-select-box">
                   <i className="fa-solid fa-chart-line field-leading-icon"></i>
                   <select name="experience" value={formData.experience} onChange={handleInputChange}>
-                    <option value="Beginner">Beginner Tier (Base Line)</option>
-                    <option value="Intermediate">Intermediate Competency</option>
-                    <option value="Advanced">Advanced Stack Engineer</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
                   </select>
                 </div>
                 <div className="capsule-field-container dropdown-select-box">
                   <i className="fa-solid fa-wand-magic-sparkles field-leading-icon"></i>
                   <select name="learningStyle" value={formData.learningStyle} onChange={handleInputChange}>
-                    <option value="Videos">Interactive Media Stream</option>
-                    <option value="Text">Deep Scopus Indexed Documents</option>
-                    <option value="Projects">Direct Practical Codebases</option>
+                    <option value="Videos">Video Tutorials</option>
+                    <option value="Text">Reading & Articles</option>
+                    <option value="Projects">Hands-on Projects</option>
                   </select>
                 </div>
                 <div className="registration-telemetry-pill-display">
                   <div className="telemetry-display-row">
-                    <span className="telemetry-lbl">Owner Node:</span>
-                    <span className="telemetry-val text-cyan">{formData.fullName || 'Awaiting Input...'}</span>
+                    <span className="telemetry-lbl">Name:</span>
+                    <span className="telemetry-val text-cyan">{formData.fullName || 'Not entered yet'}</span>
                   </div>
                   <div className="telemetry-display-row">
-                    <span className="telemetry-lbl">Course Track:</span>
+                    <span className="telemetry-lbl">Learning Track:</span>
                     <span className="telemetry-val">{formData.domain}</span>
                   </div>
                 </div>
@@ -383,16 +383,16 @@ function Register() {
         <div className="dashboard-panel-half right-three-panel">
           <div className="panel-sheen-liner"></div>
           <div className="project-blueprint-info">
-            <div className="brand-meta-badge"><span className="brand-badge-dot"></span> LuminaLearn Studio Registry</div>
-            <h2>Initialize Identity Clusters</h2>
-            <p>Help our adaptive curation neural network calibrate your baseline preferences node parameters in real-time execution.</p>
+            <div className="brand-meta-badge"><span className="brand-badge-dot"></span> Impact LMS</div>
+            <h2>Create Your Account</h2>
+            <p>Tell us about yourself and we'll personalize your learning experience with AI-powered courses.</p>
           </div>
           <div className="threejs-embedded-stage" ref={stageRef}>
             <canvas id="quantum3DCanvas" ref={canvasRef}></canvas>
           </div>
           <div className="panel-status-ribbon-strip">
-            <span><i className="fa-solid fa-gem network-cyan"></i> GRAPHICS_ENGINE: OBSIDIAN_GLASS</span>
-            <span><i className="fa-solid fa-bolt telemetry-purple"></i> REFLECTIONS: REALTIME</span>
+            <span><i className="fa-solid fa-gem network-cyan"></i> AI-Powered Learning</span>
+            <span><i className="fa-solid fa-bolt telemetry-purple"></i> Always Active</span>
           </div>
         </div>
       </div>

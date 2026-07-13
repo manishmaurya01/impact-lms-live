@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Menu, X, LayoutDashboard, Sparkles, FolderOpen, 
@@ -9,10 +9,35 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
   const navigate = useNavigate();
   const { pathname } = useLocation();
   
-  // 🚀 SIDEBAR COLLAPSIBLE STATE HANDLING 
+  // Responsive sidebar collapsible state
   const [isExpanded, setIsExpanded] = useState(true);
+  const [userProfile, setUserProfile] = useState({
+    fullName: 'Guest User',
+    role: 'Student',
+    initials: 'GU'
+  });
 
-  // Helper utility to strictly check and assign active CSS class paths
+  useEffect(() => {
+    try {
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        const user = JSON.parse(storedUser);
+        const fullName = user.fullName || user.name || 'User';
+        const role = user.role || 'Student';
+        const initials = fullName
+          .split(' ')
+          .map(n => n[0])
+          .join('')
+          .substring(0, 2)
+          .toUpperCase() || 'US';
+        
+        setUserProfile({ fullName, role, initials });
+      }
+    } catch (e) {
+      console.error("Failed to parse user profile details:", e);
+    }
+  }, []);
+
   const isActive = (routePath) => pathname === routePath ? 'is-active' : '';
 
   return (
@@ -34,7 +59,7 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
         alignItems: 'center'
       }}
     >
-      {/* 🛠️ CONTROL HEADER PANEL TRIGGER */}
+      {/* Header Panel */}
       <div style={{ 
         display: 'flex', 
         alignItems: 'center', 
@@ -52,8 +77,8 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
           >
             <div className="brand-logo-spark" style={{ color: '#06B6D4', display: 'flex', alignItems: 'center' }}><Sparkles size={20} /></div>
             <div className="brand-title-text" style={{ display: 'flex', flexDirection: 'column' }}>
-              <h2 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 900, color: '#fff', lineTone: '1.1' }}>LuminaLearn</h2>
-              <span style={{ fontSize: '0.65rem', color: '#8B5CF6', letterSpacing: '0.1em', fontWeight: 'bold' }}>Studio Core</span>
+              <h2 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 900, color: '#fff', lineHeight: '1.1' }}>Impact LMS</h2>
+              <span style={{ fontSize: '0.65rem', color: '#8B5CF6', letterSpacing: '0.1em', fontWeight: 'bold' }}>Learning Platform</span>
             </div>
           </div>
         )}
@@ -103,7 +128,7 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
         </div>
       </div>
 
-      {/* 🚀 ALL DYNAMIC CORE NAVIGATION LINKS */}
+      {/* Navigation Links */}
       <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flexGrow: 1, width: '100%', padding: isExpanded ? '0' : '0 10px', boxSizing: 'border-box' }}>
         
         {/* 1. Dashboard Core */}
@@ -113,10 +138,10 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
           style={{ display: 'flex', alignItems: 'center', justifyContent: isExpanded ? 'flex-start' : 'center', gap: isExpanded ? '0.85rem' : '0', width: '100%', padding: '0.85rem', whiteSpace: 'nowrap', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
         >
           <LayoutDashboard size={18} style={{ flexShrink: 0 }} />
-          {isExpanded && <span>Dashboard Hub</span>}
+          {isExpanded && <span>Dashboard</span>}
         </button>
 
-        {/* 2. Generate Course / Path (वापस डाल दिया है) */}
+        {/* 2. Generate Course */}
         <button 
           onClick={() => navigate('/assignments')} 
           className={`nav-link-item ${isActive('/assignments')}`}
@@ -136,7 +161,7 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
           {isExpanded && <span>AI Interviewer</span>}
         </button>
 
-        {/* 4. Manage Courses & History */}
+        {/* 4. Courses & History */}
         <button 
           onClick={() => navigate('/courses')} 
           className={`nav-link-item ${isActive('/courses')}`}
@@ -153,27 +178,31 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
           style={{ display: 'flex', alignItems: 'center', justifyContent: isExpanded ? 'flex-start' : 'center', gap: isExpanded ? '0.85rem' : '0', width: '100%', padding: '0.85rem', whiteSpace: 'nowrap', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left' }}
         >
           <BookOpen size={18} style={{ flexShrink: 0 }} />
-          {isExpanded && <span>Cloud Notes</span>}
+          {isExpanded && <span>My Notes</span>}
         </button>
       </nav>
 
-      {/* 👥 ACCOUNT DATA PROFILE NODES FOOTER */}
+      {/* Account Profile Footer */}
       <div className="sidebar-footer-profile-node" style={{ borderTop: '1px solid rgba(30, 41, 59, 0.8)', paddingTop: '1.25rem', width: '100%', paddingLeft: isExpanded ? '0.5rem' : '0', paddingRight: isExpanded ? '0.5rem' : '0', boxSizing: 'border-box' }}>
         {isExpanded ? (
           <div className="profile-info-row" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem', whiteSpace: 'nowrap' }}>
             <div className="user-avatar-glow-wrapper" style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', padding: '2px', background: 'linear-gradient(135deg, #06B6D4, #8B5CF6)' }}>
-              <div className="user-avatar-initials" style={{ width: '100%', height: '100%', borderRadius: '50%', background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 800, color: '#fff' }}>MM</div>
+              <div className="user-avatar-initials" style={{ width: '100%', height: '100%', borderRadius: '50%', background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 800, color: '#fff' }}>
+                {userProfile.initials}
+              </div>
             </div>
             <div className="user-meta-credentials" style={{ display: 'flex', flexDirection: 'column' }}>
-              <h4 style={{ margin: 0, fontSize: '0.85rem', fontWeight: 700, color: '#fff' }}>Manish Maurya</h4>
+              <h4 style={{ margin: 0, fontSize: '0.85rem', fontWeight: 700, color: '#fff', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis' }}>{userProfile.fullName}</h4>
               <span className="user-role" style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.65rem', color: '#94a3b8' }}>
-                Verified Student <BadgeCheck size={12} style={{ color: '#06B6D4' }} />
+                {userProfile.role} <BadgeCheck size={12} style={{ color: '#06B6D4' }} />
               </span>
             </div>
           </div>
         ) : (
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', width: '100%' }}>
-            <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', background: 'linear-gradient(135deg, #06B6D4, #8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, color: '#fff' }}>MM</div>
+            <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '50%', background: 'linear-gradient(135deg, #06B6D4, #8B5CF6)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800, color: '#fff' }}>
+              {userProfile.initials}
+            </div>
           </div>
         )}
         
@@ -198,7 +227,7 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
           }}
         >
           <LogOut size={16} style={{ flexShrink: 0 }} /> 
-          {isExpanded && <span>Terminate Session</span>}
+          {isExpanded && <span>Log Out</span>}
         </button>
       </div>
     </aside>

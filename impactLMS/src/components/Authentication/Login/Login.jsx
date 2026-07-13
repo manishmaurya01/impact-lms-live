@@ -10,11 +10,10 @@ function Login() {
   const canvasRef = useRef(null);
   const stageRef = useRef(null);
 
-  // 🚀 CRITICAL RE-ENGINEERING 1: AUTO-REDIRECT IF SESSION ACTIVE
+  // Auto-redirect if already logged in
   useEffect(() => {
-    const verifiedSessionToken = localStorage.getItem('token');
-    if (verifiedSessionToken) {
-      console.log("[AUTH_GUARD] Active identity token found. Redirecting straight to terminal...");
+    const token = localStorage.getItem('token');
+    if (token) {
       navigate('/dashboard');
     }
   }, [navigate]);
@@ -185,7 +184,6 @@ function Login() {
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("[LOGIN_SUBMIT] Dispatching session encryption tokens...");
       const response = await fetch(`${window.API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -195,15 +193,12 @@ function Login() {
       const data = await response.json();
       
       if (response.ok && data.success) {
-        console.log("[LOGIN_SUCCESS] Synchronization resolved. Writing session payload tokens.");
-        
-        // 🚀 CRITICAL FIXED LINK: Storing token explicitly inside "token" matching intake expectations
         localStorage.setItem('token', data.token);
         if (data.user) {
           localStorage.setItem('user', JSON.stringify(data.user));
         }
 
-        alert("🔓 Handshake Successful! Redirection sequence active.");
+        alert("✅ Login successful!");
         navigate('/dashboard');
       } else {
         alert(`❌ Error: ${data.message || 'Authentication rejected.'}`);
@@ -227,7 +222,7 @@ function Login() {
           
           <div className="auth-panel-header">
             <h1>Welcome back</h1>
-            <p>Reset your focus and step back into your personal knowledge terminal. Your tailored roadmap is active and waiting.</p>
+            <p>Sign in to continue your learning journey where you left off.</p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="capsule-inputs-mesh-layout">
@@ -290,10 +285,10 @@ function Login() {
           
           <div className="project-blueprint-info">
             <div className="brand-meta-badge">
-              <span className="brand-badge-dot"></span> Core Engine Active
+              <span className="brand-badge-dot"></span> Impact LMS
             </div>
-            <h2>The Intelligence Engine</h2>
-            <p>Where complex syllabi dissolve into clean, custom daily learning streaks. Powered by cognitive AI curation models designed for infinite memory retention.</p>
+            <h2>Your Learning Journey Awaits</h2>
+            <p>AI-powered courses, quizzes, and interviews — all personalized to your learning style and pace.</p>
           </div>
 
           <div className="threejs-embedded-stage" ref={stageRef}>
@@ -301,8 +296,8 @@ function Login() {
           </div>
           
           <div className="panel-status-ribbon-strip">
-            <span><i className="fa-solid fa-gem network-cyan"></i> GRAPHICS_ENGINE: OBSIDIAN_GLASS</span>
-            <span><i className="fa-solid fa-bolt telemetry-purple"></i> FREQUENCY: ACTIVE</span>
+            <span><i className="fa-solid fa-gem network-cyan"></i> AI-Powered Learning</span>
+            <span><i className="fa-solid fa-bolt telemetry-purple"></i> Always Active</span>
           </div>
         </div>
 
