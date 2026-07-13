@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AICourseIntake & Roadmap Display: PREMIUM CSS STYLESHEET
+   AICourseIntake & Roadmap Display: RESPONSIVE CSS
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700;800&display=swap');
@@ -16,14 +16,13 @@
   --transition-smooth: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
-/* --- 1. VIEWPORT & AMBIENT BACKGROUND --- */
 .centralized-prompt-matrix-viewport {
   position: relative;
   min-height: 100vh;
   width: 100%;
   background-color: var(--bg-dark);
   color: var(--text-primary);
-  padding: 3rem 2rem;
+  padding: 2rem 1.5rem;
   font-family: 'Inter', system-ui, sans-serif;
   box-sizing: border-box;
   overflow-x: hidden;
@@ -43,25 +42,36 @@
   z-index: 0;
 }
 
-/* --- 2. LAYOUT & GLASS CARDS --- */
+/* Layout Container */
 .roadmap-master-scaffold-container {
   max-width: 76rem;
   width: 100%;
   margin: 0 auto;
   z-index: 10;
   position: relative;
+  box-sizing: border-box;
+}
+
+.roadmap-master-scaffold-container.max-w-xl {
+  max-width: 36rem;
+}
+
+.roadmap-master-scaffold-container.max-w-4xl {
+  max-width: 58rem;
 }
 
 .interactive-glass-card {
   background: var(--surface-glass);
   border: 1px solid var(--border-slate);
-  border-radius: 1.5rem;
-  padding: 2.5rem;
+  border-radius: 1.25rem;
+  padding: 2.25rem;
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   margin-bottom: 2rem;
   transition: var(--transition-smooth);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .interactive-glass-card:hover {
@@ -70,42 +80,43 @@
 }
 
 .gradient-heading-text {
-  font-size: 2.2rem;
-  font-weight: 900;
+  font-size: 1.8rem;
+  font-weight: 800;
   text-align: center;
   background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--purple-glow) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin: 0 0 2.5rem 0;
+  margin: 0 0 2rem 0;
   letter-spacing: -0.02em;
 }
 
-/* --- 3. FORM ELEMENTS & BUTTONS --- */
+/* Forms */
 .form-input-wrapper-node {
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
+  width: 100%;
 }
 
 .input-field-terminal-label {
   display: block;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--cyan-glow);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.65rem;
   font-weight: bold;
 }
 
 .form-input-wrapper-node textarea {
   width: 100%;
-  height: 7rem;
+  height: 6.5rem;
   background: rgba(2, 6, 23, 0.6);
   border: 1px solid var(--border-slate);
-  border-radius: 1rem;
-  padding: 1.25rem;
+  border-radius: 0.75rem;
+  padding: 1rem;
   color: var(--text-primary);
   resize: vertical;
-  font-size: 1rem;
+  font-size: 0.925rem;
   font-family: 'Inter', sans-serif;
   outline: none;
   transition: var(--transition-smooth);
@@ -122,22 +133,24 @@
   display: flex;
   background: rgba(2, 6, 23, 0.5);
   border: 1px solid var(--border-slate);
-  padding: 0.35rem;
+  padding: 0.25rem;
   border-radius: 9999px;
   gap: 0.25rem;
 }
 
 .pill-selector-item {
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: var(--text-muted);
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 9999px;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: bold;
   font-family: 'JetBrains Mono', monospace;
   cursor: pointer;
   transition: var(--transition-smooth);
+  box-sizing: border-box;
+  text-decoration: none;
 }
 
 .pill-selector-item:hover {
@@ -151,7 +164,7 @@
 }
 
 .prompt-matrix-submit-btn {
-  padding: 1rem 2.5rem;
+  padding: 0.75rem 2rem;
   background: linear-gradient(135deg, var(--cyan-glow) 0%, var(--purple-glow) 100%);
   border: none;
   color: #020617;
@@ -161,13 +174,13 @@
   cursor: pointer;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   transition: var(--transition-smooth);
   box-shadow: 0 10px 20px rgba(6, 182, 212, 0.2);
 }
 
 .prompt-matrix-submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   box-shadow: 0 15px 25px rgba(139, 92, 246, 0.4);
 }
 
@@ -178,16 +191,16 @@
   box-shadow: none;
 }
 
-/* --- 4. TIMELINE ROADMAP VIEW --- */
+/* Timeline Layout */
 .module-timeline-wrapper-node {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  margin-top: 3rem;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  box-sizing: border-box;
 }
 
-/* The vertical connecting line */
 .module-timeline-wrapper-node::before {
   content: '';
   position: absolute;
@@ -196,24 +209,24 @@
   bottom: 1rem;
   width: 2px;
   background: linear-gradient(to bottom, var(--cyan-glow), var(--purple-glow));
-  opacity: 0.4;
+  opacity: 0.3;
   border-radius: 2px;
 }
 
 .module-timeline-node-card {
   position: relative;
-  display: grid;
-  grid-template-columns: 1fr;
-  padding-left: 5.5rem;
+  display: flex;
+  flex-direction: column;
+  padding-left: 5rem;
+  box-sizing: border-box;
 }
 
-/* Glowing Timeline Counter */
 .timeline-bullet-counter {
   position: absolute;
   left: 0.65rem;
-  top: 0;
-  width: 2.75rem;
-  height: 2.75rem;
+  top: 0.25rem;
+  width: 2.5rem;
+  height: 2.5rem;
   background: #020617;
   border: 2px solid var(--cyan-glow);
   border-radius: 50%;
@@ -221,184 +234,224 @@
   align-items: center;
   justify-content: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 1.1rem;
-  font-weight: 900;
+  font-size: 1rem;
+  font-weight: 800;
   color: var(--cyan-glow);
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
   z-index: 5;
   transition: var(--transition-smooth);
 }
 
 .module-timeline-node-card:hover .timeline-bullet-counter {
-  transform: scale(1.1);
+  transform: scale(1.05);
   background: var(--cyan-glow);
   color: #020617;
-  box-shadow: 0 0 30px rgba(6, 182, 212, 0.6);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.5);
 }
 
 .node-card-inner-box {
   background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(55, 65, 81, 0.5);
-  border-radius: 1.25rem;
-  padding: 2.5rem;
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  border-radius: 1rem;
+  padding: 2rem;
   transition: var(--transition-smooth);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .module-timeline-node-card:hover .node-card-inner-box {
-  border-color: rgba(139, 92, 246, 0.5);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 0 0 20px rgba(139, 92, 246, 0.1);
-  transform: translateX(4px);
+  border-color: rgba(139, 92, 246, 0.4);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+  transform: translateX(2px);
 }
 
-/* --- 5. INNER PACKAGE PILLS (QUIZ, ASSIGNMENT, YOUTUBE) --- */
+/* Card details (quiz, assignments) */
 .meta-packages-asymmetric-row {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.25rem;
-  margin-top: 2rem;
-}
-
-@media (min-width: 768px) {
-  .meta-packages-asymmetric-row { grid-template-columns: 1fr 1fr; }
-}
-
-@media (min-width: 1024px) {
-  .meta-packages-asymmetric-row { grid-template-columns: 1fr 1fr 1.2fr; }
+  margin-top: 1.75rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .package-pill-box {
   background: rgba(2, 6, 23, 0.4);
-  border: 1px solid rgba(55, 65, 81, 0.4);
-  border-radius: 1rem;
-  padding: 1.5rem;
+  border: 1px solid rgba(55, 65, 81, 0.3);
+  border-radius: 0.85rem;
+  padding: 1.25rem;
   transition: var(--transition-smooth);
+  box-sizing: border-box;
 }
 
 .package-pill-box:hover {
-  background: rgba(15, 23, 42, 0.8);
-  border-color: rgba(55, 65, 81, 0.8);
-  transform: translateY(-2px);
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(55, 65, 81, 0.6);
+  transform: translateY(-1px);
 }
 
 .pill-type-header {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
 .quiz-theme { color: #38bdf8; }
 .assignment-theme { color: #fbbf24; }
-.youtube-theme { color: #f87171; }
 
-.youtube-search-embed-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #f87171;
-  text-decoration: none;
-  font-weight: 700;
-  margin-top: 0.75rem;
-  padding: 0.5rem 1rem;
-  background: rgba(248, 113, 113, 0.1);
-  border: 1px solid rgba(248, 113, 113, 0.2);
-  border-radius: 0.5rem;
+.course-list-row {
   transition: var(--transition-smooth);
 }
 
-.youtube-search-embed-link:hover {
-  background: rgba(248, 113, 113, 0.2);
-  box-shadow: 0 0 15px rgba(248, 113, 113, 0.3);
-  transform: translateX(2px);
-}
+/* === RESPONSIVE VIEWPORTS === */
 
-/* --- 6. ANIMATIONS --- */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fadeIn {
-  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* ==========================================================================
-   MOBILE & TABLET TIMELINE ROADMAP ADAPTATIONS
-   ========================================================================== */
-@media (max-width: 768px) {
+/* Tablets */
+@media (max-width: 1024px) {
   .centralized-prompt-matrix-viewport {
-    padding: 1.5rem 1rem !important;
+    padding: 1.5rem 1.25rem;
   }
   .interactive-glass-card {
-    padding: 1.25rem !important;
-    border-radius: 1rem !important;
+    padding: 2rem;
   }
-  .gradient-heading-text {
-    font-size: 1.5rem !important;
-    margin-bottom: 1.25rem !important;
+}
+
+@media (max-width: 768px) {
+  .intake-nav-header {
+    flex-direction: column;
+    align-items: stretch !important;
   }
-  .module-timeline-node-card {
-    padding-left: 2.5rem !important;
+  .back-dash-btn {
+    text-align: center;
+    justify-content: center;
+    width: 100%;
   }
-  .module-timeline-wrapper-node::before {
-    left: 1rem !important;
+  .intake-nav-tabs {
+    width: 100%;
   }
-  .timeline-bullet-counter {
-    left: 0 !important;
-    width: 1.8rem !important;
-    height: 1.8rem !important;
-    font-size: 0.8rem !important;
-  }
-  .node-card-inner-box {
-    padding: 1rem !important;
-  }
-  .pill-selector-mesh {
-    flex-wrap: wrap !important;
-    border-radius: 12px !important;
-    padding: 0.5rem !important;
-  }
-  .pill-selector-item {
-    padding: 0.5rem 0.85rem !important;
-    font-size: 0.75rem !important;
+  .intake-nav-tabs .pill-selector-item {
+    flex: 1;
+    text-align: center;
+    justify-content: center;
   }
   
-  /* Timeline Header Adaptations */
+  .module-timeline-node-card {
+    padding-left: 3rem;
+  }
+  .module-timeline-wrapper-node::before {
+    left: 1.25rem;
+  }
+  .timeline-bullet-counter {
+    left: 0.25rem;
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.85rem;
+  }
+  
+  .node-card-inner-box {
+    padding: 1.5rem;
+  }
+  .node-card-inner-box h2 {
+    font-size: 1.15rem !important;
+  }
+  
   .timeline-header-row {
     flex-direction: column !important;
     align-items: stretch !important;
-    gap: 1.25rem !important;
     text-align: center;
   }
   .timeline-course-title {
-    font-size: 1.6rem !important;
+    font-size: 1.5rem !important;
   }
   .timeline-header-buttons {
     width: 100% !important;
     justify-content: center !important;
   }
   .timeline-header-buttons button, .timeline-header-buttons span {
-    flex: 1 1 auto !important;
+    flex: 1 1 auto;
     justify-content: center !important;
-    text-align: center !important;
   }
   
-  /* Course Lists Adaptations */
   .course-list-row {
-    flex-direction: column !important;
+    flex-direction: column;
     align-items: stretch !important;
-    gap: 1rem !important;
     text-align: center;
+    gap: 0.75rem;
   }
   .course-list-row div {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+  }
+  .course-list-row div span {
+    margin-top: 0.25rem;
+  }
+  .course-list-row div:last-child {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+}
+
+/* Mobile Screens */
+@media (max-width: 480px) {
+  .centralized-prompt-matrix-viewport {
+    padding: 1rem 0.75rem;
+  }
+  .interactive-glass-card {
+    padding: 1.25rem;
+    border-radius: 1rem;
+  }
+  .gradient-heading-text {
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .pill-selector-mesh {
+    width: 100%;
+    justify-content: space-around;
+  }
+  .pill-selector-item {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.7rem;
+  }
+  .interactive-glass-card form div:last-child {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    align-items: stretch !important;
+  }
+  .prompt-matrix-submit-btn {
+    width: 100%;
+    text-align: center;
+    padding: 0.7rem;
+    font-size: 0.75rem;
+  }
+  .form-input-wrapper-node textarea {
+    font-size: 0.85rem;
+    padding: 0.75rem;
+    height: 5.5rem;
+  }
+  
+  .module-timeline-wrapper-node::before {
+    display: none;
+  }
+  .module-timeline-node-card {
+    padding-left: 0;
+  }
+  .timeline-bullet-counter {
+    position: static;
+    margin-bottom: 0.75rem;
+  }
+  .node-card-inner-box {
+    padding: 1rem;
+  }
+  .meta-packages-asymmetric-row {
+    grid-template-columns: 1fr;
   }
 }

@@ -38,7 +38,7 @@ export default function MainResourceCanvas({
   // Extract text from HTML structure cleanly and slice it by natural breaks
   useEffect(() => {
     if (!materialNotes?.htmlContent) {
-      setPhrases(["Initializing course telemetry board..."]);
+      setPhrases(["Loading lesson guide..."]);
       return;
     }
     const tempDiv = document.createElement("div");
@@ -161,17 +161,17 @@ export default function MainResourceCanvas({
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#02040a', padding: '2rem', overflowY: 'auto', color: '#fff', fontFamily: '"Inter", sans-serif', position: 'relative' }}>
       
       {/* 🚀 Dynamic Navigation Tabs Navbar Header Element */}
-      <div className="canvas-tabs-header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '2rem' }}>
-        <div className="canvas-tabs-buttons-row" style={{ display: 'flex', gap: '1rem' }}>
-          <button onClick={() => setActiveTab('video')} style={{ background: activeTab === 'video' ? 'rgba(6,182,212,0.05)' : 'transparent', border: 'none', color: activeTab === 'video' ? '#06b6d4' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>
-            By-Topic Smart Lecture Masterclass
+      <div className="canvas-tabs-header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <div className="canvas-tabs-buttons-row" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <button onClick={() => setActiveTab('video')} style={{ background: activeTab === 'video' ? 'rgba(6,182,212,0.05)' : 'transparent', border: 'none', color: activeTab === 'video' ? '#06b6d4' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
+            Lesson Guide
           </button>
-          <button onClick={() => setActiveTab('quiz')} style={{ background: activeTab === 'quiz' ? 'rgba(245,158,11,0.05)' : 'transparent', border: 'none', color: activeTab === 'quiz' ? '#f59e0b' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>
-            ⚡ Quiz Evaluation
+          <button onClick={() => setActiveTab('quiz')} style={{ background: activeTab === 'quiz' ? 'rgba(245,158,11,0.05)' : 'transparent', border: 'none', color: activeTab === 'quiz' ? '#f59e0b' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
+            ⚡ Quiz
           </button>
           {assignment && assignment.assignmentObjective && assignment.assignmentObjective.trim() !== "" && assignment.assignmentObjective !== "Implement concepts learned today." && (
-            <button onClick={() => setActiveTab('assignment')} style={{ background: activeTab === 'assignment' ? 'rgba(16,185,129,0.05)' : 'transparent', border: 'none', color: activeTab === 'assignment' ? '#10b981' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px' }}>
-              🛠️ Assignment Challenge
+            <button onClick={() => setActiveTab('assignment')} style={{ background: activeTab === 'assignment' ? 'rgba(16,185,129,0.05)' : 'transparent', border: 'none', color: activeTab === 'assignment' ? '#10b981' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
+              🛠️ Assignment
             </button>
           )}
         </div>
@@ -181,14 +181,14 @@ export default function MainResourceCanvas({
           onClick={() => setIsNotesPopupOpen(true)} 
           style={{ 
             background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.4)', 
-            color: '#06b6d4', padding: '0.5rem 1.2rem', cursor: 'pointer', 
+            color: '#06b6d4', padding: '0.45rem 1rem', cursor: 'pointer', 
             fontWeight: 'bold', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '0.5rem',
-            transition: 'all 200ms ease'
+            transition: 'all 200ms ease', fontSize: '0.85rem'
           }}
           onMouseEnter={(e) => { e.currentTarget.style.background = '#06b6d4'; e.currentTarget.style.color = '#000'; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(6,182,212,0.1)'; e.currentTarget.style.color = '#06b6d4'; }}
         >
-          <BookOpen size={16} /> Open Workspace Notes
+          <BookOpen size={14} /> My Workspace Notes
         </button>
       </div>
 
@@ -197,59 +197,58 @@ export default function MainResourceCanvas({
         
         {/* 📺 TAB 1: SMART MASTERCLASS LECTURES */}
         {activeTab === 'video' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '0.5rem' }}>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>
-                Active Workspace Concept Node: {topicName}
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>
+                Active Topic: {topicName}
               </h2>
             </div>
             
-            {/* 🤖 NATURAL PROCTOR CLASSROOM INTERFACE MONITOR PANEL */}
-            <div className="ai-classroom-panel" style={{ height: '380px', background: 'linear-gradient(180deg, #090d16 0%, #030509 100%)', border: '1px solid #1e293b', borderRadius: '12px', display: 'flex', overflow: 'hidden', position: 'relative' }}>
-              
+            {/* AI Classroom Panel */}
+            <div className="ai-classroom-panel" style={{ background: 'linear-gradient(180deg, #090d16 0%, #030509 100%)', border: '1px solid #1e293b', borderRadius: '12px', display: 'flex', overflow: 'hidden', position: 'relative' }}>
+
               {/* Left Column: Avatar Graphic Box */}
-              <div className="ai-avatar-column" style={{ width: '30%', borderRight: '1px solid rgba(30, 41, 59, 0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#040710', position: 'relative' }}>
+              <div className="ai-avatar-column" style={{ width: '30%', borderRight: '1px solid rgba(30, 41, 59, 0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#040710', position: 'relative', padding: '1.5rem 1rem', boxSizing: 'border-box' }}>
                 <div style={{ position: 'absolute', top: '10px', left: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                   <span style={{ width: '8px', height: '8px', background: isPlaying ? '#10b981' : '#64748b', borderRadius: '50%', display: 'inline-block', animation: isPlaying ? 'pulse 1.5s infinite' : 'none' }} />
-                  <span style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase' }}>{isPlaying ? 'LECTURING' : 'PAUSED'}</span>
+                  <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase' }}>{isPlaying ? 'READING' : 'PAUSED'}</span>
                 </div>
 
-                <div style={{ width: '110px', height: '110px', borderRadius: '50%', background: 'linear-gradient(135deg, #1e1b4b 0%, #311042 100%)', border: isPlaying ? '3px solid #06b6d4' : '3px solid #1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', transform: avatarExpression !== 'idle' ? 'scale(1.04)' : 'scale(1)', transition: 'all 0.3s ease' }}>
-                  <div style={{ width: '40px', height: '15px', border: '2px solid rgba(6, 182, 212, 0.4)', borderRadius: '4px', position: 'absolute', top: '35px', display: 'flex', justifyContent: 'space-between' }}>
-                    <div style={{ width: '14px', height: '10px', background: isPlaying ? 'rgba(6,182,212,0.2)' : 'transparent' }} />
-                    <div style={{ width: '14px', height: '10px', background: isPlaying ? 'rgba(6,182,212,0.2)' : 'transparent' }} />
+                <div style={{ width: '90px', height: '90px', borderRadius: '50%', background: 'linear-gradient(135deg, #1e1b4b 0%, #311042 100%)', border: isPlaying ? '2px solid #06b6d4' : '2px solid #1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', transform: avatarExpression !== 'idle' ? 'scale(1.04)' : 'scale(1)', transition: 'all 0.3s ease' }}>
+                  <div style={{ width: '30px', height: '12px', border: '2px solid rgba(6, 182, 212, 0.4)', borderRadius: '4px', position: 'absolute', top: '28px', display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ width: '10px', height: '8px', background: isPlaying ? 'rgba(6,182,212,0.2)' : 'transparent' }} />
+                    <div style={{ width: '10px', height: '8px', background: isPlaying ? 'rgba(6,182,212,0.2)' : 'transparent' }} />
                   </div>
                   <div style={{ 
-                    width: avatarExpression === 'idle' ? '24px' : '30px', 
-                    height: avatarExpression === 'idle' ? '4px' : avatarExpression === 'talking' ? '18px' : '10px', 
+                    width: avatarExpression === 'idle' ? '20px' : '26px', 
+                    height: avatarExpression === 'idle' ? '4px' : avatarExpression === 'talking' ? '14px' : '8px', 
                     background: '#e11d48', 
                     borderRadius: '50%/40%', 
                     position: 'absolute', 
-                    top: '65px', 
+                    top: '55px', 
                     animation: isPlaying ? 'lipSyncAction 0.22s infinite alternate ease-in-out' : 'none'
                   }} />
                   <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, rgba(2,4,10,0.4) 100%)' }} />
                 </div>
 
-                <div style={{ marginTop: '1rem', fontSize: '0.85rem', fontWeight: 'bold', color: '#fff' }}>Professor Lumina AI</div>
-                <div style={{ fontSize: '0.7rem', color: '#06b6d4', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Technical Workspace Instructor</div>
+                <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', fontWeight: 'bold', color: '#fff' }}>AI Voice Guide</div>
+                <div style={{ fontSize: '0.65rem', color: '#06b6d4', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Explanation Reader</div>
               </div>
 
-              {/* Right Column: Audio Blackboard Timeline Controller Display */}
-              <div className="ai-blackboard-column" style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#020408' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748b', fontSize: '0.75rem', borderBottom: '1px solid rgba(30,41,59,0.4)', paddingBottom: '0.5rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Monitor size={14}/> <span>AI ACTIVE BROADCAST MONITOR</span></div>
-                  <div>Sentence Matrix: {currentPhraseIndex + 1} / {phrases.length}</div>
+              {/* Right Column: Audio Blackboard Display */}
+              <div className="ai-blackboard-column" style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#020408', boxSizing: 'border-box' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748b', fontSize: '0.7rem', borderBottom: '1px solid rgba(30,41,59,0.4)', paddingBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><span>AI VOICE READOUT</span></div>
+                  <div>Sentence {currentPhraseIndex + 1} / {phrases.length}</div>
                 </div>
                 
                 {/* Active Sentence Visual Highlight Panel Box */}
-                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-                  <p style={{ fontSize: '1.25rem', color: isPlaying ? '#f8fafc' : '#94a3b8', textAlign: 'center', fontWeight: '500', lineHeight: '1.6' }}>
-                    "{phrases[currentPhraseIndex] || 'Loading classroom script data structures...'}"
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem 0.5rem' }}>
+                  <p style={{ fontSize: '1.05rem', color: isPlaying ? '#f8fafc' : '#94a3b8', textAlign: 'center', fontWeight: '500', lineHeight: '1.5', margin: 0 }}>
+                    "{phrases[currentPhraseIndex] || 'Loading explanation text...'}"
                   </p>
                 </div>
 
-                {/* 🎚️ RELIABLE SEEK PROGRESS CONTROL TIMELINE BAR */}
                 <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                   <input 
                     type="range" 
@@ -259,10 +258,10 @@ export default function MainResourceCanvas({
                     onChange={handleProgressBarScrub}
                     style={{ width: '100%', cursor: 'pointer', accentColor: '#06b6d4', background: '#1e293b', height: '6px', borderRadius: '4px' }}
                   />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#475569', fontWeight: 'bold' }}>
-                    <span>BACKWARD SEEK</span>
-                    <span>DRAG TIMELINE KNOB TO REPEAT ANY SPECIFIC SECTION</span>
-                    <span>FORWARD SEEK</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: '#475569', fontWeight: 'bold' }}>
+                    <span>BACK</span>
+                    <span>DRAG SLIDER TO REPEAT SECTION</span>
+                    <span>NEXT</span>
                   </div>
                 </div>
 
@@ -306,36 +305,36 @@ export default function MainResourceCanvas({
 
             {/* Reading Board Scripts Display Canvas */}
             {materialNotes?.htmlContent ? (
-              <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', position: 'relative' }}>
+              <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', position: 'relative', width: '100%', boxSizing: 'border-box' }}>
                 <div style={{ fontSize: '0.75rem', color: '#06b6d4', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <BookOpen size={14}/> <span>Sync Reading Script Blueprint Notes</span>
+                  <BookOpen size={14}/> <span>Lesson Notes</span>
                 </div>
                 <div 
                   className="dynamic-rich-article" 
-                  style={{ fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.75', display: 'flex', flexDirection: 'column', gap: '1.25rem' }} 
+                  style={{ fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.7', display: 'flex', flexDirection: 'column', gap: '1rem', boxSizing: 'border-box', width: '100%', overflowX: 'auto' }} 
                   dangerouslySetInnerHTML={{ __html: materialNotes.htmlContent }} 
                 />
               </div>
             ) : (
-              <div style={{ color: '#475569', textAlign: 'center', padding: '4rem', border: '1px dashed #1e293b', borderRadius: '8px' }}>
-                {"\uD83D\uDCC4"} Compiling raw concept blueprints logs from server mesh...
+              <div style={{ color: '#475569', textAlign: 'center', padding: '3rem', border: '1px dashed #1e293b', borderRadius: '8px', width: '100%', boxSizing: 'border-box' }}>
+                📖 Loading lesson content...
               </div>
             )}
 
-            {/* 📚 DYNAMIC VIDEO & DOCUMENTATION REFERENCES PANEL */}
+            {/* DYNAMIC VIDEO & DOC */}
             {materialNotes && (
-              <div className="canvas-video-doc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
+              <div className="canvas-video-doc-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem', width: '100%', boxSizing: 'border-box' }}>
                 
                 {/* Video References Column */}
-                <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '1rem', boxSizing: 'border-box' }}>
                   <div style={{ fontSize: '0.75rem', color: '#06b6d4', fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Play size={14}/> <span>Video Lectures & Masterclasses</span>
+                    <Play size={14}/> <span>Video Lectures</span>
                   </div>
                   
                   {materialNotes.videoReferences && materialNotes.videoReferences.length > 0 ? (
                     materialNotes.videoReferences.map((video, idx) => (
                       <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderBottom: idx < materialNotes.videoReferences.length - 1 ? '1px solid rgba(30, 41, 59, 0.5)' : 'none', paddingBottom: idx < materialNotes.videoReferences.length - 1 ? '1rem' : '0' }}>
-                        <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>{video.title}</div>
+                        <div style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff' }}>{video.title}</div>
                         
                         {/* Video Embed Player */}
                         {video.embedUrl && (
@@ -351,16 +350,15 @@ export default function MainResourceCanvas({
                           </div>
                         )}
                         
-                        <a href={video.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#06b6d4', fontSize: '0.8rem', fontWeight: '600', textDecoration: 'none', marginTop: '0.25rem' }}>
-                          Open Video on YouTube &rarr;
+                        <a href={video.url} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#06b6d4', fontSize: '0.75rem', fontWeight: '600', textDecoration: 'none', marginTop: '0.25rem' }}>
+                          Watch on YouTube &rarr;
                         </a>
                       </div>
                     ))
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                      <div style={{ fontSize: '0.9rem', fontWeight: '600', color: '#fff' }}>Topic Demonstration</div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: '600', color: '#fff' }}>Topic Demonstration</div>
                       
-                      {/* Fallback Single Video embed */}
                       {materialNotes.videoLink && (materialNotes.videoLink.includes('youtube.com/embed') || materialNotes.videoLink.includes('youtube.com/watch') || materialNotes.videoLink.includes('youtu.be')) ? (
                         <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', maxWidth: '100%', borderRadius: '6px', border: '1px solid #1e293b' }}>
                           <iframe 
@@ -372,8 +370,8 @@ export default function MainResourceCanvas({
                           ></iframe>
                         </div>
                       ) : (
-                        <a href={materialNotes.videoLink || "https://www.youtube.com"} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#06b6d4', fontSize: '0.85rem', fontWeight: '600', textDecoration: 'none' }}>
-                          Open Search Resources on YouTube &rarr;
+                        <a href={materialNotes.videoLink || "https://www.youtube.com"} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', color: '#06b6d4', fontSize: '0.8rem', fontWeight: '600', textDecoration: 'none' }}>
+                          Search on YouTube &rarr;
                         </a>
                       )}
                     </div>
@@ -381,9 +379,9 @@ export default function MainResourceCanvas({
                 </div>
 
                 {/* Documentation References Column */}
-                <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', display: 'flex', flexDirection: 'column', gap: '1rem', boxSizing: 'border-box' }}>
                   <div style={{ fontSize: '0.75rem', color: '#8b5cf6', fontWeight: 'bold', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <BookOpen size={14}/> <span>Documentation & GeeksforGeeks Links</span>
+                    <BookOpen size={14}/> <span>Useful Reading Links</span>
                   </div>
 
                   {materialNotes.docReferences && materialNotes.docReferences.length > 0 ? (
@@ -392,14 +390,14 @@ export default function MainResourceCanvas({
                         <a key={idx} href={doc.url} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', border: '1px solid #1e293b', padding: '0.75rem 1rem', borderRadius: '8px', color: '#cbd5e1', textDecoration: 'none', transition: 'all 0.2s' }}
                            onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#8b5cf6'; e.currentTarget.style.background = 'rgba(139, 92, 246, 0.03)'; }}
                            onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1e293b'; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}>
-                          <span style={{ fontSize: '0.85rem', fontWeight: '500' }}>{doc.title}</span>
-                          <span style={{ fontSize: '0.75rem', color: '#8b5cf6' }}>Read Reference &rarr;</span>
+                          <span style={{ fontSize: '0.8rem', fontWeight: '500', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '160px' }}>{doc.title}</span>
+                          <span style={{ fontSize: '0.7rem', color: '#8b5cf6', flexShrink: 0 }}>Read &rarr;</span>
                         </a>
                       ))}
                     </div>
                   ) : (
-                    <div style={{ color: '#475569', fontSize: '0.85rem', textAlign: 'center', padding: '1.5rem 0' }}>
-                      No additional reading links specified for this topic node.
+                    <div style={{ color: '#475569', fontSize: '0.8rem', textAlign: 'center', padding: '1.5rem 0' }}>
+                      No additional links.
                     </div>
                   )}
                 </div>
@@ -413,26 +411,26 @@ export default function MainResourceCanvas({
           </div>
         )}
 
-        {/* ⚡ TAB 2: SECURE SYSTEM QUIZ METRICS EVALUATOR */}
+        {/* TAB 2: QUIZ */}
         {activeTab === 'quiz' && (
-          <div style={{ maxWidth: '700px' }}>
-            <h3 style={{ color: '#f59e0b', fontSize: '1.3rem', fontWeight: '700', letterSpacing: '-0.01em' }}>
-              ⚡ Module Quiz Evaluation: {quiz?.name || "Topic Verification Quiz"}
+          <div style={{ maxWidth: '700px', width: '100%', boxSizing: 'border-box' }}>
+            <h3 style={{ color: '#f59e0b', fontSize: '1.2rem', fontWeight: '700', letterSpacing: '-0.01em' }}>
+              ⚡ Topic Quiz: {quiz?.name || "Concept Check Quiz"}
             </h3>
-            <p style={{ color: '#64748b', fontSize: '0.88rem', marginTop: '0.25rem' }}>
-              This dynamic quiz bounds test constraints mapped explicitly for your verified workspace modules.
+            <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+              Test your understanding of the concepts covered in this topic.
             </p>
 
-            <div style={{ background: '#020617', border: activeQuizResult ? '1px solid rgba(6, 182, 212, 0.25)' : '1px solid #1e293b', padding: '2rem', borderRadius: '12px', marginTop: '1.5rem', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
+            <div style={{ background: '#020617', border: activeQuizResult ? '1px solid rgba(6, 182, 212, 0.25)' : '1px solid #1e293b', padding: '1.5rem', borderRadius: '12px', marginTop: '1.5rem', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', boxSizing: 'border-box', width: '100%' }}>
               {activeQuizResult && (
-                <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', color: '#f87171', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.7rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.35rem', textTransform: 'uppercase' }}>
-                  <Lock size={12}/> COMPLETED & LOCKED
+                <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', color: '#f87171', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.35rem', textTransform: 'uppercase' }}>
+                  <Lock size={12}/> LOCKED
                 </div>
               )}
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem', background: '#070a12', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.02)' }}>
-                <div style={{ fontSize: '0.9rem', color: '#cbd5e1' }}><strong>📚 Core Scope Focus:</strong> <span style={{ color: '#06b6d4' }}>{quiz?.quizTopic || "Universal Module Concepts"}</span></div>
-                <div style={{ fontSize: '0.9rem', color: '#cbd5e1' }}><strong>⏳ Expected Speed Cap:</strong> <span>{quiz?.duration || "10 Minutes standard allotment"}</span></div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.02)', boxSizing: 'border-box', width: '100%' }}>
+                <div style={{ fontSize: '0.85rem', color: '#cbd5e1' }}><strong>📚 Topic Area:</strong> <span style={{ color: '#06b6d4' }}>{quiz?.quizTopic || "Module Concepts"}</span></div>
+                <div style={{ fontSize: '0.85rem', color: '#cbd5e1' }}><strong>⏳ Standard Duration:</strong> <span>{quiz?.duration || "10 minutes"}</span></div>
               </div>
 
               <button 
@@ -442,38 +440,38 @@ export default function MainResourceCanvas({
                   background: activeQuizResult ? 'rgba(255,255,255,0.02)' : 'linear-gradient(135deg, #f59e0b, #d97706)', 
                   color: activeQuizResult ? '#475569' : '#000', 
                   border: activeQuizResult ? '1px solid #1e293b' : 'none',
-                  padding: '0.8rem 1.75rem', borderRadius: '8px', fontWeight: '800', fontSize: '0.9rem',
+                  padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: '800', fontSize: '0.85rem',
                   cursor: activeQuizResult ? 'not-allowed' : 'pointer', transition: 'all 200ms ease'
                 }}
               >
-                {activeQuizResult ? "Assessment Token Cleared" : "Proceed To Take Quiz Terminal"}
+                {activeQuizResult ? "Completed" : "Start Quiz"}
               </button>
               
               {activeQuizResult && (
-                <div style={{ marginTop: '2.5rem', borderTop: '1px solid #1e293b', paddingTop: '2rem' }}>
-                  <div style={{ color: '#06b6d4', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1.25rem' }}>
-                    <BarChart3 size={16} style={{ display: 'inline', marginRight: '0.4rem', verticalAlign: 'text-bottom' }}/> Secure Verification Performance Output
+                <div style={{ marginTop: '2rem', borderTop: '1px solid #1e293b', paddingTop: '1.5rem' }}>
+                  <div style={{ color: '#06b6d4', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem' }}>
+                    <BarChart3 size={14} style={{ display: 'inline', marginRight: '0.4rem', verticalAlign: 'text-bottom' }}/> Result Details
                   </div>
                   
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-                    <div style={{ background: '#070a12', padding: '1.25rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-                      <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: '700' }}>ACCURACY RATIO</div>
-                      <div style={{ fontSize: '1.6rem', fontWeight: '800', color: accuracyPercentage >= 70 ? '#10b981' : '#f59e0b', marginTop: '0.25rem', fontFamily: 'monospace' }}>{accuracyPercentage.toFixed(0)}%</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
+                      <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: '700' }}>ACCURACY</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: accuracyPercentage >= 70 ? '#10b981' : '#f59e0b', marginTop: '0.15rem', fontFamily: 'monospace' }}>{accuracyPercentage.toFixed(0)}%</div>
                     </div>
-                    <div style={{ background: '#070a12', padding: '1.25rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-                      <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: '700' }}>TOTAL MATRIX ITEMS</div>
-                      <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#06b6d4', marginTop: '0.25rem', fontFamily: 'monospace' }}>{totalQuestions}</div>
+                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
+                      <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: '700' }}>TOTAL QUESTIONS</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: '#06b6d4', marginTop: '0.15rem', fontFamily: 'monospace' }}>{totalQuestions}</div>
                     </div>
                   </div>
                   
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div style={{ background: '#070a12', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                      <div style={{ fontSize: '0.7rem', color: '#10b981', fontWeight: '700' }}>CORRECT / VALID</div>
-                      <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#10b981', marginTop: '0.25rem', fontFamily: 'monospace' }}>{correctAnswers}</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                      <div style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: '700' }}>CORRECT ANSWERS</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: '#10b981', marginTop: '0.15rem', fontFamily: 'monospace' }}>{correctAnswers}</div>
                     </div>
-                    <div style={{ background: '#070a12', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                      <div style={{ fontSize: '0.7rem', color: '#ef4444', fontWeight: '700' }}>WRONG / FLAWED</div>
-                      <div style={{ fontSize: '1.6rem', fontWeight: '800', color: '#ef4444', marginTop: '0.25rem', fontFamily: 'monospace' }}>{wrongAnswers}</div>
+                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                      <div style={{ fontSize: '0.65rem', color: '#ef4444', fontWeight: '700' }}>INCORRECT ANSWERS</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: '#ef4444', marginTop: '0.15rem', fontFamily: 'monospace' }}>{wrongAnswers}</div>
                     </div>
                   </div>
                 </div>
@@ -482,27 +480,27 @@ export default function MainResourceCanvas({
           </div>
         )}
 
-        {/* 🛠️ TAB 3: AI-CRITIC INTEGRATED LABORATORY SANDBOX PANELS */}
+        {/* TAB 3: ASSIGNMENT */}
         {activeTab === 'assignment' && (
-          <div style={{ maxWidth: '750px' }}>
-            <h3 style={{ color: '#10b981', fontSize: '1.3rem', fontWeight: '700', letterSpacing: '-0.01em' }}>
-              🛠️ Laboratory Assignment Challenge
+          <div style={{ maxWidth: '750px', width: '100%', boxSizing: 'border-box' }}>
+            <h3 style={{ color: '#10b981', fontSize: '1.2rem', fontWeight: '700', letterSpacing: '-0.01em' }}>
+              🛠️ Assignment Challenge
             </h3>
             <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.25rem', lineHeight: '1.4' }}>
-              Automated AI static compilation models will critique code structure metrics and design patterns live via proctor streams.
+              Complete the assignment task and get AI-powered feedback.
             </p>
 
-            <div style={{ background: '#020617', border: activeAssignmentResult ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid #1e293b', padding: '2.5rem 2rem', borderRadius: '12px', marginTop: '1.5rem', position: 'relative', boxShadow: '0 25px 50px rgba(0,0,0,0.5)' }}>
+            <div style={{ background: '#020617', border: activeAssignmentResult ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid #1e293b', padding: '1.5rem', borderRadius: '12px', marginTop: '1.5rem', position: 'relative', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', boxSizing: 'border-box', width: '100%' }}>
               {activeAssignmentResult && (
-                <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', color: '#10b981', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.7rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.35rem', textTransform: 'uppercase' }}>
-                  <Lock size={12}/> EVALUATED & LOCKED
+                <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', color: '#10b981', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.35rem', textTransform: 'uppercase' }}>
+                  <Lock size={12}/> LOCKED
                 </div>
               )}
               
-              <div style={{ background: '#070a12', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', marginBottom: '2rem' }}>
-                <div style={{ fontSize: '0.9rem', color: '#cbd5e1', lineHeight: '1.6' }}>
-                  <strong style={{ color: '#fff', display: 'block', marginBottom: '0.4rem', fontSize: '0.95rem' }}>🎯 Goal Instruction Objective:</strong> 
-                  {assignment?.assignmentObjective || "Design an automated isolation architecture schema mapping local thread hooks loops constraints."}
+              <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', marginBottom: '1.5rem', boxSizing: 'border-box', width: '100%' }}>
+                <div style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: '1.5' }}>
+                  <strong style={{ color: '#fff', display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem' }}>🎯 Assignment Objective:</strong> 
+                  {assignment?.assignmentObjective || "Complete the practice exercise."}
                 </div>
               </div>
 
@@ -513,39 +511,39 @@ export default function MainResourceCanvas({
                   background: activeAssignmentResult ? 'rgba(255,255,255,0.02)' : 'linear-gradient(135deg, #10b981, #059669)', 
                   color: activeAssignmentResult ? '#475569' : '#fff', 
                   border: activeAssignmentResult ? '1px solid #1e293b' : 'none',
-                  padding: '0.8rem 1.75rem', borderRadius: '8px', fontWeight: '800', fontSize: '0.88rem',
+                  padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: '800', fontSize: '0.85rem',
                   cursor: activeAssignmentResult ? 'not-allowed' : 'pointer',
                   display: 'inline-flex', alignItems: 'center', gap: '0.5rem', boxShadow: activeAssignmentResult ? 'none' : '0 8px 16px rgba(16, 185, 129, 0.15)'
                 }}
               >
-                <Terminal size={16}/> {activeAssignmentResult ? "Sandbox Vault Closed" : "Proceed To Take Assignment Terminal"}
+                <Terminal size={14}/> {activeAssignmentResult ? "Completed" : "Start Assignment"}
               </button>
 
               {activeAssignmentResult && (
-                <div style={{ marginTop: '2.5rem', borderTop: '1px solid #1e293b', paddingTop: '2rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-                    <div style={{ color: '#06b6d4', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      <Sparkles size={14} style={{ display: 'inline', marginRight: '0.4rem', verticalAlign: 'text-bottom' }}/> Verified Engine Metrics Output
+                <div style={{ marginTop: '2rem', borderTop: '1px solid #1e293b', paddingTop: '1.5rem', width: '100%', boxSizing: 'border-box' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <div style={{ color: '#06b6d4', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <Sparkles size={14} style={{ display: 'inline', marginRight: '0.4rem', verticalAlign: 'text-bottom' }}/> AI Evaluation Results
                     </div>
-                    <div style={{ background: '#070a12', padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid #1e293b', fontSize: '0.85rem', fontFamily: 'monospace' }}>
-                      RATING: <span style={{ color: '#10b981', fontWeight: '800' }}>{activeAssignmentResult.approachScore} / 100</span>
+                    <div style={{ background: '#070a12', padding: '0.4rem 0.85rem', borderRadius: '6px', border: '1px solid #1e293b', fontSize: '0.8rem', fontFamily: 'monospace' }}>
+                      SCORE: <span style={{ color: '#10b981', fontWeight: '800' }}>{activeAssignmentResult.approachScore} / 100</span>
                     </div>
                   </div>
                   
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', fontSize: '0.88rem', color: '#cbd5e1' }}>
-                    <div style={{ background: '#070a12', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', lineHeight: '1.5' }}>
-                      <strong style={{ color: '#8b5cf6', display: 'block', marginBottom: '0.3rem', fontSize: '0.75rem', textTransform: 'uppercase' }}>📊 Complexity Parameters Analysis:</strong>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.85rem', color: '#cbd5e1', width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', lineHeight: '1.5' }}>
+                      <strong style={{ color: '#8b5cf6', display: 'block', marginBottom: '0.25rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>📊 Complexity Analysis:</strong>
                       {activeAssignmentResult.complexityAnalysis}
                     </div>
                     
-                    <div style={{ background: '#070a12', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', lineHeight: '1.5' }}>
-                      <strong style={{ color: '#f59e0b', display: 'block', marginBottom: '0.3rem', fontSize: '0.75rem', textTransform: 'uppercase' }}>💡 Architectural Critique Node:</strong>
+                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', lineHeight: '1.5' }}>
+                      <strong style={{ color: '#f59e0b', display: 'block', marginBottom: '0.25rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>💡 Review Feedback:</strong>
                       {activeAssignmentResult.architecturalCritique}
                     </div>
                     
-                    <div style={{ background: '#02040a', padding: '1.25rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-                      <strong style={{ color: '#34d399', display: 'block', marginBottom: '0.5rem', fontSize: '0.75rem', textTransform: 'uppercase' }}>Refactored Ideal Template Alternative:</strong>
-                      <pre style={{ color: '#a7f3d0', fontFamily: '"Fira Code", monospace', fontSize: '0.85rem', marginTop: '0.5rem', overflowX: 'auto', lineHeight: '1.5', background: '#070a12', padding: '1rem', borderRadius: '6px' }}>
+                    <div style={{ background: '#02040a', padding: '1rem', borderRadius: '8px', border: '1px solid #1e293b', boxSizing: 'border-box', width: '100%', overflowX: 'hidden' }}>
+                      <strong style={{ color: '#34d399', display: 'block', marginBottom: '0.5rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>Alternative Solution:</strong>
+                      <pre style={{ color: '#a7f3d0', fontFamily: '"Fira Code", monospace', fontSize: '0.8rem', marginTop: '0.5rem', overflowX: 'auto', lineHeight: '1.4', background: '#070a12', padding: '0.75rem', borderRadius: '6px', boxSizing: 'border-box', width: '100%' }}>
                         {activeAssignmentResult.betterAlternativeTemplate}
                       </pre>
                     </div>

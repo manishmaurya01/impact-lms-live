@@ -88,7 +88,7 @@ export default function AICourseIntake() {
     } catch (err) {
       clearInterval(progressInterval);
       setGenerationProgress(0);
-      setErrorLogs(err.message || "Pipeline integration fault trace.");
+      setErrorLogs(err.message || "Failed to generate course. Please try again.");
     } finally {
       setIsGenerating(false);
     }
@@ -96,7 +96,7 @@ export default function AICourseIntake() {
 
   const handleCourseDeletionNode = async (courseId, e) => {
     e.stopPropagation();
-    if (!window.confirm("Delete roadmap node from cluster?")) return;
+    if (!window.confirm("Are you sure you want to delete this course?")) return;
     try {
       const activeSessionToken = localStorage.getItem('token');
       await fetch(getApiUrl(`/api/courses/${courseId}`), {
@@ -106,7 +106,7 @@ export default function AICourseIntake() {
       if (activeViewportCourse?._id === courseId) setActiveViewportCourse(null);
       fetchSavedCoursesFromDatabase();
     } catch (err) {
-      alert("Database mutation execution failed.");
+      alert("Failed to delete course.");
     }
   };
 
@@ -125,45 +125,44 @@ export default function AICourseIntake() {
       <div className="cyber-ambient-grid-underlay"></div>
 
       {isGenerating && (
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(2, 4, 10, 0.85)', backdropFilter: 'blur(12px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 99999 }}>
-          <div style={{ width: '400px', background: '#070a12', border: '1px solid rgba(139, 92, 246, 0.25)', padding: '2.5rem 2rem', borderRadius: '1rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)', textAlign: 'center' }}>
+        <div className="generating-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(2, 4, 10, 0.85)', backdropFilter: 'blur(12px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 99999, padding: '1rem', boxSizing: 'border-box' }}>
+          <div className="generating-card" style={{ width: '100%', maxWidth: '400px', background: '#070a12', border: '1px solid rgba(139, 92, 246, 0.25)', padding: '2.5rem 2rem', borderRadius: '1rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)', textAlign: 'center', boxSizing: 'border-box' }}>
             <div style={{ margin: '0 auto 1.5rem auto', width: '44px', height: '44px', border: '3px solid rgba(139, 92, 246, 0.1)', borderTop: '3px solid #8b5cf6', borderRadius: '50%', animation: 'workspaceCoreSpin 0.85s linear infinite' }} />
-            <h3 style={{ margin: '0 0 0.6rem 0', color: '#fff', fontSize: '1.2rem', fontWeight: '600' }}>Architecting Learning Roadmap ({generationProgress}%)</h3>
+            <h3 style={{ margin: '0 0 0.6rem 0', color: '#fff', fontSize: '1.2rem', fontWeight: '600' }}>Generating Course Path ({generationProgress}%)</h3>
             
             <div style={{ width: '100%', height: '6px', background: '#1e293b', borderRadius: '3px', overflow: 'hidden', margin: '1rem 0 1.5rem 0' }}>
               <div style={{ width: `${generationProgress}%`, height: '100%', background: '#8b5cf6', transition: 'width 0.2s ease-out', boxShadow: '0 0 10px #8b5cf6' }} />
             </div>
 
-            <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0', lineHeight: '1.4' }}>Sifting through pedagogical indexes and compiling custom AI syllabus roadmaps...</p>
+            <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0', lineHeight: '1.4' }}>Our AI is organizing your custom course roadmap and syllabus modules...</p>
           </div>
           <style>{`@keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
         </div>
       )}
 
       {/* 🚀 REAL ROUTER MAPPED PLATFORM LINK ENGINE NAVBAR WITH DYNAMIC BACK TRACE LINK */}
-      <div style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '76rem', margin: '0 auto 2rem auto', borderBottom: '1px solid #1e293b', paddingBottom: '1rem' }}>
+      <div className="intake-nav-header" style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '76rem', margin: '0 auto 2rem auto', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
         
-        {/* Unified Back Action Controller Button */}
         <button 
           onClick={() => navigate('/dashboard')} 
-          className="pill-selector-item"
+          className="pill-selector-item back-dash-btn"
           style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#94a3b8', borderColor: '#1e293b', background: 'rgba(255,255,255,0.01)' }}
         >
-          &larr; Back to Terminal Dashboard
+          &larr; Back to Dashboard
         </button>
 
-        <div style={{ display: 'flex', gap: '1rem' }}>
+        <div className="intake-nav-tabs" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <button 
             onClick={() => { navigate('/assignments'); setActiveViewportCourse(null); }} 
             className={`pill-selector-item ${pathname === '/assignments' && !activeViewportCourse ? 'is-active' : ''}`}
           >
-            ✨ Generate Course Path
+            ✨ Generate New Course
           </button>
           <button 
             onClick={() => { navigate('/courses'); setActiveViewportCourse(null); }} 
             className={`pill-selector-item ${pathname === '/courses' && !activeViewportCourse ? 'is-active' : ''}`}
           >
-            📂 Manage Courses ({savedCoursesList.length})
+            📂 My Courses ({savedCoursesList.length})
           </button>
         </div>
       </div>

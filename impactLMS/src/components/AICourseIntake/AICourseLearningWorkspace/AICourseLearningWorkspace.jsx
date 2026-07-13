@@ -97,7 +97,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
       await new Promise(resolve => setTimeout(resolve, 300));
 
     } catch (err) {
-      console.error("Failed syncing material collection layer:", err);
+      console.error("Failed syncing material details:", err);
       clearInterval(progressInterval);
       setSyncProgress(0);
     } finally {
@@ -131,7 +131,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
       const nextModuleObj = modulesArray[currentModuleIndex + 1];
       handleTopicSelection(nextModuleObj.dayId, 0);
     } else {
-      alert("🎉 Dynamic curriculum paths completely verified!");
+      alert("🎉 You have completed this course! Excellent job!");
     }
   };
 
@@ -149,14 +149,13 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
     setAssignmentModeActive(false);
   };
 
-  // Safe Guardrail Interceptor Rule to Lock Finished Sessions completely
   const triggerAssignmentWorkspaceActivation = () => {
     const activeAssignment = currentModule?.schedules?.assignment;
     if (!activeAssignment || !activeAssignment.assignmentObjective || activeAssignment.assignmentObjective.trim() === "" || activeAssignment.assignmentObjective === "Implement concepts learned today.") {
       return alert("⚠️ This topic does not require a technical assignment.");
     }
     if (assignmentLocksCache[trackKey]) {
-      return alert("⚠️ Access Denied: Assignment has already been submitted and securely locked in historical database clusters.");
+      return alert("⚠️ Assignment has already been submitted and verified.");
     }
     setAssignmentModeActive(true);
   };
@@ -219,16 +218,16 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
         />
 
         {isSyncingMaterial && (
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(2, 4, 10, 0.85)', backdropFilter: 'blur(8px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 9999 }}>
-            <div style={{ width: '400px', background: '#070a12', border: '1px solid rgba(6, 182, 212, 0.25)', padding: '2.5rem 2rem', borderRadius: '1rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)', textAlign: 'center' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(2, 4, 10, 0.85)', backdropFilter: 'blur(8px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 99999 }}>
+            <div style={{ width: '90%', maxWidth: '400px', background: '#070a12', border: '1px solid rgba(6, 182, 212, 0.25)', padding: '2.5rem 2rem', borderRadius: '1rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)', textAlign: 'center', boxSizing: 'border-box' }}>
               <div style={{ margin: '0 auto 1.5rem auto', width: '44px', height: '44px', border: '3px solid rgba(6, 182, 212, 0.1)', borderTop: '3px solid #06b6d4', borderRadius: '50%', animation: 'workspaceCoreSpin 0.85s linear infinite' }} />
-              <h3 style={{ margin: '0 0 0.6rem 0', color: '#fff', fontSize: '1.2rem', fontWeight: '600' }}>Syncing Workspace Telemetry ({syncProgress}%)</h3>
+              <h3 style={{ margin: '0 0 0.6rem 0', color: '#fff', fontSize: '1.1rem', fontWeight: '600' }}>Syncing Study Data ({syncProgress}%)</h3>
               
               <div style={{ width: '100%', height: '6px', background: '#1e293b', borderRadius: '3px', overflow: 'hidden', margin: '1rem 0 1.5rem 0' }}>
                 <div style={{ width: `${syncProgress}%`, height: '100%', background: '#06b6d4', transition: 'width 0.2s ease-out', boxShadow: '0 0 10px #06b6d4' }} />
               </div>
 
-              <p style={{ color: '#64748b', fontSize: '0.88rem', margin: '0', lineHeight: '1.4' }}>Loading dynamic learning paths and looking up server lock verification database logs...</p>
+              <p style={{ color: '#64748b', fontSize: '0.82rem', margin: '0', lineHeight: '1.4' }}>Loading learning path and verified topic guides...</p>
             </div>
             <style>{`
               @keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }

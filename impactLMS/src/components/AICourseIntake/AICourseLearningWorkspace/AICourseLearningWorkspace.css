@@ -1,4 +1,4 @@
-/* --- PREMIUM GLOWING COGNITIVE LEARNING WORKSPACE --- */
+/* --- PREMIUM COGNITIVE LEARNING WORKSPACE --- */
 
 .workspace-ambient-wrapper {
   position: relative;
@@ -246,7 +246,7 @@
   color: #cbd5e1;
 }
 
-/* --- RIGHT PANE RICH STUDY WORKSPACE --- */
+/* --- RIGHT PANE STUDY WORKSPACE --- */
 .right-pane-rich-workspace {
   background: #020617;
   overflow-y: auto;
@@ -263,38 +263,39 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 3rem;
+  padding: 2rem 1.5rem;
   margin: auto;
   max-width: 36rem;
+  box-sizing: border-box;
 }
 
 .idle-globe-ambient-neon {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
   border: 2px solid rgba(139, 92, 246, 0.4);
   border-radius: 50%;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   box-shadow: 0 0 30px rgba(139, 92, 246, 0.15);
   animation: idleFloat 4s ease-in-out infinite;
 }
 
 .workspace-welcome-title {
-  font-size: 2rem;
-  font-weight: 900;
+  font-size: 1.6rem;
+  font-weight: 800;
   color: #ffffff;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .workspace-welcome-sub {
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   color: #64748b;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 /* --- STUDY CANVAS --- */
 .study-content-scrollable-canvas {
-  padding: 3rem;
+  padding: 2rem 1.5rem;
   max-width: 52rem;
   width: 100%;
   margin: 0 auto;
@@ -302,17 +303,17 @@
 }
 
 .study-main-topic-headline {
-  font-size: 2.25rem;
-  font-weight: 900;
+  font-size: 1.8rem;
+  font-weight: 800;
   color: #ffffff;
-  line-height: 1.2;
+  line-height: 1.25;
   margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
 }
 
 .category-tag-neon {
-  font-size: 0.7rem;
-  font-weight: 900;
+  font-size: 0.65rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #06b6d4;
@@ -322,7 +323,7 @@
   background: transparent;
   border: 1px solid #1e293b;
   color: #94a3b8;
-  padding: 0.45rem 1rem;
+  padding: 0.4rem 0.85rem;
   border-radius: 0.5rem;
   font-size: 0.75rem;
   font-weight: bold;
@@ -344,16 +345,18 @@
 .study-takeaways-glowing-card {
   background: rgba(6, 182, 212, 0.02);
   border: 1px solid rgba(6, 182, 212, 0.15);
-  border-radius: 1rem;
-  padding: 1.5rem;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .section-sub-title {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 800;
   color: #ffffff;
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0.85rem;
 }
 
 /* --- EMBEDDED IFRAME TERMINAL --- */
@@ -363,6 +366,8 @@
   border-radius: 0.75rem;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .terminal-header-top {
@@ -395,8 +400,36 @@
   color: #475569;
 }
 
+/* Sidebar responsive slide shifts */
+.workspace-sidebar-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 320px;
+  background: #070a12;
+  border-right: 1px solid rgba(255,255,255,0.03);
+  overflow-y: auto;
+  padding: 1.25rem;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+/* Tablet / Mobile Toggles */
+@media (max-width: 1024px) {
+  .workspace-sidebar-container {
+    position: absolute !important;
+    left: -320px;
+    top: 0;
+    bottom: 0;
+    height: 100% !important;
+    z-index: 100 !important;
+    transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5) !important;
+  }
+}
+
 /* --- ANIMATIONS --- */
 @keyframes idleFloat {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-8px); }
 }

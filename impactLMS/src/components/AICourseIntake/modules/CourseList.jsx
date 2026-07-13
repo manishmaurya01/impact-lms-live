@@ -3,10 +3,12 @@ import React from 'react';
 export default function CourseList({ savedCoursesList, onSelectCourse, onDeleteCourse }) {
   if (savedCoursesList.length === 0) {
     return (
-      <div className="interactive-glass-card">
-        <p style={{ color: '#64748b', fontSize: '0.9rem' }}>
-          No persistent structures recorded inside your cloud workspace profile nodes index. Go generate a path first!
-        </p>
+      <div className="roadmap-master-scaffold-container max-w-4xl w-full">
+        <div className="interactive-glass-card">
+          <p style={{ color: '#64748b', fontSize: '0.9rem', textAlign: 'center' }}>
+            No saved courses found. Go generate a course path first!
+          </p>
+        </div>
       </div>
     );
   }
@@ -14,8 +16,8 @@ export default function CourseList({ savedCoursesList, onSelectCourse, onDeleteC
   return (
     <div className="roadmap-master-scaffold-container max-w-4xl w-full">
       <div className="interactive-glass-card">
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '1.5rem', color: '#fff' }}>
-          Saved Roadmap Repository Logs
+        <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1.5rem', color: '#fff' }}>
+          My Saved Courses
         </h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {savedCoursesList.map((course) => (
@@ -28,7 +30,7 @@ export default function CourseList({ savedCoursesList, onSelectCourse, onDeleteC
               <div>
                 <h4 style={{ color: '#fff', fontSize: '1.05rem', fontWeight: 700, margin: 0 }}>{course.title}</h4>
                 <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                  Domain Class: {course.contentType} | Tracks: {course.modules.length} Modules
+                  {course.modules.length} Modules | Level: {course.level}
                 </span>
               </div>
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
