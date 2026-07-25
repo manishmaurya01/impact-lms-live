@@ -604,14 +604,14 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                 <button 
                   onClick={() => setTool("pen")} 
-                  style={{ background: tool === "pen" ? "rgba(139, 92, 246, 0.15)" : "transparent", color: tool === "pen" ? "#8b5cf6" : "#64748b" }}
+                  style={{ background: tool === "pen" ? "rgba(var(--accent-primary-rgb), 0.15)" : "transparent", color: tool === "pen" ? "var(--accent-primary)" : "var(--text-muted)" }}
                   title="Draw Tool"
                 >
                   <PenTool size={14} />
                 </button>
                 <button 
                   onClick={() => setTool("eraser")} 
-                  style={{ background: tool === "eraser" ? "rgba(139, 92, 246, 0.15)" : "transparent", color: tool === "eraser" ? "#8b5cf6" : "#64748b" }}
+                  style={{ background: tool === "eraser" ? "rgba(var(--accent-primary-rgb), 0.15)" : "transparent", color: tool === "eraser" ? "var(--accent-primary)" : "var(--text-muted)" }}
                   title="Eraser Tool"
                 >
                   <Eraser size={14} />
@@ -625,7 +625,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
                       key={neonColor}
                       onClick={() => { setColor(neonColor); setTool("pen"); }}
                       style={{ 
-                        width: '18px', height: '18px', borderRadius: '50%', background: neonColor, border: color === neonColor && tool === "pen" ? '2px solid #fff' : '1px solid rgba(255,255,255,0.2)', padding: 0, cursor: 'pointer',
+                        width: '18px', height: '18px', borderRadius: '50%', background: neonColor, border: color === neonColor && tool === "pen" ? '2px solid var(--text-main)' : '1px solid var(--border-color)', padding: 0, cursor: 'pointer',
                         boxShadow: color === neonColor && tool === "pen" ? `0 0 10px ${neonColor}` : 'none'
                       }}
                     />
@@ -634,29 +634,29 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
                 
                 <span className="separator">|</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Size:</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Size:</span>
                   <input 
                     type="range" 
                     min="1" 
                     max="20" 
                     value={brushSize} 
                     onChange={(e) => setBrushSize(parseInt(e.target.value))} 
-                    style={{ width: '80px', accentColor: '#8b5cf6', cursor: 'pointer', height: '4px' }}
+                    style={{ width: '80px', accentColor: 'var(--accent-primary)', cursor: 'pointer', height: '4px' }}
                   />
-                  <span style={{ fontSize: '0.75rem', color: '#cbd5e1', fontFamily: 'monospace' }}>{brushSize}px</span>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-main)', fontFamily: 'monospace' }}>{brushSize}px</span>
                 </div>
               </div>
 
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 <button 
                   onClick={clearCanvas} 
-                  style={{ background: 'rgba(239, 68, 68, 0.08)', color: '#f87171', border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '0.75rem', width: 'auto', padding: '0 10px' }}
+                  style={{ background: 'rgba(239, 68, 68, 0.08)', color: 'var(--accent-danger)', border: '1px solid rgba(239, 68, 68, 0.25)', fontSize: '0.75rem', width: 'auto', padding: '0 10px' }}
                 >
                   Clear Sketch
                 </button>
                 <button 
                   onClick={saveWhiteboardToNotes}
-                  style={{ background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '0.75rem', width: 'auto', padding: '0 10px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}
+                  style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-success)', border: '1px solid rgba(16, 185, 129, 0.3)', fontSize: '0.75rem', width: 'auto', padding: '0 10px', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 'bold' }}
                 >
                   <Image size={12} />
                   <span>Insert into Note</span>
@@ -665,7 +665,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
             </div>
 
             {/* drawing canvas container */}
-            <div style={{ flex: 1, border: '1px solid #1e293b', borderRadius: '12px', overflow: 'hidden', background: '#070a12', position: 'relative' }}>
+            <div style={{ flex: 1, border: '1px solid var(--border-color)', borderRadius: '12px', overflow: 'hidden', background: 'var(--bg-primary)', position: 'relative' }}>
               <canvas
                 ref={canvasRef}
                 onMouseDown={startDrawing}
@@ -698,7 +698,7 @@ function NotesPage({ isModal = false, activeCourseContext = null, onClose = null
                       <button 
                         className="btn-note-inline-purge"
                         onClick={(e) => handleDeleteNote(e, n._id)}
-                        style={{ background: 'transparent', border: 'none', color: '#ef4444', opacity: 0.6, cursor: 'pointer', padding: '2px', display: 'flex', alignItems: 'center' }}
+                        style={{ background: 'transparent', border: 'none', color: 'var(--accent-danger)', opacity: 0.6, cursor: 'pointer', padding: '2px', display: 'flex', alignItems: 'center' }}
                         onMouseEnter={(e) => e.currentTarget.style.opacity = 1}
                         onMouseLeave={(e) => e.currentTarget.style.opacity = 0.6}
                       >

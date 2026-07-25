@@ -7,6 +7,7 @@ function Register() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [theme, setTheme] = useState(document.documentElement.getAttribute('data-theme') || 'dark');
   
@@ -102,6 +103,7 @@ function Register() {
 
   const handleFinalSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const response = await fetch(`${window.API_URL}/api/auth/register`, {
         method: 'POST',
@@ -111,14 +113,15 @@ function Register() {
 
       const data = await response.json();
       if (response.ok) {
-        alert(`✅ Account created! Welcome, ${formData.fullName}.`);
         navigate('/login');
       } else {
         alert(`❌ Error: ${data.message}`);
+        setIsSubmitting(false);
       }
     } catch (err) {
       console.error("Connection failed:", err);
       alert("Backend Server not running!");
+      setIsSubmitting(false);
     }
   };
 
@@ -233,6 +236,43 @@ function Register() {
 
   return (
     <div className="lms-unified-center-viewport">
+      {isSubmitting && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: 'rgba(3, 7, 18, 0.85)',
+          backdropFilter: 'var(--glass-blur)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 10000,
+          animation: 'fade-in 0.25s ease-out'
+        }}>
+          <div style={{
+            background: 'var(--bg-secondary)',
+            border: '1px solid var(--border-color)',
+            padding: '3rem',
+            borderRadius: '16px',
+            textAlign: 'center',
+            boxShadow: 'var(--shadow-lg), var(--shadow-glow)',
+            maxWidth: '360px',
+            width: '90%'
+          }}>
+            <div style={{
+              margin: '0 auto 1.5rem auto',
+              width: '40px',
+              height: '40px',
+              border: '3px solid rgba(var(--accent-secondary-rgb), 0.1)',
+              borderTop: '3px solid var(--accent-secondary)',
+              borderRadius: '50%',
+              animation: 'workspaceCoreSpin 0.85s linear infinite'
+            }} />
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '800', color: 'var(--text-main)', margin: '0 0 0.5rem 0' }}>Creating Profile</h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Compiling dynamic learning context models...</p>
+          </div>
+          <style>{`@keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+        </div>
+      )}
       <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 100 }}>
         <button onClick={toggleTheme} className="theme-switch-btn" title="Toggle Theme">
           {theme === 'dark' ? <i className="fa-solid fa-sun"></i> : <i className="fa-solid fa-moon"></i>}
