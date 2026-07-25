@@ -9,6 +9,15 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const canvasRef = useRef(null);
   const stageRef = useRef(null);
+  
+  const [theme, setTheme] = useState(document.documentElement.getAttribute('data-theme') || 'dark');
+  
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    setTheme(nextTheme);
+  };
 
   // Auto-redirect if already logged in
   useEffect(() => {
@@ -211,6 +220,11 @@ function Login() {
 
   return (
     <div className="lms-unified-center-viewport">
+      <div style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 100 }}>
+        <button onClick={toggleTheme} className="theme-switch-btn" title="Toggle Theme">
+          {theme === 'dark' ? <i className="fa-solid fa-sun"></i> : <i className="fa-solid fa-moon"></i>}
+        </button>
+      </div>
       <div className="bg-radial-blur-shades"></div>
       <div className="bg-canvas-dot-matrix"></div>
 

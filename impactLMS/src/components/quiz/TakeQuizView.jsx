@@ -549,45 +549,45 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
               </h1>
             </div>
             
-            <p style={{ margin: '0 0 2rem 0', color: '#cbd5e1', fontSize: '0.95rem', lineHeight: '1.5' }}>
+            <p style={{ margin: '0 0 2rem 0', color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: '1.5' }}>
               Welcome to the Secure Testing Arena. This assessment is proctored in real-time by an automated AI model to verify identity and maintain evaluation integrity.
             </p>
 
-            <div style={{ background: 'rgba(6, 182, 212, 0.02)', border: '1px solid rgba(6, 182, 212, 0.1)', padding: '1.25rem', borderRadius: '10px', marginBottom: '2.5rem' }}>
-              <h3 style={{ margin: '0 0 0.75rem 0', fontSize: '0.88rem', color: '#06B6D4', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Security Environment Checkpoints</h3>
+            <div style={{ background: 'rgba(var(--accent-secondary-rgb), 0.02)', border: '1px solid rgba(var(--accent-secondary-rgb), 0.15)', padding: '1.25rem', borderRadius: '10px', marginBottom: '2.5rem' }}>
+              <h3 style={{ margin: '0 0 0.75rem 0', fontSize: '0.88rem', color: 'var(--accent-secondary)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Security Environment Checkpoints</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#cbd5e1' }}>
-                  <div style={{ width: '6px', height: '6px', background: '#06B6D4', borderRadius: '50%' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-main)' }}>
+                  <div style={{ width: '6px', height: '6px', background: 'var(--accent-secondary)', borderRadius: '50%' }} />
                   Screen Share Streaming Permission (Enforced)
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#cbd5e1' }}>
-                  <div style={{ width: '6px', height: '6px', background: '#06B6D4', borderRadius: '50%' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-main)' }}>
+                  <div style={{ width: '6px', height: '6px', background: 'var(--accent-secondary)', borderRadius: '50%' }} />
                   Live Webcam Telemetry Feed (AI Monitored)
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#cbd5e1' }}>
-                  <div style={{ width: '6px', height: '6px', background: '#06B6D4', borderRadius: '50%' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-main)' }}>
+                  <div style={{ width: '6px', height: '6px', background: 'var(--accent-secondary)', borderRadius: '50%' }} />
                   Locked Fullscreen Execution (Exiting triggers instant violation alert)
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#cbd5e1' }}>
-                  <div style={{ width: '6px', height: '6px', background: '#06B6D4', borderRadius: '50%' }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-main)' }}>
+                  <div style={{ width: '6px', height: '6px', background: 'var(--accent-secondary)', borderRadius: '50%' }} />
                   Dynamic AI Object Scanner (Cell phone & user presence check)
                 </div>
               </div>
             </div>
 
             {isModelLoading ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255, 255, 255, 0.02)', padding: '1.25rem', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                <RefreshCw size={20} color="#8B5CF6" style={{ animation: 'spin 2s linear infinite' }} />
-                <span style={{ fontSize: '0.88rem', color: '#94a3b8' }}>Downloading security weights and compiling AI scanner...</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--bg-surface)', padding: '1.25rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                <RefreshCw size={20} color="var(--accent-primary)" style={{ animation: 'spin 2s linear infinite' }} />
+                <span style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>Downloading security weights and compiling AI scanner...</span>
               </div>
             ) : (
               <button 
                 onClick={() => setAssessmentPhase('STREAM_ENFORCE')} 
                 style={{ 
                   width: '100%', 
-                  background: 'linear-gradient(135deg, #06B6D4, #0891b2)', 
+                  background: 'linear-gradient(135deg, var(--accent-secondary), var(--accent-secondary-hover))', 
                   border: 'none', 
-                  color: '#020617', 
+                  color: 'var(--text-inverse)', 
                   padding: '1rem', 
                   borderRadius: '8px', 
                   fontSize: '0.95rem', 
@@ -597,7 +597,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                   justifyContent: 'center', 
                   alignItems: 'center', 
                   gap: '0.5rem',
-                  boxShadow: '0 4px 20px rgba(6, 182, 212, 0.3)'
+                  boxShadow: '0 4px 20px rgba(var(--accent-secondary-rgb), 0.2)'
                 }}
               >
                 Proceed to Environment Setup <ArrowRight size={16} />
@@ -612,26 +612,26 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
             margin: 'auto', 
             width: '100%', 
             maxWidth: '540px', 
-            background: 'rgba(15, 23, 42, 0.75)', 
-            border: '1px solid rgba(139, 92, 246, 0.25)', 
+            background: 'var(--glass-bg)', 
+            border: '1px solid var(--border-color)', 
             padding: '3rem', 
             borderRadius: '16px', 
             textAlign: 'center',
-            backdropFilter: 'blur(20px)'
+            backdropFilter: 'var(--glass-blur)'
           }}>
-            <Monitor size={48} color="#8B5CF6" style={{ marginBottom: '1.5rem', filter: 'drop-shadow(0 0 10px rgba(139, 92, 246, 0.4))' }} />
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', margin: '0 0 1rem 0', color: '#fff' }}>Establish Proctor Connection</h2>
-            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '2.5rem' }}>
+            <Monitor size={48} color="var(--accent-primary)" style={{ marginBottom: '1.5rem', filter: 'drop-shadow(0 0 10px rgba(var(--accent-primary-rgb), 0.4))' }} />
+            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', margin: '0 0 1rem 0', color: 'var(--text-main)' }}>Establish Proctor Connection</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '2.5rem' }}>
               Authorize the screen-sharing stream and webcam feeds to setup your secure exam session context. Please grant both permissions when prompted.
             </p>
             {streamError && (
               <div style={{ 
-                color: '#f87171', 
+                color: 'var(--accent-danger)', 
                 fontSize: '0.85rem', 
                 marginBottom: '1.5rem', 
                 textAlign: 'left', 
                 background: 'rgba(239, 68, 68, 0.08)', 
-                border: '1px solid rgba(239, 68, 68, 0.2)', 
+                border: '1px solid rgba(239, 68, 68, 0.25)', 
                 padding: '0.8rem 1.2rem', 
                 borderRadius: '8px' 
               }}>
@@ -642,15 +642,15 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
               onClick={initiateSecureProctorStream} 
               style={{ 
                 width: '100%', 
-                background: 'linear-gradient(135deg, #8B5CF6, #7c3aed)', 
+                background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover))', 
                 border: 'none', 
-                color: '#fff', 
+                color: '#ffffff', 
                 padding: '1rem', 
                 borderRadius: '8px', 
                 fontSize: '0.95rem', 
                 fontWeight: '700', 
                 cursor: 'pointer',
-                boxShadow: '0 4px 20px rgba(139, 92, 246, 0.3)'
+                boxShadow: '0 4px 20px rgba(var(--accent-primary-rgb), 0.3)'
               }}
             >
               Start Security Telemetry Verification
@@ -661,9 +661,9 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
         {/* VIEW C: LOADER SPINNER STREAM */}
         {assessmentPhase === 'GENERATING' && (
           <div style={{ margin: 'auto', textAlign: 'center' }}>
-            <RefreshCw size={36} color="#06B6D4" style={{ animation: 'spin 2s linear infinite', marginBottom: '1rem' }} />
-            <h3 style={{ fontSize: '1.15rem', fontWeight: '600' }}>Structuring Database Questions Matrices...</h3>
-            <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.25rem' }}>Writing indices into quizdata system nodes collection schemas layer.</p>
+            <RefreshCw size={36} color="var(--accent-secondary)" style={{ animation: 'spin 2s linear infinite', marginBottom: '1rem' }} />
+            <h3 style={{ fontSize: '1.15rem', fontWeight: '600', color: 'var(--text-main)' }}>Structuring Database Questions Matrices...</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.25rem' }}>Writing indices into quizdata system nodes collection schemas layer.</p>
           </div>
         )}
 
@@ -673,8 +673,8 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
             
             {/* LEFT COLUMN PANEL: DYNAMIC USER METADATA METRICS GRAPH */}
             <div style={{ 
-              background: 'rgba(15, 23, 42, 0.85)', 
-              borderRight: '1px solid rgba(255, 255, 255, 0.06)', 
+              background: 'var(--bg-secondary)', 
+              borderRight: '1px solid var(--border-color)', 
               padding: '2rem 1.5rem', 
               display: 'flex', 
               flexDirection: 'column', 
@@ -688,35 +688,35 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                 display: 'flex', 
                 alignItems: 'center', 
                 gap: '1rem', 
-                background: '#020617', 
+                background: 'var(--bg-primary)', 
                 padding: '1rem', 
                 borderRadius: '12px', 
-                border: '1px solid rgba(255,255,255,0.06)' 
+                border: '1px solid var(--border-color)' 
               }}>
                 <div style={{ 
                   width: '36px', 
                   height: '36px', 
-                  background: 'rgba(6, 182, 212, 0.08)', 
-                  border: '1px solid rgba(6, 182, 212, 0.2)', 
+                  background: 'rgba(var(--accent-secondary-rgb), 0.08)', 
+                  border: '1px solid rgba(var(--accent-secondary-rgb), 0.2)', 
                   borderRadius: '8px', 
                   display: 'flex', 
                   justifyContent: 'center', 
                   alignItems: 'center', 
-                  color: '#06B6D4' 
+                  color: 'var(--accent-secondary)' 
                 }}>
                   <User size={18} />
                 </div>
                 <div style={{ overflow: 'hidden' }}>
-                  <div style={{ fontSize: '0.85rem', fontWeight: '700', color: '#fff', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{userProfile.name}</div>
-                  <div style={{ fontSize: '0.68rem', color: '#64748b', textTransform: 'uppercase', fontWeight: '600', marginTop: '0.15rem' }}>Candidate Reference</div>
+                  <div style={{ fontSize: '0.85rem', fontWeight: '700', color: 'var(--text-main)', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{userProfile.name}</div>
+                  <div style={{ fontSize: '0.68rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '600', marginTop: '0.15rem' }}>Candidate Reference</div>
                 </div>
               </div>
 
               {/* Webcam Proctor Feed */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.72rem', color: '#06b6d4', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>AI Proctor Stream</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--accent-secondary)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>AI Proctor Stream</span>
                 
-                <div style={{ position: 'relative', width: '100%', height: '160px', borderRadius: '10px', overflow: 'hidden', background: '#020617', border: '1px solid rgba(6, 182, 212, 0.2)' }}>
+                <div style={{ position: 'relative', width: '100%', height: '160px', borderRadius: '10px', overflow: 'hidden', background: 'var(--bg-primary)', border: '1px solid rgba(var(--accent-secondary-rgb), 0.2)' }}>
                   <video 
                     ref={videoRef}
                     muted
@@ -751,7 +751,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                           top: `${top}px`,
                           width: `${boxW}px`,
                           height: `${boxH}px`,
-                          border: isViolation ? '2px solid #f43f5e' : '2px solid #10b981',
+                          border: isViolation ? '2px solid var(--accent-danger)' : '2px solid var(--accent-success)',
                           borderRadius: '4px',
                           pointerEvents: 'none',
                           zIndex: 10
@@ -761,8 +761,8 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                           position: 'absolute',
                           top: '-18px',
                           left: 0,
-                          background: isViolation ? '#f43f5e' : '#10b981',
-                          color: '#fff',
+                          background: isViolation ? 'var(--accent-danger)' : 'var(--accent-success)',
+                          color: '#ffffff',
                           fontSize: '0.6rem',
                           padding: '1px 3px',
                           borderRadius: '2px',
@@ -792,8 +792,8 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                     position: 'absolute',
                     width: '100%',
                     height: '2px',
-                    background: 'rgba(6, 182, 212, 0.4)',
-                    boxShadow: '0 0 6px rgba(6, 182, 212, 0.8)',
+                    background: 'rgba(var(--accent-secondary-rgb), 0.4)',
+                    boxShadow: '0 0 6px rgba(var(--accent-secondary-rgb), 0.8)',
                     animation: 'scanline 3s linear infinite',
                     pointerEvents: 'none'
                   }} />
@@ -812,13 +812,13 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                   <div style={{ 
                     width: '8px', 
                     height: '8px', 
-                    background: proctorStatus.status === 'VERIFIED' ? '#10b981' : '#f43f5e', 
+                    background: proctorStatus.status === 'VERIFIED' ? 'var(--accent-success)' : 'var(--accent-danger)', 
                     borderRadius: '50%',
                     animation: 'pulse 1s infinite'
                   }} />
                   <span style={{ 
                     fontSize: '0.75rem', 
-                    color: proctorStatus.status === 'VERIFIED' ? '#10b981' : '#f43f5e',
+                    color: proctorStatus.status === 'VERIFIED' ? 'var(--accent-success)' : 'var(--accent-danger)',
                     fontWeight: '700' 
                   }}>
                     {proctorStatus.message}
@@ -828,10 +828,10 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
 
               {/* Scrolling Logs */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.72rem', color: '#8B5CF6', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Telemetry Logs</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--accent-primary)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Telemetry Logs</span>
                 <div style={{ 
-                  background: '#020617', 
-                  border: '1px solid rgba(255,255,255,0.06)', 
+                  background: 'var(--bg-primary)', 
+                  border: '1px solid var(--border-color)', 
                   borderRadius: '8px', 
                   padding: '0.6rem', 
                   height: '100px', 
@@ -841,13 +841,13 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.25rem',
-                  color: '#64748b'
+                  color: 'var(--text-muted)'
                 }}>
                   {proctorLogs.map((log, i) => {
                     const isViolation = log.includes('VIOLATION');
                     const isWarning = log.includes('Warning') || log.includes('ALERT');
                     return (
-                      <div key={i} style={{ color: isViolation ? '#f43f5e' : isWarning ? '#fbbf24' : '#64748b', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      <div key={i} style={{ color: isViolation ? 'var(--accent-danger)' : isWarning ? 'var(--accent-warning)' : 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {log}
                       </div>
                     );
@@ -857,7 +857,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
 
               {/* Matrix Step Segments Map */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <span style={{ fontSize: '0.72rem', color: '#cbd5e1', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Questions Array Monitor</span>
+                <span style={{ fontSize: '0.72rem', color: 'var(--text-main)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Questions Array Monitor</span>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.5rem' }}>
                   {generatedQuestions.map((q, idx) => {
                     const isCurrent = idx === currentQuestionIndex;
@@ -869,13 +869,13 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                         style={{ 
                           height: '34px', 
                           borderRadius: '6px', 
-                          border: isCurrent ? '1px solid #06B6D4' : '1px solid rgba(255, 255, 255, 0.06)', 
-                          background: isCurrent ? 'rgba(6, 182, 212, 0.12)' : isAnswered ? 'rgba(139, 92, 246, 0.08)' : '#020617', 
-                          color: isCurrent ? '#06B6D4' : isAnswered ? '#a78bfa' : '#94a3b8', 
+                          border: isCurrent ? '1px solid var(--accent-secondary)' : '1px solid var(--border-color)', 
+                          background: isCurrent ? 'rgba(var(--accent-secondary-rgb), 0.12)' : isAnswered ? 'rgba(var(--accent-primary-rgb), 0.08)' : 'var(--bg-primary)', 
+                          color: isCurrent ? 'var(--accent-secondary)' : isAnswered ? 'var(--accent-primary)' : 'var(--text-muted)', 
                           fontSize: '0.8rem', 
                           fontWeight: '700', 
                           cursor: 'pointer',
-                          boxShadow: isCurrent ? '0 0 10px rgba(6, 182, 212, 0.2)' : 'none',
+                          boxShadow: isCurrent ? '0 0 10px rgba(var(--accent-secondary-rgb), 0.2)' : 'none',
                           transition: 'all 200ms ease'
                         }}
                       >
@@ -889,8 +889,8 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
               <div style={{ flex: 1 }} />
 
               {/* Secure Footprint Tracker Tag */}
-              <div style={{ fontSize: '0.7rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.4rem', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1rem' }}>
-                <Shield size={12} color="#10b981" /> Hot-sync cloud connection active
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.4rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
+                <Shield size={12} color="var(--accent-success)" /> Hot-sync cloud connection active
               </div>
             </div>
 
@@ -901,24 +901,24 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
               flexDirection: 'column', 
               justifyContent: 'space-between', 
               overflowY: 'auto',
-              background: 'radial-gradient(circle at bottom left, #050716, #020617)'
+              background: 'radial-gradient(circle at bottom left, var(--bg-secondary), var(--bg-primary))'
             }}>
               
               <div style={{ maxWidth: '780px', width: '100%', margin: '0 auto' }}>
                 
                 {/* Horizontal Progress Track Indicator */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
-                  <span style={{ fontSize: '0.72rem', color: '#8B5CF6', fontWeight: '800', fontFamily: 'monospace', background: 'rgba(139, 92, 246, 0.08)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--accent-primary)', fontWeight: '800', fontFamily: 'monospace', background: 'rgba(var(--accent-primary-rgb), 0.08)', padding: '0.3rem 0.6rem', borderRadius: '4px' }}>
                     SEGMENT {currentQuestionIndex + 1} / {generatedQuestions.length}
                   </span>
-                  <div style={{ flex: 1, height: '3px', background: 'rgba(255, 255, 255, 0.06)', borderRadius: '10px', overflow: 'hidden' }}>
-                    <div style={{ width: `${((currentQuestionIndex + 1) / generatedQuestions.length) * 100}%`, height: '100%', background: 'linear-gradient(90deg, #8B5CF6, #06B6D4)', transition: 'width 250ms ease-out' }} />
+                  <div style={{ flex: 1, height: '3px', background: 'var(--border-color)', borderRadius: '10px', overflow: 'hidden' }}>
+                    <div style={{ width: `${((currentQuestionIndex + 1) / generatedQuestions.length) * 100}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))', transition: 'width 250ms ease-out' }} />
                   </div>
                 </div>
 
                 {/* Target Isolated Active Question */}
-                <h2 style={{ fontSize: '1.35rem', fontWeight: '700', lineHeight: '1.5', color: '#f8fafc', marginBottom: '2.5rem', letterSpacing: '-0.02em', display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
-                  <HelpCircle size={22} color="#06B6D4" style={{ marginTop: '3px', flexShrink: 0 }} />
+                <h2 style={{ fontSize: '1.35rem', fontWeight: '700', lineHeight: '1.5', color: 'var(--text-main)', marginBottom: '2.5rem', letterSpacing: '-0.02em', display: 'flex', gap: '0.85rem', alignItems: 'flex-start' }}>
+                  <HelpCircle size={22} color="var(--accent-secondary)" style={{ marginTop: '3px', flexShrink: 0 }} />
                   {generatedQuestions[currentQuestionIndex]?.questionText}
                 </h2>
 
@@ -931,28 +931,28 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                         key={idx}
                         onClick={() => handleAnswerSelection(generatedQuestions[currentQuestionIndex].id, idx)}
                         style={{
-                          background: isSelected ? 'rgba(6, 182, 212, 0.04)' : 'rgba(15, 23, 42, 0.65)',
-                          border: isSelected ? '1px solid #06B6D4' : '1px solid rgba(255, 255, 255, 0.06)',
+                          background: isSelected ? 'rgba(var(--accent-secondary-rgb), 0.04)' : 'var(--bg-secondary)',
+                          border: isSelected ? '1px solid var(--accent-secondary)' : '1px solid var(--border-color)',
                           padding: '1.25rem 1.5rem',
                           borderRadius: '12px',
                           cursor: 'pointer',
                           display: 'flex',
                           alignItems: 'center',
                           gap: '1.25rem',
-                          boxShadow: isSelected ? '0 0 15px rgba(6, 182, 212, 0.12)' : 'none',
+                          boxShadow: isSelected ? '0 0 15px rgba(var(--accent-secondary-rgb), 0.12)' : 'none',
                           transition: 'all 200ms ease',
                           transform: isSelected ? 'scale(1.005)' : 'scale(1)'
                         }}
                         onMouseEnter={(e) => {
                           if (!isSelected) {
-                            e.currentTarget.style.border = '1px solid rgba(6, 182, 212, 0.3)';
-                            e.currentTarget.style.background = 'rgba(15, 23, 42, 0.8)';
+                            e.currentTarget.style.border = '1px solid rgba(var(--accent-secondary-rgb), 0.3)';
+                            e.currentTarget.style.background = 'var(--bg-surface-hover)';
                           }
                         }}
                         onMouseLeave={(e) => {
                           if (!isSelected) {
-                            e.currentTarget.style.border = '1px solid rgba(255, 255, 255, 0.06)';
-                            e.currentTarget.style.background = 'rgba(15, 23, 42, 0.65)';
+                            e.currentTarget.style.border = '1px solid var(--border-color)';
+                            e.currentTarget.style.background = 'var(--bg-secondary)';
                           }
                         }}
                       >
@@ -961,8 +961,8 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                           width: '26px',
                           height: '26px',
                           borderRadius: '6px',
-                          background: isSelected ? '#06B6D4' : 'rgba(255, 255, 255, 0.04)',
-                          color: isSelected ? '#020617' : '#cbd5e1',
+                          background: isSelected ? 'var(--accent-secondary)' : 'var(--border-color)',
+                          color: isSelected ? 'var(--text-inverse)' : 'var(--text-main)',
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
@@ -974,7 +974,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                         </div>
                         <span style={{ 
                           fontSize: '0.95rem', 
-                          color: isSelected ? '#fff' : '#cbd5e1', 
+                          color: isSelected ? 'var(--text-main)' : 'var(--text-muted)', 
                           fontWeight: isSelected ? '600' : '400',
                           transition: 'all 200ms ease'
                         }}>
@@ -988,14 +988,14 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
               </div>
 
               {/* Multi-Directional Navigation Footer Toolbar */}
-              <div style={{ maxWidth: '780px', width: '100%', margin: '3rem auto 0 auto', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.5rem' }}>
+              <div style={{ maxWidth: '780px', width: '100%', margin: '3rem auto 0 auto', display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
                 <button
                   onClick={() => setCurrentQuestionIndex(prev => Math.max(0, prev - 1))}
                   disabled={currentQuestionIndex === 0}
                   style={{
-                    background: 'rgba(15, 23, 42, 0.5)',
-                    border: '1px solid rgba(255, 255, 255, 0.06)',
-                    color: currentQuestionIndex === 0 ? '#475569' : '#fff',
+                    background: 'var(--bg-secondary)',
+                    border: '1px solid var(--border-color)',
+                    color: currentQuestionIndex === 0 ? 'var(--text-muted)' : 'var(--text-main)',
                     padding: '0.7rem 1.5rem',
                     borderRadius: '8px',
                     fontSize: '0.88rem',
@@ -1013,15 +1013,15 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                   <button
                     onClick={terminateAssessmentSession}
                     style={{
-                      background: 'linear-gradient(135deg, #10b981, #059669)',
+                      background: 'linear-gradient(135deg, var(--accent-success), var(--bg-surface-hover))',
                       border: 'none',
-                      color: '#fff',
+                      color: '#ffffff',
                       padding: '0.7rem 2rem',
                       borderRadius: '8px',
                       fontSize: '0.88rem',
                       fontWeight: '700',
                       cursor: 'pointer',
-                      boxShadow: '0 10px 20px rgba(16, 185, 129, 0.2)'
+                      boxShadow: '0 10px 20px rgba(16, 185, 129, 0.15)'
                     }}
                   >
                     Submit Assessment Matrix
@@ -1030,9 +1030,9 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
                   <button
                     onClick={() => setCurrentQuestionIndex(prev => prev + 1)}
                     style={{
-                      background: '#06B6D4',
+                      background: 'var(--accent-secondary)',
                       border: 'none',
-                      color: '#020617',
+                      color: 'var(--text-inverse)',
                       padding: '0.7rem 1.5rem',
                       borderRadius: '8px',
                       fontSize: '0.88rem',
@@ -1062,7 +1062,7 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
           left: 0,
           width: '100vw',
           height: '100vh',
-          background: 'rgba(2, 6, 23, 0.9)',
+          background: 'rgba(0, 0, 0, 0.9)',
           backdropFilter: 'blur(10px)',
           display: 'flex',
           justifyContent: 'center',
@@ -1071,8 +1071,8 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
           animation: 'fade-in 0.2s ease-out'
         }}>
           <div style={{
-            background: '#0f172a',
-            border: '2px solid #ef4444',
+            background: 'var(--bg-secondary)',
+            border: '2px solid var(--accent-danger)',
             borderRadius: '16px',
             padding: '3rem',
             maxWidth: '500px',
@@ -1080,13 +1080,13 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
             textAlign: 'center',
             boxShadow: '0 25px 50px -12px rgba(239, 68, 68, 0.25)'
           }}>
-            <AlertTriangle size={64} color="#ef4444" style={{ marginBottom: '1.5rem', animation: 'pulse 1s infinite' }} />
-            <h2 style={{ fontSize: '1.8rem', fontWeight: '800', color: '#f8fafc', margin: '0 0 0.5rem 0' }}>Security Warning</h2>
+            <AlertTriangle size={64} color="var(--accent-danger)" style={{ marginBottom: '1.5rem', animation: 'pulse 1s infinite' }} />
+            <h2 style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--text-main)', margin: '0 0 0.5rem 0' }}>Security Warning</h2>
             <div style={{
               fontSize: '1rem',
-              color: '#fca5a5',
+              color: 'var(--accent-danger)',
               background: 'rgba(239, 68, 68, 0.05)',
-              border: '1px solid rgba(239, 68, 68, 0.15)',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
               padding: '1rem',
               borderRadius: '8px',
               margin: '1.5rem 0',
@@ -1095,9 +1095,9 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
               {warningMessage}
             </div>
             
-            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6', margin: '0 0 2rem 0' }}>
-              Warning count: <span style={{ color: '#ef4444', fontWeight: '800' }}>{warningCount} / 2</span>. 
-              Please note that <span style={{ color: '#ef4444', fontWeight: '700' }}>a second warning will result in the immediate automatic submission</span> and closure of your assessment.
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: '1.6', margin: '0 0 2rem 0' }}>
+              Warning count: <span style={{ color: 'var(--accent-danger)', fontWeight: '800' }}>{warningCount} / 2</span>. 
+              Please note that <span style={{ color: 'var(--accent-danger)', fontWeight: '700' }}>a second warning will result in the immediate automatic submission</span> and closure of your assessment.
             </p>
 
             <button
@@ -1107,9 +1107,9 @@ export default function TakeQuizView({ quiz, topicName, courseId, moduleId, onBa
               }}
               style={{
                 width: '100%',
-                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                background: 'linear-gradient(135deg, var(--accent-danger), var(--accent-primary))',
                 border: 'none',
-                color: '#fff',
+                color: '#ffffff',
                 padding: '1rem',
                 borderRadius: '8px',
                 fontSize: '1rem',

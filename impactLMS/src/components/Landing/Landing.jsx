@@ -9,6 +9,15 @@ function Landing() {
   // Speed modifier tracking ref to avoid re-triggering effects
   const speedModifierRef = useRef(1.0); 
 
+  const [theme, setTheme] = useState(document.documentElement.getAttribute('data-theme') || 'dark');
+  
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    setTheme(nextTheme);
+  }; 
+
   useEffect(() => {
     // --- AUTOMATED CONSOLE PRINTS LOGIC ---
     const phrases = [
@@ -188,14 +197,14 @@ function Landing() {
         
      
 
-        <div className="auth-buttons">
+        <div className="header-right-side">
+          <button onClick={toggleTheme} className="theme-switch-btn" title="Toggle Theme">
+            {theme === 'dark' ? <i className="fa-solid fa-sun"></i> : <i className="fa-solid fa-moon"></i>}
+          </button>
           <div className="auth-buttons">
-  {/* Link Router to Dynamic Secure Login Portal */}
-  <Link to="/login" className="btn-login">Login</Link>
-  
-  {/* Link Router to Dynamic Onboarding */}
-  <Link to="/register" className="btn-register">Register</Link>
-</div>
+            <Link to="/login" className="btn-login">Login</Link>
+            <Link to="/register" className="btn-register">Register</Link>
+          </div>
         </div>
       </header>
 

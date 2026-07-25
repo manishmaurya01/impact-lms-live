@@ -188,6 +188,26 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100vw', height: '100vh', background: '#02040a', overflow: 'hidden' }}>
+      <style>{`
+        @keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 1024px) {
+          .workspace-sidebar-container {
+            position: absolute !important;
+            left: ${isSidebarOpen ? '0' : '-320px'} !important;
+            top: 0;
+            bottom: 0;
+            height: 100% !important;
+            z-index: 100 !important;
+            transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.5) !important;
+          }
+        }
+        @media (min-width: 1025px) {
+          .workspace-sidebar-toggle-btn {
+            display: none !important;
+          }
+        }
+      `}</style>
       <WorkspaceHeader 
         courseTitle={courseData?.title} 
         modules={modulesArray}
@@ -229,21 +249,6 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
 
               <p style={{ color: '#64748b', fontSize: '0.82rem', margin: '0', lineHeight: '1.4' }}>Loading learning path and verified topic guides...</p>
             </div>
-            <style>{`
-              @keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-              @media (max-width: 1024px) {
-                .workspace-sidebar-container {
-                  position: absolute !important;
-                  left: ${isSidebarOpen ? '0' : '-320px'} !important;
-                  top: 0;
-                  bottom: 0;
-                  height: 100% !important;
-                  z-index: 100 !important;
-                  transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
-                  box-shadow: 10px 0 30px rgba(0,0,0,0.5) !important;
-                }
-              }
-            `}</style>
           </div>
         )}
 

@@ -1,5 +1,286 @@
+/* ==========================================================================
+   LuminaLearn Global Design System Tokens
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+
+:root {
+  /* Font Family definitions */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Fira Code', Consolas, Monaco, monospace;
+
+  /* Theme: DARK MODE (Default System Look) */
+  --bg-primary: #070913;
+  --bg-secondary: #0f1322;
+  --bg-surface: #171d34;
+  --bg-surface-hover: #1f2746;
+  
+  --text-main: #f3f4f6;
+  --text-muted: #9ca3af;
+  --text-inverse: #070913;
+  
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(255, 255, 255, 0.15);
+  
+  --accent-primary: #8b5cf6;
+  --accent-primary-rgb: 139, 92, 246;
+  --accent-primary-hover: #7c3aed;
+  
+  --accent-secondary: #06b6d4;
+  --accent-secondary-rgb: 6, 182, 212;
+  --accent-secondary-hover: #0891b2;
+  
+  --accent-success: #10b981;
+  --accent-warning: #fbbf24;
+  --accent-danger: #ef4444;
+  
+  /* Glassmorphism settings */
+  --glass-bg: rgba(15, 23, 42, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-blur: blur(16px);
+  
+  /* Shadows & Ambient glow effects */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 30px rgba(139, 92, 246, 0.15);
+  
+  /* Inputs */
+  --input-bg: rgba(2, 6, 23, 0.4);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-focus-border: #8b5cf6;
+  --input-focus-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+  
+  /* Border Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+}
+
+[data-theme='light'] {
+  /* Theme: LIGHT MODE */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+  
+  --border-color: rgba(15, 23, 42, 0.08);
+  --border-hover: rgba(15, 23, 42, 0.15);
+  
+  --accent-primary: #6366f1;
+  --accent-primary-rgb: 99, 102, 241;
+  --accent-primary-hover: #4f46e5;
+  
+  --accent-secondary: #0ea5e9;
+  --accent-secondary-rgb: 14, 165, 233;
+  --accent-secondary-hover: #0284c7;
+  
+  --accent-success: #10b981;
+  --accent-warning: #fbbf24;
+  --accent-danger: #ef4444;
+  
+  /* Glassmorphism settings */
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(15, 23, 42, 0.06);
+  --glass-blur: blur(16px);
+  
+  /* Shadows & Ambient glow effects */
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 16px 48px rgba(15, 23, 42, 0.12);
+  --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.1);
+  
+  /* Inputs */
+  --input-bg: #ffffff;
+  --input-border: #cbd5e1;
+  --input-focus-border: #6366f1;
+  --input-focus-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Reset and Global Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  overflow-x: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Modern Clean Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-surface-hover);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-primary);
+}
+
+/* Unified Typography Rules */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-main);
+}
+
+/* Modern Input Controls */
+input, select, textarea {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-main);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--input-focus-border);
+  box-shadow: var(--input-focus-shadow);
+}
+
+button {
+  cursor: pointer;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+}
+
+/* Dark/Light mode switcher class */
+.theme-switch-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.theme-switch-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-surface-hover);
+  border-color: var(--border-hover);
+}
+
+/* ==========================================================================
+   TAILWIND UTILITIES LIGHT-THEME COMPATIBILITY
+   ========================================================================== */
+[data-theme='light'] .bg-slate-900 {
+  background-color: var(--bg-secondary) !important;
+}
+
+[data-theme='light'] .bg-slate-950 {
+  background-color: var(--bg-primary) !important;
+}
+
+[data-theme='light'] .bg-slate-900\/60 {
+  background-color: rgba(255, 255, 255, 0.65) !important;
+}
+
+[data-theme='light'] .bg-slate-950\/40 {
+  background-color: var(--bg-surface-hover) !important;
+}
+
+[data-theme='light'] .bg-slate-950\/80 {
+  background-color: var(--bg-surface-hover) !important;
+}
+
+[data-theme='light'] .bg-slate-950\/20 {
+  background-color: var(--bg-surface) !important;
+}
+
+[data-theme='light'] .border-slate-800 {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme='light'] .border-slate-900 {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme='light'] .border-slate-800\/80 {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme='light'] .border-slate-800\/60 {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme='light'] .border-slate-800\/20 {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme='light'] .text-slate-100,
+[data-theme='light'] .text-slate-200,
+[data-theme='light'] .text-slate-300 {
+  color: var(--text-main) !important;
+}
+
+[data-theme='light'] .text-slate-400,
+[data-theme='light'] .text-slate-500 {
+  color: var(--text-muted) !important;
+}
+
+[data-theme='light'] .hover\:bg-slate-950\/30:hover {
+  background-color: var(--bg-surface-hover) !important;
+}
+
+[data-theme='light'] .hover\:bg-slate-800:hover {
+  background-color: var(--bg-surface-hover) !important;
+}
+
+[data-theme='light'] .divide-slate-800\/40 > * + * {
+  border-color: var(--border-color) !important;
+}
+
+[data-theme='light'] .bg-blue-950\/20 {
+  background-color: rgba(99, 102, 241, 0.08) !important;
+}
+
+[data-theme='light'] .border-blue-900\/30 {
+  border-color: rgba(99, 102, 241, 0.25) !important;
+}
+
+[data-theme='light'] .bg-blue-950\/80 {
+  background-color: rgba(99, 102, 241, 0.12) !important;
+}
+
+[data-theme='light'] .border-blue-900\/40 {
+  border-color: rgba(99, 102, 241, 0.25) !important;
+}
+
+[data-theme='light'] .bg-emerald-950\/80 {
+  background-color: rgba(16, 185, 129, 0.08) !important;
+}
+
+[data-theme='light'] .border-emerald-900\/40 {
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
