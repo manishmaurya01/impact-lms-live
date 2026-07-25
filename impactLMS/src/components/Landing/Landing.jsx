@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'; // Add this at the top of Landing.jsx
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import './Landing.css';
 function Landing() {
