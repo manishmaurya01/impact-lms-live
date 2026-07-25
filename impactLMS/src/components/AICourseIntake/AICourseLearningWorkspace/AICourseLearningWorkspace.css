@@ -429,6 +429,22 @@
   }
 }
 
+/* --- RESPONSIVE GRIDS --- */
+.canvas-video-doc-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .canvas-video-doc-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 /* --- ANIMATIONS --- */
 @keyframes idleFloat {
   0%, 100% { transform: translateY(0); }
