@@ -21,6 +21,8 @@ const AIProctoredInterview = () => {
   const [proctorLogs, setProctorLogs] = useState(["[INFO]: Secure proctoring initialized."]);
   const [model, setModel] = useState(null);
   const [faceDetected, setFaceDetected] = useState(true);
+  const [permissionsGranted, setPermissionsGranted] = useState(false);
+  const permissionsGrantedRef = useRef(false);
 
   const videoRef = useRef(null);
   const recognitionRef = useRef(null);
@@ -151,10 +153,8 @@ const AIProctoredInterview = () => {
   }, [model, interviewId, token]);
 
   useEffect(() => {
-    enforceFullscreenAndHardwareAccess();
-    
     const handleVisibilityChange = async () => {
-      if (document.hidden) {
+      if (document.hidden && permissionsGrantedRef.current) {
         setViolations(prev => {
           const nextCount = prev + 1;
           fetch(`${BACKEND_URL}/interview/sync-proctor`, {
@@ -191,10 +191,17 @@ const AIProctoredInterview = () => {
         await document.documentElement.requestFullscreen().catch(() => {});
       }
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      if (videoRef.current) videoRef.current.srcObject = stream;
+      
+      setPermissionsGranted(true);
+      permissionsGrantedRef.current = true;
+      
+      setTimeout(() => {
+        if (videoRef.current) videoRef.current.srcObject = stream;
+      }, 100);
       
       triggerInitialQuestionFetch();
     } catch (err) {
+      console.error("Hardware pipeline check failed:", err);
       alert("Hardware pipeline blocked! Microphone and camera data required to execute panel.");
       cleanlyExitToMainDashboard();
     }
@@ -397,6 +404,53 @@ const AIProctoredInterview = () => {
     }
     navigate('/interview');
   };
+
+  if (!permissionsGranted) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-white p-6 font-sans flex items-center justify-center relative overflow-hidden">
+        <script src="https://cdn.tailwindcss.com"></script>
+        
+        {/* Decorative backgrounds */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-teal-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="max-w-lg w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl relative z-10 text-center">
+          <div className="w-16 h-16 bg-indigo-500/10 border border-indigo-500/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          
+          <h2 className="text-2xl font-black tracking-tight text-white mb-2">Initialize Secure Proctor Sandbox</h2>
+          <p className="text-sm text-slate-400 mb-8">
+            This AI proctored assessment requires browser fullscreen state and permission parameters to access your webcam and microphone streams.
+          </p>
+
+          <div className="space-y-4 mb-8 text-left max-w-sm mx-auto">
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-[10px] text-indigo-400 font-bold shrink-0 mt-0.5">1</div>
+              <p className="text-xs text-slate-300">Lock fullscreen viewport array</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-[10px] text-indigo-400 font-bold shrink-0 mt-0.5">2</div>
+              <p className="text-xs text-slate-300">Grant webcam camera input access</p>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-[10px] text-indigo-400 font-bold shrink-0 mt-0.5">3</div>
+              <p className="text-xs text-slate-300">Grant microphone audio capture permission</p>
+            </div>
+          </div>
+
+          <button
+            onClick={enforceFullscreenAndHardwareAccess}
+            className="w-full bg-gradient-to-r from-indigo-600 to-teal-600 hover:from-indigo-500 hover:to-teal-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-indigo-900/30 transition-all active:scale-[0.98]"
+          >
+            Authorize & Start Interview
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6 font-sans flex flex-col justify-between relative overflow-hidden">

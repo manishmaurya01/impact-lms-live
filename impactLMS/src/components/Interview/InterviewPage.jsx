@@ -72,50 +72,62 @@ export default function InterviewPage() {
     if (selectedModules.length === 0) {
       return alert("कृपया इंटरव्यू शुरू करने के लिए कम से कम 1 मॉड्यूल ज़रूर चुनें!");
     }
-    
-    const questionsPool = {
-      'Virtual DOM & Reconciliation': [
-        "What is the difference between Shadow DOM and Virtual DOM?", 
-        "How does React's diffing algorithm work during reconciliation?"
-      ],
-      'Hooks (useState, useEffect)': [
-        "Why can't we call React hooks inside loops or nested functions?", 
-        "How do you mimic componentWillUnmount using the useEffect hook?"
-      ],
-      'State Management': [
-        "When should you prefer Context API over Redux or Zustand?", 
-        "What is prop drilling, and how do modern libraries solve it?"
-      ],
-      'Event Loop & Asynchronous JS': [
-        "Explain the role of Microtask queue vs Macrotask queue in Node.js.", 
-        "What is the operational difference between setImmediate() and setTimeout()?"
-      ],
-      'REST API Design': [
-        "What makes an API truly RESTful, and what do you mean by Idempotency?", 
-        "Which HTTP status codes are best suited for validation errors vs server crashes?"
-      ]
-    };
 
-    let questions = [];
-    selectedModules.forEach(mod => {
-      if (questionsPool[mod]) {
-        questions = [...questions, ...questionsPool[mod]];
+    try {
+      // Direct call within click gesture chain
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      streamRef.current = stream;
+
+      const questionsPool = {
+        'Virtual DOM & Reconciliation': [
+          "What is the difference between Shadow DOM and Virtual DOM?", 
+          "How does React's diffing algorithm work during reconciliation?"
+        ],
+        'Hooks (useState, useEffect)': [
+          "Why can't we call React hooks inside loops or nested functions?", 
+          "How do you mimic componentWillUnmount using the useEffect hook?"
+        ],
+        'State Management': [
+          "When should you prefer Context API over Redux or Zustand?", 
+          "What is prop drilling, and how do modern libraries solve it?"
+        ],
+        'Event Loop & Asynchronous JS': [
+          "Explain the role of Microtask queue vs Macrotask queue in Node.js.", 
+          "What is the operational difference between setImmediate() and setTimeout()?"
+        ],
+        'REST API Design': [
+          "What makes an API truly RESTful, and what do you mean by Idempotency?", 
+          "Which HTTP status codes are best suited for validation errors vs server crashes?"
+        ]
+      };
+
+      let questions = [];
+      selectedModules.forEach(mod => {
+        if (questionsPool[mod]) {
+          questions = [...questions, ...questionsPool[mod]];
+        }
+      });
+
+      if (questions.length === 0) {
+        questions = ["Can you introduce yourself and tell me about your technical stack?"];
       }
-    });
 
-    if (questions.length === 0) {
-      questions = ["Can you introduce yourself and tell me about your technical stack?"];
+      setGeneratedQuestions(questions);
+      setCurrentQuestionIndex(0);
+      setIsInterviewActive(true);
+      
+      setChatLog([{ sender: 'ai', text: questions[0] }]);
+      
+      // Let the DOM mount, then assign stream
+      setTimeout(() => {
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+      }, 100);
+    } catch (err) {
+      console.error("Camera access denied:", err);
+      alert("AI इंटरव्यू के लिए कैमरा और माइक्रोफ़ोन की अनुमति (Permission) देना आवश्यक है।");
     }
-
-    setGeneratedQuestions(questions);
-    setCurrentQuestionIndex(0);
-    setIsInterviewActive(true);
-    
-    setChatLog([{ sender: 'ai', text: questions[0] }]);
-    
-    setTimeout(async () => {
-      await startCamera();
-    }, 500);
   };
 
   // अगले सवाल पर जाने का लॉजिक
