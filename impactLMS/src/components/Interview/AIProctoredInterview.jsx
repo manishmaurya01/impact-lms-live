@@ -343,9 +343,22 @@ const AIProctoredInterview = () => {
       }
     };
 
+    rec.onerror = (event) => {
+      console.warn("Speech Recognition error:", event.error);
+      addProctorLog(`Microphone alert: ${event.error}`);
+      setIsListening(false);
+    };
+
     rec.onend = () => { setIsListening(false); };
     recognitionRef.current = rec;
-    rec.start();
+    
+    try {
+      rec.start();
+    } catch (e) {
+      console.error("Speech recognition start failed:", e);
+      addProctorLog("Microphone start failed: Gesture authorization required.");
+      setIsListening(false);
+    }
   };
 
   const dispatchAudioPayloadToBackend = async (payload) => {
@@ -595,11 +608,26 @@ const AIProctoredInterview = () => {
             <div className="mt-4 p-4 bg-slate-950 border border-slate-800/80 rounded-xl min-h-[72px] flex items-center justify-between gap-4">
               <div className="flex-1">
                 <span className="text-[9px] font-bold text-emerald-400 uppercase tracking-widest block mb-1 font-mono">
-                  {isListening ? '🎙️ Capture Stream Active (Speak Now):' : '🔒 System Muted (Interviewer Speaking)'}
+                  {isListening ? '🎙️ Capture Stream Active (Speak Now):' : botSpeakingState ? '🔒 System Muted (Interviewer Speaking)' : '🎙️ Microphone Inactive (Awaiting Input)'}
                 </span>
-                <p className="text-xs text-slate-300 italic font-medium leading-relaxed transition-all">
-                  {liveSpeechBuffer || (processingPipeline ? "Awaiting calculation cycle loops..." : "Silence detection initialized. Please speak...")}
-                </p>
+                {(!isListening && !botSpeakingState && !processingPipeline) ? (
+                  <button 
+                    onClick={() => {
+                      addProctorLog("Manual speech capture stream requested.");
+                      activateMicrophoneSpeechStream();
+                    }}
+                    className="mt-2 w-full py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold rounded-lg shadow-lg flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+                  >
+                    <svg className="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                    <span>Tap to Speak (Start Microphone)</span>
+                  </button>
+                ) : (
+                  <p className="text-xs text-slate-300 italic font-medium leading-relaxed transition-all">
+                    {liveSpeechBuffer || (processingPipeline ? "Awaiting calculation cycle loops..." : botSpeakingState ? "Please listen to the AI interviewer..." : "Silence detection initialized. Please speak...")}
+                  </p>
+                )}
               </div>
               <button 
                 onClick={() => {
