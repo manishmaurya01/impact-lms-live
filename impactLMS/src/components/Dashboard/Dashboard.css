@@ -1320,6 +1320,17 @@
 }
 
 @media (max-width: 480px) {
+  .notifications-dropdown-menu {
+    position: fixed !important;
+    top: 4.5rem !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    width: auto !important;
+    max-width: none !important;
+    z-index: 1100 !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+  }
+
   .premium-metrics-grid {
     grid-template-columns: 1fr !important;
     gap: 1rem !important;
