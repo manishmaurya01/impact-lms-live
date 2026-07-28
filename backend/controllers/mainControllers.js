@@ -269,6 +269,18 @@ const dashboardCtrl = {
         }
       }
 
+      // Filter by Search Query
+      const { search } = req.query;
+      if (search) {
+        const matchedCourses = await Course.find({ userId: uid, title: { $regex: search, $options: 'i' } }).select('_id');
+        const matchedIds = matchedCourses.map(c => c._id.toString());
+        if (allowedCourseIds === null) {
+          allowedCourseIds = matchedIds;
+        } else {
+          allowedCourseIds = allowedCourseIds.filter(id => matchedIds.includes(id.toString()));
+        }
+      }
+
       if (allowedCourseIds !== null) {
         query.courseId = { $in: allowedCourseIds.map(id => new mongoose.Types.ObjectId(id)) };
       }

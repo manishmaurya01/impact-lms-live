@@ -174,7 +174,7 @@ export default function Dashboard() {
     if (activeTab === 'dashboard' && selectedCourse) {
       fetchRealtimeDashboardData();
     }
-  }, [activeTab, selectedCourse, timeRange, courseStatus, difficulty, activityType, customStartDate, customEndDate]);
+  }, [activeTab, selectedCourse, timeRange, courseStatus, difficulty, activityType, customStartDate, customEndDate, searchQuery]);
 
   // Combined Fetch Engine for live DB Analytics
   const fetchRealtimeDashboardData = async () => {
@@ -198,7 +198,8 @@ export default function Dashboard() {
         difficulty,
         activityType,
         startDate: customStartDate,
-        endDate: customEndDate
+        endDate: customEndDate,
+        search: searchQuery
       });
 
       // Get Aggregated Metrics Counters
