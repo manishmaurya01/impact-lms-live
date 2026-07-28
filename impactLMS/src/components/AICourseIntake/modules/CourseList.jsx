@@ -16,7 +16,7 @@ export default function CourseList({ savedCoursesList, onSelectCourse, onDeleteC
   return (
     <div className="roadmap-master-scaffold-container max-w-6xl w-full">
       <div className="interactive-glass-card" style={{ background: 'transparent', border: 'none', padding: 0 }}>
-        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '2rem', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <h2 style={{ fontSize: '1.6rem', fontWeight: 900, marginBottom: '2rem', color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           📂 My Saved Courses ({savedCoursesList.length})
         </h2>
         
@@ -44,8 +44,8 @@ export default function CourseList({ savedCoursesList, onSelectCourse, onDeleteC
                     <span>Syllabus Progress</span>
                     <strong>{progress}%</strong>
                   </div>
-                  <div className="progress-bar-bg" style={{ height: '6px', background: '#1e293b', borderRadius: '4px', overflow: 'hidden' }}>
-                    <div className="progress-bar-fill" style={{ width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-secondary), var(--accent-primary))' }} />
+                  <div className="progress-bar-bg" style={{ height: '6px' }}>
+                    <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
                   </div>
                 </div>
 

@@ -145,18 +145,18 @@ export default function AICourseIntake() {
       <div className="cyber-ambient-grid-underlay"></div>
 
       {isGenerating && (
-        <div className="generating-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(2, 4, 10, 0.85)', backdropFilter: 'blur(12px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 99999, padding: '1rem', boxSizing: 'border-box' }}>
-          <div className="generating-card" style={{ width: '100%', maxWidth: '450px', background: '#070a12', border: '1px solid rgba(139, 92, 246, 0.25)', padding: '2.5rem 2rem', borderRadius: '1rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)', boxSizing: 'border-box' }}>
+        <div className="generating-overlay" style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: 'rgba(0, 0, 0, 0.7)', backdropFilter: 'blur(12px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 99999, padding: '1rem', boxSizing: 'border-box' }}>
+          <div className="generating-card" style={{ width: '100%', maxWidth: '450px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', padding: '2.5rem 2rem', borderRadius: '1rem', boxShadow: 'var(--shadow-lg)', boxSizing: 'border-box' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
               <div style={{ width: '20px', height: '20px', border: '2px solid rgba(139, 92, 246, 0.1)', borderTop: '2px solid #8b5cf6', borderRadius: '50%', animation: 'workspaceCoreSpin 0.85s linear infinite' }} />
-              <h3 style={{ margin: '0', color: '#fff', fontSize: '1.25rem', fontWeight: '800' }}>Building AI Course Path ({generationProgress}%)</h3>
+              <h3 style={{ margin: '0', color: 'var(--text-main)', fontSize: '1.25rem', fontWeight: '800' }}>Building AI Course Path ({generationProgress}%)</h3>
             </div>
             
-            <div style={{ width: '100%', height: '6px', background: '#1e293b', borderRadius: '3px', overflow: 'hidden', margin: '1rem 0 1.5rem 0' }}>
-              <div style={{ width: `${generationProgress}%`, height: '100%', background: 'linear-gradient(90deg, #8b5cf6, #06b6d4)', transition: 'width 0.2s ease-out', boxShadow: '0 0 10px #8b5cf6' }} />
+            <div style={{ width: '100%', height: '6px', background: 'var(--bg-surface)', borderRadius: '3px', overflow: 'hidden', margin: '1rem 0 1.5rem 0' }}>
+              <div style={{ width: `${generationProgress}%`, height: '100%', background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))', transition: 'width 0.2s ease-out' }} />
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', textAlign: 'left', margin: '1.5rem 0', background: 'rgba(255,255,255,0.01)', border: '1px solid #1e293b', padding: '1rem', borderRadius: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', textAlign: 'left', margin: '1.5rem 0', background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '1rem', borderRadius: '8px' }}>
               {[
                 { label: "Analyzing Learning Goal...", min: 0 },
                 { label: "Understanding Skill Level...", min: 15 },
@@ -172,7 +172,7 @@ export default function AICourseIntake() {
                 const isActive = generationProgress >= s.min && !isCompleted;
                 
                 return (
-                  <div key={idx} className={`progress-step-item-row ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.85rem', color: isCompleted ? 'var(--accent-secondary)' : (isActive ? '#8b5cf6' : '#475569'), fontWeight: isActive ? '700' : '400' }}>
+                  <div key={idx} className={`progress-step-item-row ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.85rem', color: isCompleted ? 'var(--accent-secondary)' : (isActive ? 'var(--accent-primary)' : 'var(--text-muted)'), fontWeight: isActive ? '700' : '400' }}>
                     <div className="progress-step-icon-wrapper" style={{ width: '18px', display: 'flex', justifyContent: 'center' }}>
                       {isCompleted ? "✓" : isActive ? "⚡" : "○"}
                     </div>
@@ -182,19 +182,19 @@ export default function AICourseIntake() {
               })}
             </div>
 
-            <p style={{ color: '#64748b', fontSize: '0.8rem', margin: '0', textAlign: 'center', lineHeight: '1.4' }}>Gemini AI is parsing course context and generating your nested syllabus modules...</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: '0', textAlign: 'center', lineHeight: '1.4' }}>Gemini AI is parsing course context and generating your nested syllabus modules...</p>
           </div>
           <style>{`@keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
         </div>
       )}
 
       {/* 🚀 REAL ROUTER MAPPED PLATFORM LINK ENGINE NAVBAR WITH DYNAMIC BACK TRACE LINK */}
-      <div className="intake-nav-header" style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '76rem', margin: '0 auto 2rem auto', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="intake-nav-header" style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', maxWidth: '76rem', margin: '0 auto 2rem auto', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
         
         <button 
           onClick={() => navigate('/dashboard')} 
           className="pill-selector-item back-dash-btn"
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#94a3b8', borderColor: '#1e293b', background: 'rgba(255,255,255,0.01)' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
           &larr; Back to Dashboard
         </button>

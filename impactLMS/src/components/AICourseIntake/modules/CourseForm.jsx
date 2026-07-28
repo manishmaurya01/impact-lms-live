@@ -249,7 +249,7 @@ Focus Areas: Projects, Coding, Practice
           <p className="maskara-sub">Verify your learning parameters before generating the syllabus.</p>
 
           <div className="wizard-summary-card">
-            <h3 style={{ margin: '0 0 1.25rem 0', fontSize: '1.1rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fff' }}>
+            <h3 style={{ margin: '0 0 1.25rem 0', fontSize: '1.1rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-main)' }}>
               <User size={18} style={{ color: 'var(--accent-secondary)' }} /> Course Construction Details
             </h3>
 

@@ -1,7 +1,11 @@
 /* ==========================================================================
    AICourseIntake & AI Studio: CONVERSATIONAL PREMIUM CSS
+   All colors use CSS variables for dark/light mode compatibility
    ========================================================================== */
 
+/* ==========================================================================
+   MASTER VIEWPORT
+   ========================================================================== */
 .centralized-prompt-matrix-viewport {
   position: relative;
   min-height: 100vh;
@@ -25,6 +29,102 @@
   opacity: 0.15;
   pointer-events: none;
   z-index: 0;
+}
+
+/* ==========================================================================
+   SCAFFOLD & GLASS CARD CONTAINERS
+   ========================================================================== */
+.roadmap-master-scaffold-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 76rem;
+  margin: 0 auto;
+}
+
+.interactive-glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.studio-card-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   NAV PILLS / TAB SELECTOR (used in header of AICourseIntake)
+   ========================================================================== */
+.pill-selector-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-sans);
+}
+
+.pill-selector-item:hover {
+  color: var(--text-main);
+  border-color: var(--border-hover);
+  background: var(--bg-surface-hover);
+}
+
+.pill-selector-item.is-active {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
+  background: rgba(var(--accent-primary-rgb), 0.08);
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   STUDIO PILLS (language/duration selectors in confirmation step)
+   ========================================================================== */
+.studio-pills-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.studio-pill-node {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border-color);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-sans);
+}
+
+.studio-pill-node:hover {
+  border-color: var(--accent-primary);
+  color: var(--text-main);
+}
+
+.studio-pill-node.is-active {
+  background: rgba(var(--accent-primary-rgb), 0.1);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  font-weight: 700;
 }
 
 /* ==========================================================================
@@ -61,12 +161,9 @@
 .maskara-title {
   font-size: 2.85rem;
   font-weight: 900;
-  color: #fff;
+  color: var(--text-main);
   letter-spacing: -0.04em;
   margin-bottom: 0.75rem;
-  background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,0.7) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .maskara-sub {
@@ -91,18 +188,22 @@
   border: 1px solid var(--border-color);
   border-radius: 9999px;
   padding: 1.1rem 4rem 1.1rem 1.75rem;
-  color: #fff;
+  color: var(--text-main);
   font-size: 0.95rem;
   outline: none;
   transition: all 0.2s ease;
   box-shadow: var(--shadow-sm);
   box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+
+.maskara-input::placeholder {
+  color: var(--text-muted);
 }
 
 .maskara-input:focus {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 15px rgba(108, 99, 255, 0.12);
-  background: rgba(255, 255, 255, 0.02);
+  box-shadow: 0 0 15px rgba(var(--accent-primary-rgb), 0.12);
 }
 
 .maskara-send-btn {
@@ -113,7 +214,7 @@
   border-radius: 50%;
   background: var(--accent-primary);
   border: none;
-  color: #fff;
+  color: var(--text-inverse);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,7 +223,7 @@
 }
 
 .maskara-send-btn:hover:not(:disabled) {
-  background: var(--accent-secondary);
+  background: var(--accent-primary-hover);
   transform: scale(1.05);
 }
 
@@ -141,7 +242,7 @@
 }
 
 .prompt-suggest-pill {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-surface);
   border: 1px solid var(--border-color);
   padding: 0.4rem 0.85rem;
   border-radius: 9999px;
@@ -149,6 +250,7 @@
   color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: var(--font-sans);
 }
 
 .prompt-suggest-pill:hover {
@@ -220,7 +322,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(108, 99, 255, 0.08);
+  background: rgba(var(--accent-primary-rgb), 0.08);
   color: var(--accent-primary);
   display: flex;
   align-items: center;
@@ -231,7 +333,7 @@
   margin: 0;
   font-size: 0.85rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-main);
 }
 
 /* ==========================================================================
@@ -277,21 +379,21 @@
 }
 
 .wizard-choice-card:hover {
-  border-color: rgba(108, 99, 255, 0.4);
-  background: rgba(255, 255, 255, 0.01);
+  border-color: rgba(var(--accent-primary-rgb), 0.4);
+  background: var(--bg-surface);
 }
 
 .wizard-choice-card.is-active {
-  background: rgba(108, 99, 255, 0.06);
+  background: rgba(var(--accent-primary-rgb), 0.06);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 15px rgba(108, 99, 255, 0.15);
+  box-shadow: 0 0 15px rgba(var(--accent-primary-rgb), 0.15);
 }
 
 .wizard-choice-card h4 {
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-main);
 }
 
 .wizard-choice-card p {
@@ -319,11 +421,12 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: var(--font-sans);
 }
 
 .wizard-btn-secondary:hover {
-  color: #fff;
-  border-color: #fff;
+  color: var(--text-main);
+  border-color: var(--text-main);
 }
 
 .wizard-btn-primary {
@@ -336,15 +439,18 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: var(--font-sans);
 }
 
 .wizard-btn-primary:hover {
-  background: var(--accent-secondary);
+  background: var(--accent-primary-hover);
 }
 
-/* Step 3: Summary details card */
+/* ==========================================================================
+   SUMMARY CONFIRMATION CARD (Step 3)
+   ========================================================================== */
 .wizard-summary-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 41, 59, 0.4) 100%);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-xl);
   padding: 2rem;
@@ -360,7 +466,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.85rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .summary-detail-row:last-child {
@@ -374,11 +480,116 @@
 
 .summary-detail-row strong {
   font-size: 0.85rem;
-  color: #fff;
+  color: var(--text-main);
 }
 
 /* ==========================================================================
-   PROGRESS STEP INDICATORS inside loaders
+   COURSE LIST GRID & CARDS (CourseList.jsx)
+   ========================================================================== */
+.historical-courses-matrix-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.matrix-course-item-card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.matrix-course-item-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.matrix-course-meta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.matrix-course-meta-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  flex: 1;
+}
+
+.matrix-level-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  background: rgba(var(--accent-primary-rgb), 0.1);
+  color: var(--accent-primary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.matrix-course-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.matrix-course-footer span {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.btn-open-matrix {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background: var(--accent-primary);
+  color: #fff;
+  border: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-sans);
+}
+
+.btn-open-matrix:hover {
+  background: var(--accent-primary-hover);
+  transform: translateY(-1px);
+}
+
+/* PROGRESS BAR */
+.progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-surface);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-secondary), var(--accent-primary));
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* ==========================================================================
+   PROGRESS STEP INDICATORS (loader overlay)
    ========================================================================== */
 .progress-step-item-row {
   display: flex;
@@ -395,23 +606,47 @@
 }
 
 /* ==========================================================================
-   RESPONSIVE STUDIO STYLING OVERRIDES
+   FADE-IN ANIMATION
+   ========================================================================== */
+.animate-fadeIn {
+  animation: fadeInStep 0.35s ease-out;
+}
+
+@keyframes fadeInStep {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   RESPONSIVE
    ========================================================================== */
 @media (max-width: 1024px) {
-  .studio-grid-layout {
-    grid-template-columns: 1fr;
-    gap: 1.75rem;
+  .historical-courses-matrix-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 }
 
 @media (max-width: 600px) {
+  .centralized-prompt-matrix-viewport {
+    padding: 1rem;
+  }
   .maskara-search-container {
     margin: 3rem auto 2rem auto;
   }
   .maskara-title {
-    font-size: 2rem;
+    font-size: 1.85rem;
   }
   .wizard-step-container {
-    margin: 3rem auto;
+    margin: 2.5rem auto;
+    padding: 0 0.5rem;
+  }
+  .historical-courses-matrix-grid {
+    grid-template-columns: 1fr;
+  }
+  .wizard-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .maskara-preset-card {
+    flex: 0 0 160px;
   }
 }

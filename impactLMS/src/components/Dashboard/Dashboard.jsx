@@ -1322,7 +1322,7 @@ export default function Dashboard() {
                         <div className="chart-empty-state">
                           <Layers size={36} style={{ color: 'var(--text-muted)' }} />
                           <p>No matching courses generated yet.</p>
-                          <button className="btn-resume-course-inline" style={{ alignSelf: 'center', marginTop: '0.5rem' }} onClick={() => navigate('/assignments')}>
+                          <button className="btn-resume-course-inline" style={{ alignSelf: 'center', marginTop: '0.5rem' }} onClick={() => navigate('/generate-course')}>
                             Generate roadmap now
                           </button>
                         </div>
@@ -1651,7 +1651,7 @@ export default function Dashboard() {
                       <h3><Plus size={18} style={{ color: 'var(--text-main)' }} /> Quick Actions</h3>
                     </div>
                     <div className="saas-quick-actions-row">
-                      <button className="saas-action-btn" onClick={() => navigate('/assignments')}>
+                      <button className="saas-action-btn" onClick={() => navigate('/generate-course')}>
                         <Plus size={18} className="btn-icon" />
                         <span>Build Roadmap</span>
                       </button>
