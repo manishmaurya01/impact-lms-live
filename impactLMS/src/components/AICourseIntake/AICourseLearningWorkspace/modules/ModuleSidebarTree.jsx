@@ -2,52 +2,24 @@ import React, { useState } from 'react';
 import { ChevronDown, ChevronRight, CheckCircle2, Lock, BookOpen } from 'lucide-react';
 
 export default function ModuleSidebarTree({ modules, activeModuleId, activeTopicIndex, completedTracks, onSelectTopic }) {
-  const [expandedModules, setExpandedModules] = useState({ [activeModuleId]: true });
+  const [expandedModules, setExpandedModules] = useState(() => {
+    const initial = {};
+    (modules || []).forEach(m => { initial[m.dayId] = true; });
+    return initial;
+  });
 
   const toggleModuleAccordion = (modId) => {
     setExpandedModules(prev => ({ ...prev, [modId]: !prev[modId] }));
   };
 
   const verifyLockStatus = (modIndex, currentTopicIdx) => {
-    // 1. First topic of module 0 is always unlocked
-    if (modIndex === 0 && currentTopicIdx === 0) return false; 
-
     const currentMod = modules[modIndex];
-    if (!currentMod) return false;
-
-    // 2. If this topic itself is marked as completed in DB/state, it is unlocked
-    if (completedTracks[`mod-${currentMod.dayId}-topic-${currentTopicIdx}`]) {
-      return false;
+    // Lock only if module or topic does not exist in course data
+    if (!currentMod || !currentMod.topics || !currentMod.topics[currentTopicIdx]) {
+      return true; 
     }
-
-    // 3. If previous topic in sequence is completed, this topic is unlocked
-    let targetModIndex = modIndex;
-    let targetTopicIdx = currentTopicIdx - 1;
-
-    if (targetTopicIdx < 0) {
-      targetModIndex = modIndex - 1;
-      const prevModObj = modules[targetModIndex];
-      targetTopicIdx = prevModObj && prevModObj.topics ? prevModObj.topics.length - 1 : 0;
-    }
-
-    const targetMod = modules[targetModIndex];
-    if (targetMod && completedTracks[`mod-${targetMod.dayId}-topic-${targetTopicIdx}`]) {
-      return false;
-    }
-
-    // 4. If ANY topic after or at this position in the course is completed, unlock this topic
-    for (let m = modIndex; m < modules.length; m++) {
-      const mObj = modules[m];
-      if (!mObj?.topics) continue;
-      const startT = (m === modIndex) ? currentTopicIdx : 0;
-      for (let t = startT; t < mObj.topics.length; t++) {
-        if (completedTracks[`mod-${mObj.dayId}-topic-${t}`]) {
-          return false;
-        }
-      }
-    }
-
-    return true; // Locked
+    // All topics available in the course DB data are unlocked and accessible by default
+    return false;
   };
 
   return (
