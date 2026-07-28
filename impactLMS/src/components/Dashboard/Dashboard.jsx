@@ -932,8 +932,16 @@ export default function Dashboard() {
                           onClick={e => e.stopPropagation()}
                         >
                           <div className="dropdown-header-bar">
-                            <h4>Recent Activities</h4>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Latest updates</span>
+                            <div>
+                              <h4>Recent Activities</h4>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Latest updates</span>
+                            </div>
+                            <button 
+                              className="close-notifications-btn" 
+                              onClick={() => setIsNotificationsOpen(false)}
+                            >
+                              &times;
+                            </button>
                           </div>
                           <div className="dropdown-list-scroller">
                             {recentActivities.length === 0 ? (
