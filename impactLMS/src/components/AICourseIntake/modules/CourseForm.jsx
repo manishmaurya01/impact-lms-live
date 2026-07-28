@@ -2,16 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, 
   Layers, 
-  BookOpen, 
   Award, 
   Clock, 
-  ArrowRight, 
-  Play, 
   Trophy, 
   BookOpenCheck,
   Activity,
-  FileText,
-  MessageSquare,
   Globe,
   TrendingUp,
   Cpu
@@ -28,139 +23,116 @@ export default function CourseForm({
   savedCoursesList = [],
   onSelectCourse
 }) {
-  // Encapsulated studio states
-  const [learningObjective, setLearningObjective] = useState('Skill Upgrade');
-  const [commitment, setCommitment] = useState('2 Hours');
-  const [language, setLanguage] = useState('English');
-  const [learningStyle, setLearningStyle] = useState('Mixed');
-  const [duration, setDuration] = useState('1 Month');
-  const [customDuration, setCustomDuration] = useState('');
-  const [focusAreas, setFocusAreas] = useState(['Projects', 'Practice']);
+  // Option preferences loaded in background
+  const [commitment, setCommitment] = useState('1 Hour');
+  const [learningStyle, setLearningStyle] = useState('Videos');
 
-  // Quality score helper
-  const promptLength = inputPrompt.length;
-  let promptQuality = 'Empty';
-  let qualityClass = '';
-  if (promptLength > 0) {
-    if (promptLength < 15) {
-      promptQuality = 'Weak';
-      qualityClass = 'weak';
-    } else if (promptLength < 35) {
-      promptQuality = 'Medium';
-      qualityClass = 'medium';
-    } else {
-      promptQuality = 'Strong';
-      qualityClass = 'strong';
+  // Simple customization states displayed to the user
+  const [language, setLanguage] = useState('English');
+  const [duration, setDuration] = useState('1 Month');
+
+  // Load user details from registration profile
+  useEffect(() => {
+    try {
+      const userRaw = localStorage.getItem('user');
+      if (userRaw) {
+        const u = JSON.parse(userRaw);
+        if (u.experience) {
+          setSelectedLevel(u.experience);
+        }
+        if (u.commitment) {
+          setCommitment(u.commitment);
+        }
+        if (u.learningStyle) {
+          setLearningStyle(u.learningStyle);
+        }
+      }
+    } catch (e) {
+      console.error("Failed to load user profile in course form:", e);
     }
-  }
+  }, [setSelectedLevel]);
 
   // Handle local submit assembly
   const handleLocalSubmit = (e) => {
     e.preventDefault();
-    const durationText = duration === 'Custom' ? customDuration : duration;
     const finalAssembledPrompt = `
 Goal: ${inputPrompt}
-Objective: ${learningObjective}
 Level: ${selectedLevel}
-Time Commitment: ${commitment}
+Time Commitment: ${commitment} (Extracted from profile)
 Language: ${language}
-Style: ${learningStyle}
-Duration: ${durationText}
-Focus Areas: ${focusAreas.join(', ')}
+Style: ${learningStyle} (Extracted from profile)
+Duration: ${duration}
+Objective: Skill Upgrade
+Focus Areas: Projects, Coding, Practice
 `;
     onSubmit(e, finalAssembledPrompt);
   };
 
   const handleTemplateClick = (title) => {
-    setInputPrompt(`I want to learn ${title} and build advanced real-world applications.`);
-    if (title.includes('Full Stack') || title.includes('DSA') || title.includes('Engineering')) {
-      setSelectedLevel('Intermediate');
-      setLearningObjective('Job Ready');
-      setFocusAreas(['Coding', 'Projects', 'Practice']);
-    } else {
-      setSelectedLevel('Beginner');
-      setLearningObjective('Skill Upgrade');
-      setFocusAreas(['Projects', 'Practice']);
-    }
+    setInputPrompt(`I want to learn ${title} and build practical applications.`);
   };
 
-  const handleFocusAreaToggle = (area) => {
-    if (focusAreas.includes(area)) {
-      setFocusAreas(focusAreas.filter(a => a !== area));
-    } else {
-      setFocusAreas([...focusAreas, area]);
-    }
-  };
-
-  // Live preview calculator helper
+  // Preview metrics calculations
   const getPreviewMetrics = () => {
     let modules = 6;
     let hours = 20;
-    let projects = 2;
-    let assignments = 3;
+    let projects = 1;
+    let assignments = 2;
     let quizzes = 6;
-    let interviews = 1;
 
-    // Adjust by level
     if (selectedLevel === 'Intermediate') {
       modules = 10;
-      hours = 45;
-      projects = 3;
-      assignments = 5;
+      hours = 40;
+      projects = 2;
+      assignments = 4;
       quizzes = 10;
-      interviews = 2;
     } else if (selectedLevel === 'Advanced') {
       modules = 14;
-      hours = 75;
-      projects = 4;
-      assignments = 7;
+      hours = 65;
+      projects = 3;
+      assignments = 6;
       quizzes = 14;
-      interviews = 3;
     }
 
-    // Adjust by duration
     if (duration === '1 Week') {
-      modules = Math.max(2, Math.round(modules * 0.35));
-      hours = Math.max(8, Math.round(hours * 0.35));
+      modules = Math.max(2, Math.round(modules * 0.4));
+      hours = Math.max(8, Math.round(hours * 0.4));
     } else if (duration === '2 Weeks') {
-      modules = Math.max(4, Math.round(modules * 0.6));
-      hours = Math.max(15, Math.round(hours * 0.6));
+      modules = Math.max(4, Math.round(modules * 0.65));
+      hours = Math.max(15, Math.round(hours * 0.65));
     } else if (duration === '2 Months') {
-      modules = Math.round(modules * 1.5);
-      hours = Math.round(hours * 1.5);
-      projects += 1;
-      assignments += 2;
+      modules = Math.round(modules * 1.4);
+      hours = Math.round(hours * 1.4);
     }
 
-    return { modules, hours, projects, assignments, quizzes, interviews };
+    return { modules, hours, projects, assignments, quizzes };
   };
 
   const previewMetrics = getPreviewMetrics();
 
   return (
     <div className="roadmap-master-scaffold-container">
-      {/* 1. Breadcrumb navigation */}
+      {/* Breadcrumb */}
       <div className="studio-breadcrumb">
         <span>Workspace</span>
         <span>&gt;</span>
         <span className="active">AI Course Studio</span>
       </div>
 
-      {/* 2. Premium Hero Banner */}
-      <div className="studio-hero-banner">
+      {/* Simplified Hero Banner */}
+      <div className="studio-hero-banner" style={{ padding: '2rem' }}>
         <div className="hero-glow-bubble-1" />
-        <div className="hero-glow-bubble-2" />
         <div className="hero-text-content">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
             <Sparkles size={16} style={{ color: 'var(--accent-secondary)' }} />
-            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '800', color: 'var(--accent-secondary)' }}>AI Course Studio</span>
+            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: '800', color: 'var(--accent-secondary)' }}>LuminaLearn AI</span>
           </div>
-          <h1>Generate Your Personalized Roadmap</h1>
-          <p>Provide your goal, preferences, and style. Gemini AI will instantly formulate a custom structured curriculum with quizzes, assignments, revision notes, and oral speech interviews.</p>
+          <h1>Create Your Custom Learning Path</h1>
+          <p>Tell the AI what you want to learn. We will instantly construct a custom syllabus roadmap featuring practice quizzes, project tasks, and speech interviews tailored to your experience level.</p>
         </div>
         <div className="hero-time-badge">
           <span className="time-val">10-20s</span>
-          <span className="time-lbl">Generation Time</span>
+          <span className="time-lbl">Engine Time</span>
         </div>
       </div>
 
@@ -170,170 +142,93 @@ Focus Areas: ${focusAreas.join(', ')}
         </div>
       )}
 
-      {/* 3. Main layout grid */}
+      {/* Double Column Layout */}
       <div className="studio-grid-layout">
-        {/* LEFT COLUMN: STUDIO FORM */}
+        {/* LEFT COLUMN: SIMPLIFIED FORM */}
         <form onSubmit={handleLocalSubmit} className="studio-form-container">
           
-          {/* SECTION 1: LEARNING GOAL */}
+          {/* Goal Prompt Input */}
           <div className="studio-card-panel">
-            <h3><Sparkles size={18} style={{ color: 'var(--accent-primary)' }} /> 1. What is your learning goal?</h3>
+            <h3><Sparkles size={18} style={{ color: 'var(--accent-primary)' }} /> What do you want to learn?</h3>
             <div className="textarea-wrapper">
               <textarea
                 value={inputPrompt}
                 onChange={(e) => setInputPrompt(e.target.value)}
-                placeholder="Describe what you want to master in detail... (e.g., I want to learn Node.js from scratch and build high-performance backend systems.)"
+                placeholder="Enter a topic or skill... (e.g. Learn React from scratch, JavaScript Interview Prep, MERN Stack Developer)"
                 required
                 disabled={isGenerating}
+                style={{ minHeight: '80px' }}
               />
               <div className="textarea-footer-metrics">
-                <span className="prompt-character-counter">{promptLength} characters</span>
-                {promptLength > 0 && (
-                  <span className="prompt-quality-meter">
-                    Prompt quality: <span className={`quality-indicator-dot ${qualityClass}`} /> <strong style={{ textTransform: 'capitalize' }}>{promptQuality}</strong>
+                <span>{inputPrompt.length} characters</span>
+                {inputPrompt.length > 0 && (
+                  <span style={{ color: inputPrompt.length > 25 ? 'var(--accent-secondary)' : 'var(--text-muted)', fontWeight: 700 }}>
+                    {inputPrompt.length > 25 ? '✓ Detailed prompt' : 'Add details for better results'}
                   </span>
                 )}
               </div>
             </div>
             
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.05em' }}>Prompt suggestions</span>
-            <div className="prompt-suggestions-row">
-              <span className="prompt-suggest-pill" onClick={() => setInputPrompt("I want to become a Java Backend Developer and learn Spring Boot framework.")}>Java Backend Developer</span>
-              <span className="prompt-suggest-pill" onClick={() => setInputPrompt("I want to crack Amazon SDE React coding interviews.")}>Amazon React Interview</span>
-              <span className="prompt-suggest-pill" onClick={() => setInputPrompt("I want to learn Figma UI Design from absolute scratch.")}>Figma UI Design</span>
+            <div className="prompt-suggestions-row" style={{ marginTop: '0.25rem' }}>
+              <span className="prompt-suggest-pill" onClick={() => handleTemplateClick("Java Backend Development with Spring Boot")}>Spring Boot Backend</span>
+              <span className="prompt-suggest-pill" onClick={() => handleTemplateClick("React Interview Preparation")}>React Interview</span>
+              <span className="prompt-suggest-pill" onClick={() => handleTemplateClick("Python DSA and Algorithms")}>Python DSA</span>
             </div>
           </div>
 
-          {/* SECTION 2: EXPERIENCE LEVEL */}
+          {/* Simple Selections Grid */}
           <div className="studio-card-panel">
-            <h3><Layers size={18} style={{ color: 'var(--accent-secondary)' }} /> 2. Experience Level</h3>
-            <div className="experience-cards-grid">
-              {[
-                { lvl: 'Beginner', desc: 'No prior background. Start from absolute core fundamentals and syntax.' },
-                { lvl: 'Intermediate', desc: 'Familiar with concepts. Focus on building real-world projects and design patterns.' },
-                { lvl: 'Advanced', desc: 'Experienced practitioner. Deep-dive into architecture, optimization, and system design.' }
-              ].map((item) => (
-                <div 
-                  key={item.lvl} 
-                  className={`experience-card-node ${selectedLevel === item.lvl ? 'is-active' : ''}`}
-                  onClick={() => !isGenerating && setSelectedLevel(item.lvl)}
-                >
-                  <h4>{item.lvl}</h4>
-                  <p>{item.desc}</p>
-                </div>
-              ))}
+            <h3><Layers size={18} style={{ color: 'var(--accent-secondary)' }} /> Syllabus Preferences</h3>
+            
+            {/* Level Selector */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Difficulty (Pre-filled from Profile)</span>
+              <div className="studio-pills-row">
+                {['Beginner', 'Intermediate', 'Advanced'].map((lvl) => (
+                  <button
+                    key={lvl}
+                    type="button"
+                    className={`studio-pill-node ${selectedLevel === lvl ? 'is-active' : ''}`}
+                    onClick={() => !isGenerating && setSelectedLevel(lvl)}
+                  >
+                    {lvl}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* SECTION 3: LEARNING OBJECTIVE */}
-          <div className="studio-card-panel">
-            <h3><Award size={18} style={{ color: 'var(--accent-primary)' }} /> 3. Learning Objective</h3>
-            <div className="objectives-selection-grid">
-              {['Interview Preparation', 'College Study', 'Job Ready', 'Freelancing', 'Career Switch', 'Skill Upgrade', 'Personal Interest'].map((obj) => (
-                <div 
-                  key={obj} 
-                  className={`objective-item-card ${learningObjective === obj ? 'is-active' : ''}`}
-                  onClick={() => !isGenerating && setLearningObjective(obj)}
-                >
-                  {obj}
-                </div>
-              ))}
+            {/* Language Selector */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Preferred Language</span>
+              <div className="studio-pills-row">
+                {['English', 'Hindi', 'Gujarati', 'Hinglish'].map((l) => (
+                  <button
+                    key={l}
+                    type="button"
+                    className={`studio-pill-node ${language === l ? 'is-active' : ''}`}
+                    onClick={() => !isGenerating && setLanguage(l)}
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* SECTION 4: COMMITMENT */}
-          <div className="studio-card-panel">
-            <h3><Clock size={18} style={{ color: 'var(--accent-secondary)' }} /> 4. Daily Time Commitment</h3>
-            <div className="studio-pills-row">
-              {['30 Minutes', '1 Hour', '2 Hours', '3 Hours', '5 Hours'].map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  className={`studio-pill-node ${commitment === t ? 'is-active' : ''}`}
-                  onClick={() => !isGenerating && setCommitment(t)}
-                >
-                  {t}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* SECTION 5: PREFERRED LANGUAGE */}
-          <div className="studio-card-panel">
-            <h3><Globe size={18} style={{ color: 'var(--accent-primary)' }} /> 5. Preferred Language</h3>
-            <div className="studio-pills-row">
-              {['English', 'Hindi', 'Gujarati', 'Hinglish'].map((l) => (
-                <button
-                  key={l}
-                  type="button"
-                  className={`studio-pill-node ${language === l ? 'is-active' : ''}`}
-                  onClick={() => !isGenerating && setLanguage(l)}
-                >
-                  {l}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* SECTION 6: LEARNING STYLE */}
-          <div className="studio-card-panel">
-            <h3><BookOpen size={18} style={{ color: 'var(--accent-secondary)' }} /> 6. Learning Style</h3>
-            <div className="studio-pills-row">
-              {['Videos', 'Documentation', 'Hands-on', 'Mixed'].map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  className={`studio-pill-node ${learningStyle === s ? 'is-active' : ''}`}
-                  onClick={() => !isGenerating && setLearningStyle(s)}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* SECTION 7: TARGET DURATION */}
-          <div className="studio-card-panel">
-            <h3><Clock size={18} style={{ color: 'var(--accent-primary)' }} /> 7. Target Duration</h3>
-            <div className="studio-pills-row" style={{ marginBottom: duration === 'Custom' ? '1rem' : '0' }}>
-              {['1 Week', '2 Weeks', '1 Month', '2 Months', 'Custom'].map((d) => (
-                <button
-                  key={d}
-                  type="button"
-                  className={`studio-pill-node ${duration === d ? 'is-active' : ''}`}
-                  onClick={() => !isGenerating && setDuration(d)}
-                >
-                  {d}
-                </button>
-              ))}
-            </div>
-            {duration === 'Custom' && (
-              <input 
-                type="text"
-                value={customDuration}
-                onChange={(e) => setCustomDuration(e.target.value)}
-                placeholder="e.g., 3 Weeks, 45 Days"
-                className="navbar-search-input"
-                style={{ width: '100%', maxWidth: '300px', boxSizing: 'border-box' }}
-                required
-              />
-            )}
-          </div>
-
-          {/* SECTION 8: FOCUS AREAS */}
-          <div className="studio-card-panel">
-            <h3><Layers size={18} style={{ color: 'var(--accent-secondary)' }} /> 8. Focus Areas</h3>
-            <div className="studio-pills-row">
-              {['Projects', 'Theory', 'Coding', 'Assignments', 'Interview', 'Practice'].map((f) => (
-                <button
-                  key={f}
-                  type="button"
-                  className={`studio-pill-node ${focusAreas.includes(f) ? 'is-active' : ''}`}
-                  onClick={() => !isGenerating && handleFocusAreaToggle(f)}
-                >
-                  {f} {focusAreas.includes(f) ? '✓' : '+'}
-                </button>
-              ))}
+            {/* Target Duration Selector */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.75rem' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Target Duration</span>
+              <div className="studio-pills-row">
+                {['1 Week', '2 Weeks', '1 Month', '2 Months'].map((d) => (
+                  <button
+                    key={d}
+                    type="button"
+                    className={`studio-pill-node ${duration === d ? 'is-active' : ''}`}
+                    onClick={() => !isGenerating && setDuration(d)}
+                  >
+                    {d}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -341,22 +236,22 @@ Focus Areas: ${focusAreas.join(', ')}
             type="submit" 
             className="prompt-matrix-submit-btn" 
             disabled={isGenerating || !inputPrompt.trim()}
-            style={{ width: '100%', padding: '1.2rem', fontSize: '0.95rem', borderRadius: '12px' }}
+            style={{ width: '100%', padding: '1.1rem', fontSize: '0.925rem', borderRadius: '10px' }}
           >
-            {isGenerating ? 'AI Engine Working...' : 'Construct Personalized Course'}
+            {isGenerating ? 'AI Engine Working...' : 'Generate Roadmap Now'}
           </button>
         </form>
 
-        {/* RIGHT COLUMN: AI PREVIEW */}
+        {/* RIGHT COLUMN: AI PREVIEW & DIAGNOSTICS */}
         <div className="studio-preview-container">
           
-          {/* AI STATUS INDICATOR CARD */}
-          <div className="ai-status-card">
-            <h4><Cpu size={14} style={{ color: 'var(--accent-secondary)', verticalAlign: 'middle', marginRight: '0.5rem' }} /> AI Engine Diagnostics</h4>
-            <div className="status-grid">
+          {/* AI Status Card */}
+          <div className="ai-status-card" style={{ padding: '1.25rem' }}>
+            <h4 style={{ fontSize: '0.8rem', marginBottom: '0.75rem' }}><Cpu size={12} style={{ verticalAlign: 'middle', marginRight: '0.4rem', color: 'var(--accent-secondary)' }} /> Engine Status</h4>
+            <div className="status-grid" style={{ gridTemplateColumns: '1fr', gap: '0.5rem' }}>
               <div className="status-row-item">
                 <div className="status-indicator-dot-green" />
-                <span>Gemini API Connected</span>
+                <span>Gemini Core Connected</span>
               </div>
               <div className="status-row-item">
                 <div className="status-indicator-dot-green" />
@@ -364,163 +259,117 @@ Focus Areas: ${focusAreas.join(', ')}
               </div>
               <div className="status-row-item">
                 <div className="status-indicator-dot-green" />
-                <span>Course Engine Ready</span>
-              </div>
-              <div className="status-row-item">
-                <div className="status-indicator-dot-green" />
-                <span>Roadmap Generator</span>
-              </div>
-              <div className="status-row-item">
-                <div className="status-indicator-dot-green" />
-                <span>Assignment Engine</span>
-              </div>
-              <div className="status-row-item">
-                <div className="status-indicator-dot-green" />
-                <span>Oral Interview AI</span>
+                <span>Roadmap Engine Ready</span>
               </div>
             </div>
           </div>
 
-          {/* LIVE SCORECARD PREVIEW */}
-          <div className="live-preview-scorecard">
-            <h3>
-              <Activity size={18} style={{ color: 'var(--accent-primary)' }} /> Syllabus Forecast
-              <span className="scorecard-header-badge">Live Preview</span>
+          {/* Live Preview scorecard */}
+          <div className="live-preview-scorecard" style={{ padding: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.05rem', marginBottom: '1rem' }}>
+              <Activity size={16} style={{ color: 'var(--accent-primary)' }} /> Dynamic Forecast
+              <span className="scorecard-header-badge" style={{ padding: '0.15rem 0.4rem' }}>Live</span>
             </h3>
             
-            <div className="preview-grid-stats">
-              <div className="preview-stat-box">
+            <div className="preview-grid-stats" style={{ gap: '0.75rem', marginBottom: '1.25rem' }}>
+              <div className="preview-stat-box" style={{ padding: '0.75rem' }}>
                 <span className="lbl">Est. Modules</span>
-                <span className="val">{previewMetrics.modules} Modules</span>
+                <span className="val" style={{ fontSize: '1.1rem' }}>{previewMetrics.modules} Modules</span>
               </div>
-              <div className="preview-stat-box">
+              <div className="preview-stat-box" style={{ padding: '0.75rem' }}>
                 <span className="lbl">Est. Study Hours</span>
-                <span className="val">{previewMetrics.hours} Hrs</span>
+                <span className="val" style={{ fontSize: '1.1rem' }}>{previewMetrics.hours} Hours</span>
               </div>
-              <div className="preview-stat-box">
-                <span className="lbl">Syllabus Projects</span>
-                <span className="val">{previewMetrics.projects} Projects</span>
+              <div className="preview-stat-box" style={{ padding: '0.75rem' }}>
+                <span className="lbl">Mock Projects</span>
+                <span className="val" style={{ fontSize: '1.1rem' }}>{previewMetrics.projects} Projects</span>
               </div>
-              <div className="preview-stat-box">
-                <span className="lbl">AI Assignments</span>
-                <span className="val">{previewMetrics.assignments} Tasks</span>
-              </div>
-              <div className="preview-stat-box">
-                <span className="lbl">Evaluation Quizzes</span>
-                <span className="val">{previewMetrics.quizzes} Quizzes</span>
-              </div>
-              <div className="preview-stat-box">
-                <span className="lbl">Mock Interviews</span>
-                <span className="val">{previewMetrics.interviews} Sessions</span>
+              <div className="preview-stat-box" style={{ padding: '0.75rem' }}>
+                <span className="lbl">AI Quizzes</span>
+                <span className="val" style={{ fontSize: '1.1rem' }}>{previewMetrics.quizzes} Quizzes</span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.25rem', fontSize: '0.85rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', borderTop: '1px solid var(--border-color)', paddingTop: '1rem', fontSize: '0.8rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Difficulty Depth</span>
-                <strong style={{ color: 'var(--accent-secondary)' }}>{selectedLevel}</strong>
+                <span style={{ color: 'var(--text-muted)' }}>Commitment (Profile)</span>
+                <strong>{commitment} / day</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Target Duration</span>
-                <strong style={{ color: 'var(--text-main)' }}>{duration === 'Custom' ? customDuration || 'Custom' : duration}</strong>
+                <span style={{ color: 'var(--text-muted)' }}>Learning Style (Profile)</span>
+                <strong>{learningStyle}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Certificate Access</span>
+                <span style={{ color: 'var(--text-muted)' }}>Completion Certificate</span>
                 <strong style={{ color: 'var(--accent-secondary)' }}>Free Unlocked</strong>
               </div>
             </div>
-
-            <div className="skills-preview-list">
-              <span className="skill-preview-pill">Goal Mapping</span>
-              <span className="skill-preview-pill">Syllabus Build</span>
-              <span className="skill-preview-pill">Oral Speech</span>
-              <span className="skill-preview-pill">Coding Practice</span>
-            </div>
           </div>
-
-          {/* AI SPOTLIGHT BANNER */}
-          <div className="ai-spotlight-banner">
-            <h4><Sparkles size={16} style={{ color: '#c084fc' }} /> LuminaLearn AI Features</h4>
-            <div className="spotlight-features-row">
-              <span className="spotlight-badge">Personalized Roadmap</span>
-              <span className="spotlight-badge">AI Notes</span>
-              <span className="spotlight-badge">AI Quiz</span>
-              <span className="spotlight-badge">Oral Interview</span>
-              <span className="spotlight-badge">AI Assignments</span>
-              <span className="spotlight-badge">Certificates</span>
-            </div>
-          </div>
-
         </div>
       </div>
 
-      {/* 4. Popular templates */}
-      <div className="studio-card-panel" style={{ marginTop: '2.5rem' }}>
-        <h3 style={{ borderBottom: 'none', paddingBottom: '0' }}><TrendingUp size={18} style={{ color: 'var(--accent-primary)' }} /> Popular Course Templates</h3>
-        <div className="studio-templates-grid">
+      {/* Popular Templates Grid */}
+      <div className="studio-card-panel" style={{ marginTop: '2rem', padding: '1.5rem' }}>
+        <h3 style={{ borderBottom: 'none', paddingBottom: '0', fontSize: '1.05rem', marginBottom: '1rem' }}><TrendingUp size={16} style={{ color: 'var(--accent-primary)' }} /> Popular Course Templates</h3>
+        <div className="studio-templates-grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: '0.75rem' }}>
           {[
-            { title: 'Java Full Stack', icon: BookOpenCheck },
-            { title: 'React framework', icon: Activity },
-            { title: 'NodeJS API Developer', icon: Layers },
-            { title: 'Python Programming', icon: Award },
-            { title: 'Java DSA', icon: Trophy },
-            { title: 'AI Engineering', icon: Sparkles },
-            { title: 'Machine Learning', icon: Cpu },
-            { title: 'Cyber Security', icon: FileText },
-            { title: 'UI UX Design', icon: Layers },
-            { title: 'Flutter Developer', icon: Play }
-          ].map((temp, idx) => {
-            const IconComp = temp.icon;
-            return (
-              <div 
-                key={idx} 
-                className="template-card-node"
-                onClick={() => handleTemplateClick(temp.title)}
-              >
-                <div className="icon-ring">
-                  <IconComp size={16} />
-                </div>
-                <h4>{temp.title}</h4>
-              </div>
-            );
-          })}
+            { title: 'Java Full Stack' },
+            { title: 'React JS' },
+            { title: 'NodeJS Backend' },
+            { title: 'Python Programming' },
+            { title: 'Java DSA' },
+            { title: 'AI Engineering' },
+            { title: 'Machine Learning' },
+            { title: 'Cyber Security' },
+            { title: 'UI UX Design' },
+            { title: 'Flutter Developer' }
+          ].map((temp, idx) => (
+            <div 
+              key={idx} 
+              className="template-card-node"
+              onClick={() => handleTemplateClick(temp.title)}
+              style={{ padding: '0.85rem 1rem', gap: '0.5rem' }}
+            >
+              <h4 style={{ fontSize: '0.82rem', fontWeight: 700 }}>{temp.title}</h4>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* 5. Recently generated courses */}
+      {/* Recently Generated Courses */}
       {savedCoursesList.length > 0 && (
-        <div className="studio-card-panel" style={{ marginTop: '2.5rem' }}>
-          <h3 style={{ borderBottom: 'none', paddingBottom: '0' }}><BookOpenCheck size={18} style={{ color: 'var(--accent-secondary)' }} /> Recently Generated Courses</h3>
-          <div className="historical-courses-matrix-grid">
+        <div className="studio-card-panel" style={{ marginTop: '2rem', padding: '1.5rem' }}>
+          <h3 style={{ borderBottom: 'none', paddingBottom: '0', fontSize: '1.05rem', marginBottom: '1rem' }}><BookOpenCheck size={16} style={{ color: 'var(--accent-secondary)' }} /> Recently Generated Courses</h3>
+          <div className="historical-courses-matrix-grid" style={{ gap: '1rem' }}>
             {savedCoursesList.slice(0, 3).map((course) => {
-              // Calculate progress percent
               let totalTopics = 0;
               course.modules?.forEach(m => { totalTopics += m.topics ? m.topics.length : 0; });
               const completedCount = course.completedTopics ? course.completedTopics.length : 0;
               const progress = totalTopics > 0 ? Math.round((completedCount / totalTopics) * 100) : 0;
 
               return (
-                <div key={course._id} className="matrix-course-item-card">
+                <div key={course._id} className="matrix-course-item-card" style={{ padding: '1.25rem', gap: '1rem' }}>
                   <div className="matrix-course-meta-header">
-                    <h3>{course.title}</h3>
+                    <h3 style={{ fontSize: '1.05rem' }}>{course.title}</h3>
                     <span className="matrix-level-badge">{course.level}</span>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                      <span>Syllabus Progress</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+                      <span>Progress</span>
                       <strong>{progress}%</strong>
                     </div>
-                    <div className="progress-bar-bg" style={{ height: '6px' }}>
+                    <div className="progress-bar-bg" style={{ height: '5px' }}>
                       <div className="progress-bar-fill" style={{ width: `${progress}%` }} />
                     </div>
                   </div>
-                  <div className="matrix-course-footer">
-                    <span>Generated on {new Date(course.createdAt).toLocaleDateString()}</span>
+                  <div className="matrix-course-footer" style={{ paddingTop: '0.85rem' }}>
+                    <span style={{ fontSize: '0.7rem' }}>Created: {new Date(course.createdAt).toLocaleDateString()}</span>
                     <button 
                       className="btn-open-matrix"
                       onClick={() => onSelectCourse(course)}
+                      style={{ padding: '0.4rem 0.85rem', fontSize: '0.72rem' }}
                     >
-                      Resume Study &rarr;
+                      Resume &rarr;
                     </button>
                   </div>
                 </div>
