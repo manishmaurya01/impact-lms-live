@@ -943,9 +943,9 @@ export default function Dashboard() {
                             ) : (
                               recentActivities.map((act, idx) => (
                                 <div key={idx} className="dropdown-item-row">
-                                  <span className="item-title">{act.title}</span>
-                                  <span className="item-desc">{act.detail}</span>
-                                  <span className="item-time">{new Date(act.timestamp).toLocaleDateString()}</span>
+                                  <span className="item-title">{act.action}</span>
+                                  <span className="item-desc">{act.courseTitle} &bull; {act.moduleTitle}</span>
+                                  <span className="item-time">{act.date} {act.time}</span>
                                 </div>
                               ))
                             )}
@@ -1097,11 +1097,11 @@ export default function Dashboard() {
                 
                 <div className="saas-metric-card">
                   <div className="saas-metric-header">
-                    <span className="saas-metric-title">Courses</span>
+                    <span className="saas-metric-title">Total Courses</span>
                     <div className="icon-box icon-purple-bg"><BookOpenCheck size={18} /></div>
                   </div>
-                  <h2 className="saas-metric-value">{stats.totalCourses}</h2>
-                  <span className="saas-metric-footer">Roadmaps generated</span>
+                  <h2 className="saas-metric-value">{mongoSavedHistory.length}</h2>
+                  <span className="saas-metric-footer">Total roadmaps generated</span>
                 </div>
 
                 <div className="saas-metric-card">
