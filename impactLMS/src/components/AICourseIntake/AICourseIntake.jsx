@@ -9,7 +9,7 @@ import AICourseLearningWorkspace from './AICourseLearningWorkspace/AICourseLearn
 
 export default function AICourseIntake() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const { pathname, state: routingState } = useLocation();
 
   const [inputPrompt, setInputPrompt] = useState('');
   const [selectedLevel, setSelectedLevel] = useState('Beginner');
@@ -25,6 +25,18 @@ export default function AICourseIntake() {
   useEffect(() => {
     fetchSavedCoursesFromDatabase();
   }, [pathname]);
+
+  useEffect(() => {
+    if (routingState?.courseId && savedCoursesList.length > 0) {
+      const matchedCourse = savedCoursesList.find(c => c._id === routingState.courseId);
+      if (matchedCourse) {
+        setActiveViewportCourse(matchedCourse);
+        if (routingState.autoLaunch) {
+          setIsWorkspaceActive(true);
+        }
+      }
+    }
+  }, [savedCoursesList, routingState]);
 
   const fetchSavedCoursesFromDatabase = async () => {
     try {

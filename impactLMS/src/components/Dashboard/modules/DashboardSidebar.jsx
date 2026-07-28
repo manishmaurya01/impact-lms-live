@@ -19,24 +19,32 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
   });
 
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        const user = JSON.parse(storedUser);
-        const fullName = user.fullName || user.name || 'User';
-        const role = user.role || 'Student';
-        const initials = fullName
-          .split(' ')
-          .map(n => n[0])
-          .join('')
-          .substring(0, 2)
-          .toUpperCase() || 'US';
-        
-        setUserProfile({ fullName, role, initials });
+    const loadUserProfile = () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          const fullName = user.fullName || user.name || 'User';
+          const role = user.role || 'Student';
+          const initials = fullName
+            .split(' ')
+            .map(n => n[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase() || 'US';
+          
+          setUserProfile({ fullName, role, initials });
+        }
+      } catch (e) {
+        console.error("Failed to parse user profile details:", e);
       }
-    } catch (e) {
-      console.error("Failed to parse user profile details:", e);
-    }
+    };
+
+    loadUserProfile();
+    window.addEventListener('userProfileUpdated', loadUserProfile);
+    return () => {
+      window.removeEventListener('userProfileUpdated', loadUserProfile);
+    };
   }, []);
 
   const toggleTheme = () => {

@@ -24,6 +24,7 @@ const fallbackHandler = (req, res) => res.status(501).json({ success: false, mes
 router.post('/auth/register', authCtrl.register || fallbackHandler);
 router.post('/auth/login', authCtrl.login || fallbackHandler);
 router.post('/auth/google', authCtrl.googleLogin || fallbackHandler);
+router.put('/users/profile', authorizeToken, authCtrl.updateProfile || fallbackHandler);
 
 // =========================================================================
 // 2. Dashboard Analytics
@@ -37,6 +38,7 @@ router.get('/courses', authorizeToken, pedagogyCtrl.getCourses || fallbackHandle
 router.post('/courses/generate', authorizeToken, pedagogyCtrl.generateCourse || fallbackHandler);
 router.post('/courses/fetch-material', authorizeToken, pedagogyCtrl.fetchMaterial || fallbackHandler);
 router.delete('/courses/:id', authorizeToken, pedagogyCtrl.deleteCourse || fallbackHandler);
+router.post('/courses/:id/progress', authorizeToken, pedagogyCtrl.updateProgress || fallbackHandler);
 
 // =========================================================================
 // 4. Notes

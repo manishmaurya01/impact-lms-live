@@ -7,8 +7,8 @@ import TakeAssignmentView from '../../Asignment/TakeAssignmentView';
 import DoubtSolverWidget from './modules/DoubtSolverWidget'; 
 
 export default function AICourseLearningWorkspace({ courseData, onBack }) {
-  const [activeModuleId, setActiveModuleId] = useState(courseData?.modules[0]?.dayId || 1);
-  const [activeTopicIndex, setActiveTopicIndex] = useState(0);
+  const [activeModuleId, setActiveModuleId] = useState(courseData?.lastActiveModuleId || courseData?.modules[0]?.dayId || 1);
+  const [activeTopicIndex, setActiveTopicIndex] = useState(courseData?.lastActiveTopicIndex || 0);
   const [activeTab, setActiveTab] = useState('video'); 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
 
@@ -16,7 +16,17 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   const [activeMaterial, setActiveMaterial] = useState(null);
   const [isSyncingMaterial, setIsSyncingMaterial] = useState(false);
   const [syncProgress, setSyncProgress] = useState(0);
-  const [completedTracks, setCompletedTracks] = useState({ "mod-1-topic-0": true });
+  const [completedTracks, setCompletedTracks] = useState(() => {
+    const tracks = {};
+    if (courseData?.completedTopics && courseData.completedTopics.length > 0) {
+      courseData.completedTopics.forEach(t => {
+        tracks[t] = true;
+      });
+    } else {
+      tracks[`mod-${courseData?.modules[0]?.dayId || 1}-topic-0`] = true;
+    }
+    return tracks;
+  });
   
   // METRICS REPOSITORIES TELEMETRY CACHE
   const [quizResultsCache, setQuizResultsCache] = useState({});
@@ -33,6 +43,24 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   const currentTopicName = currentModule?.topics?.[activeTopicIndex] || "No Content Available";
   const trackKey = `mod-${activeModuleId}-topic-${activeTopicIndex}`;
 
+  const saveProgressToDb = async (updatedCompletedTracks = completedTracks, modId = activeModuleId, topicIdx = activeTopicIndex) => {
+    try {
+      const token = localStorage.getItem('token');
+      const completedKeys = Object.keys(updatedCompletedTracks).filter(k => updatedCompletedTracks[k]);
+      await fetch(`${window.API_URL}/api/courses/${courseData._id}/progress`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+          completedTopics: completedKeys,
+          lastActiveModuleId: modId,
+          lastActiveTopicIndex: topicIdx
+        })
+      });
+    } catch (err) {
+      console.error("Error saving progress to DB:", err);
+    }
+  };
+
   // INTEGRATED DATABASE STATUS AUTO-FETCHER
   const loadTopicMaterialOnDemand = async (modId, topicIdx, specificTopicName) => {
     setIsSyncingMaterial(true);
@@ -40,6 +68,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
     setActiveModuleId(modId);
     setActiveTopicIndex(topicIdx);
     setActiveMaterial(null); 
+    saveProgressToDb(completedTracks, modId, topicIdx);
     
     let progressVal = 0;
     const progressInterval = setInterval(() => {
@@ -107,7 +136,11 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
 
   useEffect(() => {
     if (modulesArray.length > 0) {
-      loadTopicMaterialOnDemand(activeModuleId, activeTopicIndex, currentModule?.topics?.[0] || "");
+      const initialModuleId = courseData?.lastActiveModuleId || modulesArray[0]?.dayId || 1;
+      const initialTopicIdx = courseData?.lastActiveTopicIndex || 0;
+      const initialModule = modulesArray.find(m => m.dayId === initialModuleId) || modulesArray[0];
+      const initialTopicName = initialModule?.topics?.[initialTopicIdx] || "";
+      loadTopicMaterialOnDemand(initialModuleId, initialTopicIdx, initialTopicName);
     }
   }, []);
 
@@ -123,7 +156,9 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   const markTopicAsCompleted = () => {
     window.speechSynthesis.cancel(); 
     const currentKey = `mod-${activeModuleId}-topic-${activeTopicIndex}`;
-    setCompletedTracks(prev => ({ ...prev, [currentKey]: true }));
+    const updated = { ...completedTracks, [currentKey]: true };
+    setCompletedTracks(updated);
+    saveProgressToDb(updated, activeModuleId, activeTopicIndex);
 
     if (activeTopicIndex + 1 < (currentModule?.topics?.length || 0)) {
       handleTopicSelection(activeModuleId, activeTopicIndex + 1);

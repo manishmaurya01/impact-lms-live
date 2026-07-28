@@ -41,6 +41,9 @@ const CourseSchema = new mongoose.Schema({
   title: { type: String, required: true },
   level: { type: String, required: true },
   modules: [ModuleSchema],
+  completedTopics: [{ type: String }],
+  lastActiveModuleId: { type: Number, default: 1 },
+  lastActiveTopicIndex: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
 });
 

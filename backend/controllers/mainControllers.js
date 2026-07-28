@@ -114,6 +114,63 @@ const authCtrl = {
       console.error('Google auth error:', err.message);
       res.status(500).json({ success: false, message: 'Google authentication failed.' });
     }
+  },
+
+  updateProfile: async (req, res) => {
+    try {
+      const uid = req.user.userId;
+      const { fullName, email, role, domain, commitment, experience, learningStyle, password } = req.body;
+
+      if (!fullName || !email) {
+        return res.status(400).json({ success: false, message: 'Full name and email are required.' });
+      }
+      if (!isValidEmail(email)) {
+        return res.status(400).json({ success: false, message: 'Please provide a valid email address.' });
+      }
+
+      const existingUser = await User.findOne({ email, _id: { $ne: uid } });
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: 'An account with this email already exists.' });
+      }
+
+      const updateData = {
+        fullName,
+        email,
+        role,
+        domain,
+        commitment,
+        experience,
+        learningStyle
+      };
+
+      if (password && password.trim() !== '') {
+        if (password.length < 6) {
+          return res.status(400).json({ success: false, message: 'Password must be at least 6 characters long.' });
+        }
+        const salt = await bcrypt.genSalt(10);
+        updateData.password = await bcrypt.hash(password, salt);
+      }
+
+      const updatedUser = await User.findByIdAndUpdate(uid, { $set: updateData }, { new: true });
+      
+      res.status(200).json({
+        success: true,
+        message: 'Profile updated successfully.',
+        user: {
+          id: updatedUser._id,
+          fullName: updatedUser.fullName,
+          email: updatedUser.email,
+          role: updatedUser.role,
+          domain: updatedUser.domain,
+          commitment: updatedUser.commitment,
+          experience: updatedUser.experience,
+          learningStyle: updatedUser.learningStyle
+        }
+      });
+    } catch (err) {
+      console.error('Update profile error:', err.message);
+      res.status(500).json({ success: false, message: 'Failed to update profile. Please try again.' });
+    }
   }
 };
 
@@ -132,7 +189,123 @@ const dashboardCtrl = {
       ]);
       const averageQuizScore = quizAgg.length > 0 ? Math.round(quizAgg[0].avgScore) : 0;
 
-      res.status(200).json({ success: true, analytics: { totalCourses, totalNotes, evaluatedAssignments, averageQuizScore } });
+      // 1. Fetch all courses to calculate progress
+      const courses = await Course.find({ userId: uid });
+      const courseProgressList = courses.map(course => {
+        let totalTopics = 0;
+        course.modules.forEach(m => {
+          totalTopics += m.topics ? m.topics.length : 0;
+        });
+
+        const completedTopicsCount = course.completedTopics ? course.completedTopics.length : 0;
+        const percentProgress = totalTopics > 0 ? Math.round((completedTopicsCount / totalTopics) * 100) : 0;
+
+        let completedModules = 0;
+        course.modules.forEach(m => {
+          let moduleTopicsCount = m.topics ? m.topics.length : 0;
+          let completedModuleTopics = 0;
+          if (m.topics) {
+            m.topics.forEach((t, idx) => {
+              const key = `mod-${m.dayId}-topic-${idx}`;
+              if (course.completedTopics && course.completedTopics.includes(key)) {
+                completedModuleTopics++;
+              }
+            });
+          }
+          if (moduleTopicsCount > 0 && completedModuleTopics === moduleTopicsCount) {
+            completedModules++;
+          }
+        });
+
+        const totalModules = course.modules.length;
+        const remainingModules = totalModules - completedModules;
+
+        return {
+          courseId: course._id,
+          title: course.title,
+          level: course.level,
+          totalModules,
+          completedModules,
+          remainingModules,
+          percentProgress,
+          totalTopics,
+          completedTopicsCount,
+          lastActiveModuleId: course.lastActiveModuleId || 1,
+          lastActiveTopicIndex: course.lastActiveTopicIndex || 0
+        };
+      });
+
+      // 2. Fetch quiz performance scores over time
+      const quizResults = await QuizResults.find({ userId: uid })
+        .populate({
+          path: 'quizDataId',
+          select: 'quizName topicName moduleId'
+        })
+        .sort({ evaluatedAt: 1 })
+        .limit(50);
+
+      const quizPerformance = quizResults.map(q => ({
+        quizName: q.quizDataId?.quizName || 'Practice Assessment',
+        topicName: q.quizDataId?.topicName || 'Core Concepts',
+        scorePercentage: q.scorePercentage,
+        evaluatedAt: q.evaluatedAt
+      }));
+
+      // 3. Fetch interview performance accuracy scores
+      const { ScheduledInterview, InterviewSession, ProctoredLog } = require('../models/interviewSchemas');
+      const rawInterviews = await ScheduledInterview.find({ userId: uid }).sort({ createdAt: 1 });
+      
+      let totalInterviewsScheduled = rawInterviews.length;
+      let totalInterviewsCompleted = 0;
+      let totalFlaggedInterviews = 0;
+
+      const interviewPerformance = await Promise.all(rawInterviews.map(async (interview) => {
+        if (interview.status === 'Completed') totalInterviewsCompleted++;
+        
+        const proctorLog = await ProctoredLog.findOne({ interviewId: interview._id });
+        if (proctorLog && proctorLog.isFlaggedForCheating) totalFlaggedInterviews++;
+
+        const session = await InterviewSession.findOne({ interviewId: interview._id });
+        let avgAccuracy = 0;
+        if (session && session.conversationContext) {
+          const candidateAnswers = session.conversationContext.filter(c => c.role === 'candidate');
+          if (candidateAnswers.length > 0) {
+            const sum = candidateAnswers.reduce((acc, curr) => acc + (curr.accuracyScore || 0), 0);
+            avgAccuracy = Math.round(sum / candidateAnswers.length);
+          }
+        }
+
+        return {
+          interviewId: interview._id,
+          difficulty: interview.difficulty,
+          language: interview.language,
+          avgAccuracy,
+          status: interview.status,
+          createdAt: interview.createdAt
+        };
+      }));
+
+      const gradedInterviews = interviewPerformance.filter(ip => ip.avgAccuracy > 0);
+      const averageInterviewScore = gradedInterviews.length > 0
+        ? Math.round(gradedInterviews.reduce((acc, curr) => acc + curr.avgAccuracy, 0) / gradedInterviews.length)
+        : 0;
+
+      res.status(200).json({
+        success: true,
+        analytics: {
+          totalCourses,
+          totalNotes,
+          evaluatedAssignments,
+          averageQuizScore,
+          averageInterviewScore,
+          totalInterviewsScheduled,
+          totalInterviewsCompleted,
+          totalFlaggedInterviews
+        },
+        courseProgressList,
+        quizPerformance,
+        interviewPerformance
+      });
     } catch (err) {
       console.error('Analytics error:', err.message);
       res.status(500).json({ success: false, message: "Failed to load analytics." });
@@ -300,6 +473,22 @@ const pedagogyCtrl = {
     } catch (err) {
       console.error('Delete course error:', err.message);
       res.status(500).json({ success: false, message: 'Failed to delete course.' });
+    }
+  },
+
+  updateProgress: async (req, res) => {
+    const { id } = req.params;
+    const { completedTopics, lastActiveModuleId, lastActiveTopicIndex } = req.body;
+    try {
+      const course = await Course.findOneAndUpdate(
+        { _id: id, userId: req.user.userId },
+        { $set: { completedTopics, lastActiveModuleId, lastActiveTopicIndex } },
+        { new: true }
+      );
+      res.status(200).json({ success: true, data: course });
+    } catch (err) {
+      console.error("Update progress error:", err.message);
+      res.status(500).json({ success: false, message: "Failed to update course progress." });
     }
   }
 };
