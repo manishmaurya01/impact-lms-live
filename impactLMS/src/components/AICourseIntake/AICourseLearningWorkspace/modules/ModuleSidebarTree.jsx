@@ -9,8 +9,18 @@ export default function ModuleSidebarTree({ modules, activeModuleId, activeTopic
   };
 
   const verifyLockStatus = (modIndex, currentTopicIdx) => {
+    // 1. First topic of module 0 is always unlocked
     if (modIndex === 0 && currentTopicIdx === 0) return false; 
-    
+
+    const currentMod = modules[modIndex];
+    if (!currentMod) return false;
+
+    // 2. If this topic itself is marked as completed in DB/state, it is unlocked
+    if (completedTracks[`mod-${currentMod.dayId}-topic-${currentTopicIdx}`]) {
+      return false;
+    }
+
+    // 3. If previous topic in sequence is completed, this topic is unlocked
     let targetModIndex = modIndex;
     let targetTopicIdx = currentTopicIdx - 1;
 
@@ -21,10 +31,23 @@ export default function ModuleSidebarTree({ modules, activeModuleId, activeTopic
     }
 
     const targetMod = modules[targetModIndex];
-    if (!targetMod) return false;
+    if (targetMod && completedTracks[`mod-${targetMod.dayId}-topic-${targetTopicIdx}`]) {
+      return false;
+    }
 
-    const previousKey = `mod-${targetMod.dayId}-topic-${targetTopicIdx}`;
-    return !completedTracks[previousKey];
+    // 4. If ANY topic after or at this position in the course is completed, unlock this topic
+    for (let m = modIndex; m < modules.length; m++) {
+      const mObj = modules[m];
+      if (!mObj?.topics) continue;
+      const startT = (m === modIndex) ? currentTopicIdx : 0;
+      for (let t = startT; t < mObj.topics.length; t++) {
+        if (completedTracks[`mod-${mObj.dayId}-topic-${t}`]) {
+          return false;
+        }
+      }
+    }
+
+    return true; // Locked
   };
 
   return (

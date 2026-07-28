@@ -28,9 +28,10 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
     return tracks;
   });
   
-  // METRICS REPOSITORIES TELEMETRY CACHE
+  // METRICS REPOSITORIES TELEMETRY CACHE & MATERIALS MEMORY CACHE
   const [quizResultsCache, setQuizResultsCache] = useState({});
   const [assignmentLocksCache, setAssignmentLocksCache] = useState({});
+  const [materialsCache, setMaterialsCache] = useState({});
 
   // ROUTING FLAGS FOR FULLSCREEN SECURITY TERMINALS
   const [quizModeActive, setQuizModeActive] = useState(false);
@@ -47,6 +48,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
     try {
       const token = localStorage.getItem('token');
       const completedKeys = Object.keys(updatedCompletedTracks).filter(k => updatedCompletedTracks[k]);
+      if (completedKeys.length === 0) return; // Prevent overwriting with empty progress
       await fetch(`${window.API_URL}/api/courses/${courseData._id}/progress`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -63,12 +65,20 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
 
   // INTEGRATED DATABASE STATUS AUTO-FETCHER
   const loadTopicMaterialOnDemand = async (modId, topicIdx, specificTopicName) => {
-    setIsSyncingMaterial(true);
-    setSyncProgress(0);
     setActiveModuleId(modId);
     setActiveTopicIndex(topicIdx);
+    const currentTrackKey = `mod-${modId}-topic-${topicIdx}`;
+
+    // Fast memory cache check for instant accessibility
+    if (materialsCache[currentTrackKey]) {
+      setActiveMaterial(materialsCache[currentTrackKey]);
+      setIsSyncingMaterial(false);
+      return;
+    }
+
+    setIsSyncingMaterial(true);
+    setSyncProgress(0);
     setActiveMaterial(null); 
-    saveProgressToDb(completedTracks, modId, topicIdx);
     
     let progressVal = 0;
     const progressInterval = setInterval(() => {
@@ -86,7 +96,6 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
     
     try {
       const token = localStorage.getItem('token');
-      const currentTrackKey = `mod-${modId}-topic-${topicIdx}`;
       
       // 1. Fetch Concept Materials Layer
       const response = await fetch(`${window.API_URL}/api/courses/fetch-material`, {
@@ -97,6 +106,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
       const json = await response.json();
       if (json.success && json.data) {
         setActiveMaterial(json.data);
+        setMaterialsCache(prev => ({ ...prev, [currentTrackKey]: json.data }));
       }
 
       // 2. LIVE DATABASE QUIZ LOCK CHECK
