@@ -13,13 +13,33 @@ export default function ModuleSidebarTree({ modules, activeModuleId, activeTopic
   };
 
   const verifyLockStatus = (modIndex, currentTopicIdx) => {
+    // First topic of first module is always accessible
+    if (modIndex === 0 && currentTopicIdx === 0) return false;
+
     const currentMod = modules[modIndex];
-    // Lock only if module or topic does not exist in course data
-    if (!currentMod || !currentMod.topics || !currentMod.topics[currentTopicIdx]) {
-      return true; 
+    if (!currentMod) return true;
+
+    // If this topic itself is already completed (user did it before), keep it accessible
+    if (completedTracks[`mod-${currentMod.dayId}-topic-${currentTopicIdx}`]) return false;
+
+    // Find the immediately previous topic in sequence
+    let prevModIndex = modIndex;
+    let prevTopicIdx = currentTopicIdx - 1;
+
+    if (prevTopicIdx < 0) {
+      // Cross module boundary — check last topic of previous module
+      prevModIndex = modIndex - 1;
+      if (prevModIndex < 0) return true; // No previous module, lock it
+      const prevMod = modules[prevModIndex];
+      if (!prevMod || !prevMod.topics || prevMod.topics.length === 0) return true;
+      prevTopicIdx = prevMod.topics.length - 1;
     }
-    // All topics available in the course DB data are unlocked and accessible by default
-    return false;
+
+    const prevMod = modules[prevModIndex];
+    if (!prevMod) return true;
+
+    // Unlock only if the immediately previous topic is completed
+    return !completedTracks[`mod-${prevMod.dayId}-topic-${prevTopicIdx}`];
   };
 
   return (
