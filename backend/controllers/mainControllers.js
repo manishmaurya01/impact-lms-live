@@ -865,6 +865,37 @@ const pedagogyCtrl = {
     }
   },
 
+  getCourse: async (req, res) => {
+    const { id } = req.params;
+    try {
+      const course = await Course.findOne({ _id: id, userId: req.user.userId });
+      if (!course) return res.status(404).json({ success: false, message: "Course not found." });
+
+      // Find which topics already have generated material in DB
+      const materials = await Material.find({ courseId: id }).select('moduleId topicName');
+      const generatedTopicKeys = new Set();
+      materials.forEach(m => {
+        generatedTopicKeys.add(`mod-${m.moduleId}-topic-name-${m.topicName}`);
+      });
+
+      // Build a generated topics map per module
+      const generatedMap = {};
+      course.modules.forEach(mod => {
+        (mod.topics || []).forEach((topicName, idx) => {
+          const key = `mod-${mod.dayId}-topic-name-${topicName}`;
+          if (generatedTopicKeys.has(key)) {
+            generatedMap[`mod-${mod.dayId}-topic-${idx}`] = true;
+          }
+        });
+      });
+
+      res.status(200).json({ success: true, data: { ...course.toObject(), generatedTopics: generatedMap } });
+    } catch (err) {
+      console.error('Get course error:', err.message);
+      res.status(500).json({ success: false, message: 'Failed to get course.' });
+    }
+  },
+
   updateProgress: async (req, res) => {
     const { id } = req.params;
     const { completedTopics, lastActiveModuleId, lastActiveTopicIndex } = req.body;
@@ -872,9 +903,13 @@ const pedagogyCtrl = {
       const oldCourse = await Course.findOne({ _id: id, userId: req.user.userId });
       if (!oldCourse) return res.status(404).json({ success: false, message: "Course not found." });
 
+      // Use $addToSet to ADD new completed topics without ever removing existing ones
       const course = await Course.findOneAndUpdate(
         { _id: id, userId: req.user.userId },
-        { $set: { completedTopics, lastActiveModuleId, lastActiveTopicIndex } },
+        {
+          $addToSet: { completedTopics: { $each: completedTopics || [] } },
+          $set: { lastActiveModuleId, lastActiveTopicIndex }
+        },
         { new: true }
       );
 

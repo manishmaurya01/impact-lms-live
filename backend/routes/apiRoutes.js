@@ -37,6 +37,7 @@ router.get('/dashboard/analytics', authorizeToken, dashboardCtrl.getAnalytics ||
 router.get('/courses', authorizeToken, pedagogyCtrl.getCourses || fallbackHandler);
 router.post('/courses/generate', authorizeToken, pedagogyCtrl.generateCourse || fallbackHandler);
 router.post('/courses/fetch-material', authorizeToken, pedagogyCtrl.fetchMaterial || fallbackHandler);
+router.get('/courses/:id', authorizeToken, pedagogyCtrl.getCourse || fallbackHandler);
 router.delete('/courses/:id', authorizeToken, pedagogyCtrl.deleteCourse || fallbackHandler);
 router.post('/courses/:id/progress', authorizeToken, pedagogyCtrl.updateProgress || fallbackHandler);
 
