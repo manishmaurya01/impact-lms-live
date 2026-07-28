@@ -114,8 +114,8 @@ export default function DashboardSidebar({ onLogout, isMobileOpen, onCloseMobile
 
         {/* 2. Generate Course */}
         <button 
-          onClick={() => navigate('/assignments')} 
-          className={`nav-link-item ${isActive('/assignments')}`}
+          onClick={() => navigate('/generate-course')} 
+          className={`nav-link-item ${isActive('/generate-course')}`}
         >
           <Sparkles size={18} style={{ flexShrink: 0 }} />
           {isExpanded && <span>Generate Course</span>}

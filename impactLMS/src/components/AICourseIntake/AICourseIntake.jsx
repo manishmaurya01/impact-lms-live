@@ -201,8 +201,8 @@ export default function AICourseIntake() {
  
         <div className="intake-nav-tabs" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <button 
-            onClick={() => { navigate('/assignments'); setActiveViewportCourse(null); }} 
-            className={`pill-selector-item ${pathname === '/assignments' && !activeViewportCourse ? 'is-active' : ''}`}
+            onClick={() => { navigate('/generate-course'); setActiveViewportCourse(null); }} 
+            className={`pill-selector-item ${pathname === '/generate-course' && !activeViewportCourse ? 'is-active' : ''}`}
           >
             ✨ Generate New Course
           </button>

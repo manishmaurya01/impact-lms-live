@@ -21,7 +21,7 @@ function App() {
         
         {/* Protected Routes — require authentication */}
         <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-        <Route path="/assignments" element={<ProtectedRoute><AICourseIntake /></ProtectedRoute>} />
+        <Route path="/generate-course" element={<ProtectedRoute><AICourseIntake /></ProtectedRoute>} />
         <Route path="/courses" element={<ProtectedRoute><AICourseIntake /></ProtectedRoute>} />
         <Route path="/notes" element={<ProtectedRoute><NotesPage /></ProtectedRoute>} />
         <Route path="/interview" element={<ProtectedRoute><InterviewDashboard /></ProtectedRoute>} />
