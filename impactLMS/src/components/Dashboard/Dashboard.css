@@ -1099,3 +1099,116 @@
   justify-content: center;
   margin: 0 auto 1.5rem auto;
 }
+
+/* ==========================================================================
+   STICKY ANALYTICS FILTER BAR
+   ========================================================================== */
+.sticky-filter-bar {
+  position: sticky;
+  top: 0;
+  z-index: 950;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(8px);
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.filter-group label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.filter-group select,
+.filter-group input {
+  background: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  min-width: 140px;
+}
+
+.filter-group select:focus,
+.filter-group input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 6px rgba(108, 99, 255, 0.15);
+}
+
+.date-inputs {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.75rem;
+  align-self: flex-end;
+  padding-bottom: 2px;
+}
+
+.btn-export-csv,
+.btn-export-pdf {
+  padding: 0.45rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-export-csv {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+}
+
+.btn-export-csv:hover {
+  background: var(--bg-surface-hover);
+  border-color: var(--accent-primary);
+}
+
+.btn-export-pdf {
+  background: var(--accent-primary);
+  border: 1px solid var(--accent-primary);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(108, 99, 255, 0.25);
+}
+
+.btn-export-pdf:hover {
+  background: var(--accent-primary-hover);
+  box-shadow: 0 4px 14px rgba(108, 99, 255, 0.35);
+}
+
+/* Comparison Matrix Styling */
+.saas-panel-card table th {
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 0.85rem !important;
+}
+
+.saas-panel-card table tr:hover td {
+  background: var(--bg-surface-hover);
+}

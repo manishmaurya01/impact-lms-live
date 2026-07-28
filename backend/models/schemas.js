@@ -132,6 +132,36 @@ const NoteSchema = new mongoose.Schema({
   updatedAt: { type: Date, default: Date.now }
 });
 
+const ActivityLogSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+  courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course', index: true },
+  moduleId: { type: Number },
+  topic: { type: String },
+  activityType: { 
+    type: String, 
+    enum: [
+      'Course Generated',
+      'Course Started',
+      'Module Started',
+      'Module Completed',
+      'Notes Saved',
+      'Notes Edited',
+      'Quiz Started',
+      'Quiz Completed',
+      'Assignment Submitted',
+      'Assignment Reviewed',
+      'Interview Scheduled',
+      'Interview Completed',
+      'Certificate Generated'
+    ],
+    required: true,
+    index: true
+  },
+  status: { type: String },
+  timestamp: { type: Date, default: Date.now, index: true },
+  metadata: { type: mongoose.Schema.Types.Mixed, default: {} }
+});
+
 module.exports = {
   User: mongoose.model('User', UserSchema),
   Course: mongoose.model('Course', CourseSchema),
@@ -139,5 +169,6 @@ module.exports = {
   QuizData: mongoose.model('QuizData', QuizDataSchema),
   QuizResults: mongoose.model('QuizResults', QuizResultsSchema),
   AssignmentSubmission: mongoose.model('AssignmentSubmission', AssignmentSubmissionSchema),
-  Note: mongoose.model('Note', NoteSchema)
+  Note: mongoose.model('Note', NoteSchema),
+  ActivityLog: mongoose.model('ActivityLog', ActivityLogSchema)
 };

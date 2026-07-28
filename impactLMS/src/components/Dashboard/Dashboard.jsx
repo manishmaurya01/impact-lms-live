@@ -66,6 +66,16 @@ export default function Dashboard() {
   });
 
   const [courseProgressList, setCourseProgressList] = useState([]);
+  const [calendarData, setCalendarData] = useState({});
+  
+  // Interactive global filter states
+  const [selectedCourse, setSelectedCourse] = useState('All');
+  const [timeRange, setTimeRange] = useState('All');
+  const [courseStatus, setCourseStatus] = useState('All');
+  const [difficulty, setDifficulty] = useState('All');
+  const [activityType, setActivityType] = useState('All');
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
   const [quizHistory, setQuizHistory] = useState([]);
   const [interviewHistory, setInterviewHistory] = useState([]);
   const [heatmapData, setHeatmapData] = useState([]);
@@ -127,7 +137,7 @@ export default function Dashboard() {
     if (activeTab === 'dashboard') {
       fetchRealtimeDashboardData();
     }
-  }, [activeTab]);
+  }, [activeTab, selectedCourse, timeRange, courseStatus, difficulty, activityType, customStartDate, customEndDate]);
 
   // Combined Fetch Engine for live DB Analytics
   const fetchRealtimeDashboardData = async () => {
@@ -144,8 +154,18 @@ export default function Dashboard() {
         'Authorization': `Bearer ${currentToken}` 
       };
 
+      const queryParams = new URLSearchParams({
+        courseId: selectedCourse,
+        timeRange,
+        status: courseStatus,
+        difficulty,
+        activityType,
+        startDate: customStartDate,
+        endDate: customEndDate
+      });
+
       // Get Aggregated Metrics Counters
-      const analyticsResponse = await fetch(`${window.API_URL}/api/dashboard/analytics`, {
+      const analyticsResponse = await fetch(`${window.API_URL}/api/dashboard/analytics?${queryParams.toString()}`, {
         method: 'GET',
         headers: headers
       });
@@ -169,6 +189,9 @@ export default function Dashboard() {
         }
         if (analyticsResult.weeklyStudyHours) {
           setWeeklyStudyHours(analyticsResult.weeklyStudyHours);
+        }
+        if (analyticsResult.calendarData) {
+          setCalendarData(analyticsResult.calendarData);
         }
         if (analyticsResult.recentActivities) {
           setRecentActivities(analyticsResult.recentActivities);
@@ -197,6 +220,130 @@ export default function Dashboard() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const exportToCSV = () => {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "LuminaLearn Analytics Report\n";
+    csvContent += `Generated On: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}\n\n`;
+    csvContent += "Metrics,Value\n";
+    csvContent += `Total Courses,${stats.totalCourses}\n`;
+    csvContent += `XP Earned,${stats.xp}\n`;
+    csvContent += `Current Streak,${stats.currentStreak} days\n`;
+    csvContent += `Study Time,${stats.learningHours} hours\n`;
+    csvContent += `Quiz Average,${stats.averageQuizScore}%\n`;
+    csvContent += `Mock Interview Accuracy,${stats.averageInterviewScore}%\n\n`;
+    csvContent += "Timeline Activities\n";
+    csvContent += "Date,Time,Course,Module,Activity,Status\n";
+    
+    recentActivities.forEach(act => {
+      const row = [
+        `"${act.date}"`,
+        `"${act.time}"`,
+        `"${act.courseTitle}"`,
+        `"${act.moduleTitle}"`,
+        `"${act.action}"`,
+        `"${act.status}"`
+      ].join(",");
+      csvContent += row + "\n";
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `LuminaLearn_Analytics_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const exportToPDF = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    const actRows = recentActivities.map(act => `
+      <tr>
+        <td>${act.date} ${act.time}</td>
+        <td>${act.courseTitle}</td>
+        <td>${act.moduleTitle}</td>
+        <td>${act.action}</td>
+        <td>${act.status}</td>
+      </tr>
+    `).join('');
+    
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>LuminaLearn Learning Analytics Report</title>
+          <style>
+            body { font-family: 'Inter', sans-serif; padding: 2rem; color: #1e293b; background: #fff; }
+            h1 { font-size: 24px; font-weight: 800; margin-bottom: 0.5rem; }
+            .date { font-size: 14px; color: #64748b; margin-bottom: 2rem; }
+            .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 2.5rem; }
+            .metric-card { border: 1px solid #e2e8f0; padding: 1.25rem; border-radius: 8px; }
+            .metric-title { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 0.5rem; }
+            .metric-value { font-size: 24px; font-weight: 800; color: #4f46e5; }
+            table { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
+            th, td { border-bottom: 1px solid #e2e8f0; padding: 0.75rem; text-align: left; font-size: 13px; }
+            th { background: #f8fafc; font-weight: 700; color: #4f46e5; }
+          </style>
+        </head>
+        <body>
+          <h1>LuminaLearn Analytics Report</h1>
+          <div class="date">Exported on: ${new Date().toLocaleString()}</div>
+          
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-title">Total Courses</div>
+              <div class="metric-value">${stats.totalCourses}</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">XP Earned</div>
+              <div class="metric-value">${stats.xp} XP</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Study Hours</div>
+              <div class="metric-value">${stats.learningHours} hrs</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Current Streak</div>
+              <div class="metric-value">${stats.currentStreak} days</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Quiz Average</div>
+              <div class="metric-value">${stats.averageQuizScore}%</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-title">Mock Interview Score</div>
+              <div class="metric-value">${stats.averageInterviewScore}%</div>
+            </div>
+          </div>
+          
+          <h2>Learning Activity Timeline</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Course</th>
+                <th>Module</th>
+                <th>Action</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${actRows}
+            </tbody>
+          </table>
+          
+          <script>
+            window.onload = function() {
+              window.print();
+              setTimeout(function() { window.close(); }, 500);
+            };
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const handleProfileSubmit = async (e) => {
@@ -589,11 +736,17 @@ export default function Dashboard() {
             else if (day.count === 3) colorClass = 'heatmap-color-3';
             else if (day.count >= 4) colorClass = 'heatmap-color-4';
 
+            const details = calendarData[day.date] || { studyHours: 0, completedModules: 0 };
+            const courseText = selectedCourse !== 'All' 
+              ? (mongoSavedHistory.find(c => c._id === selectedCourse)?.title || 'Course')
+              : 'All Courses';
+            const tooltip = `Date: ${day.date}\nCourse: ${courseText}\nStudy Time: ${details.studyHours || 0} hrs\nModules Completed: ${details.completedModules || 0}`;
+
             return (
               <div 
                 key={idx} 
                 className={`heatmap-cell-node ${colorClass}`}
-                title={`${day.date}: ${day.count} activities`}
+                title={tooltip}
               />
             );
           })}
@@ -629,14 +782,17 @@ export default function Dashboard() {
     
     for (let d = 1; d <= daysInMonth; d++) {
       const dateObj = new Date(year, month, d);
-      const dateStr = dateObj.toISOString().split('T')[0];
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
       
       const isToday = d === today.getDate();
-      const hasStudyActivity = heatmapData.some(h => h.date === dateStr && h.count > 0);
+      const details = calendarData[dateStr] || { studyHours: 0, completedModules: 0, quizAttempts: 0, assignments: 0 };
+      const hasStudyActivity = details.studyHours > 0 || details.completedModules > 0 || details.quizAttempts > 0 || details.assignments > 0;
       
       calendarDays.push({
         dayNum: d,
+        dateStr,
         activeStudy: hasStudyActivity,
+        details,
         isToday
       });
     }
@@ -654,6 +810,7 @@ export default function Dashboard() {
             <div 
               key={idx} 
               className={`calendar-day-node ${day.activeStudy ? 'active-study' : ''} ${day.isToday ? 'today-highlight' : ''}`}
+              title={day.dayNum ? `Date: ${day.dateStr}\nStudy Hours: ${day.details.studyHours} hrs\nCompleted Modules: ${day.details.completedModules}\nQuiz Attempts: ${day.details.quizAttempts}\nAssignments: ${day.details.assignments}` : undefined}
             >
               {day.dayNum}
             </div>
@@ -785,6 +942,84 @@ export default function Dashboard() {
                 </div>
               </div>
 
+              {/* STICKY FILTER BAR */}
+              <div className="sticky-filter-bar">
+                <div className="filter-group">
+                  <label>Course Selection</label>
+                  <select value={selectedCourse} onChange={(e) => setSelectedCourse(e.target.value)}>
+                    <option value="All">All Courses</option>
+                    {mongoSavedHistory.map(c => (
+                      <option key={c._id} value={c._id}>{c.title}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="filter-group">
+                  <label>Time Period</label>
+                  <select value={timeRange} onChange={(e) => setTimeRange(e.target.value)}>
+                    <option value="All">All Time</option>
+                    <option value="Today">Today</option>
+                    <option value="Yesterday">Yesterday</option>
+                    <option value="Last 7 Days">Last 7 Days</option>
+                    <option value="Last 30 Days">Last 30 Days</option>
+                    <option value="Last 90 Days">Last 90 Days</option>
+                    <option value="This Year">This Year</option>
+                    <option value="Custom">Custom Range</option>
+                  </select>
+                </div>
+
+                {timeRange === 'Custom' && (
+                  <div className="filter-group date-inputs">
+                    <div>
+                      <label>Start</label>
+                      <input type="date" value={customStartDate} onChange={(e) => setCustomStartDate(e.target.value)} style={{ padding: '0.4rem', fontSize: '0.8rem' }} />
+                    </div>
+                    <div>
+                      <label>End</label>
+                      <input type="date" value={customEndDate} onChange={(e) => setCustomEndDate(e.target.value)} style={{ padding: '0.4rem', fontSize: '0.8rem' }} />
+                    </div>
+                  </div>
+                )}
+
+                <div className="filter-group">
+                  <label>Course Status</label>
+                  <select value={courseStatus} onChange={(e) => setCourseStatus(e.target.value)}>
+                    <option value="All">All Statuses</option>
+                    <option value="Not Started">Not Started</option>
+                    <option value="Started">Started</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                  </select>
+                </div>
+
+                <div className="filter-group">
+                  <label>Difficulty</label>
+                  <select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+                    <option value="All">All Levels</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                  </select>
+                </div>
+
+                <div className="filter-group">
+                  <label>Activity Focus</label>
+                  <select value={activityType} onChange={(e) => setActivityType(e.target.value)}>
+                    <option value="All">All Activities</option>
+                    <option value="Modules">Modules</option>
+                    <option value="Notes">Notes</option>
+                    <option value="Quizzes">Quizzes</option>
+                    <option value="Assignments">Assignments</option>
+                    <option value="Interviews">Interviews</option>
+                  </select>
+                </div>
+
+                <div className="filter-actions">
+                  <button className="btn-export-csv" onClick={exportToCSV}>Export CSV</button>
+                  <button className="btn-export-pdf" onClick={exportToPDF}>Export PDF</button>
+                </div>
+              </div>
+
               {/* REDESIGNED SAAS HERO BANNER */}
               <div className="premium-hero-card-container">
                 <div className="premium-hero-glow-underlay" />
@@ -885,6 +1120,55 @@ export default function Dashboard() {
                 
                 {/* LEFT 70% PANEL */}
                 <div className="dashboard-left-panel">
+                  
+                  {/* Course Comparison Matrix */}
+                  {courseProgressList.length > 1 && (
+                    <motion.div 
+                      className="saas-panel-card"
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="saas-card-header">
+                        <h3><Layers size={18} style={{ color: 'var(--accent-primary)' }} /> Course Comparison Matrix</h3>
+                      </div>
+                      <div style={{ overflowX: 'auto', width: '100%' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '700px' }}>
+                          <thead>
+                            <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
+                              <th style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>COURSE</th>
+                              <th style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>COMPLETION %</th>
+                              <th style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>QUIZ AVG</th>
+                              <th style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>STUDY TIME</th>
+                              <th style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>NOTES</th>
+                              <th style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>ASSIGNMENTS</th>
+                              <th style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>INTERVIEWS</th>
+                              <th style={{ padding: '0.75rem 1rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>LEARNING SPEED</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {courseProgressList.map(c => {
+                              const speed = c.percentProgress > 0 
+                                ? `${Math.round(c.percentProgress / 2)}% progress/day`
+                                : '0%';
+                              return (
+                                <tr key={c.courseId} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                                  <td style={{ padding: '1rem', fontWeight: '700', fontSize: '0.85rem' }}>{c.title}</td>
+                                  <td style={{ padding: '1rem', color: 'var(--accent-secondary)', fontWeight: '800' }}>{c.percentProgress}%</td>
+                                  <td style={{ padding: '1rem' }}>{c.quizAverage}%</td>
+                                  <td style={{ padding: '1rem' }}>{c.totalStudyTime} hrs</td>
+                                  <td style={{ padding: '1rem' }}>{c.notesCreated}</td>
+                                  <td style={{ padding: '1rem' }}>{c.assignmentCompletion}</td>
+                                  <td style={{ padding: '1rem' }}>{c.interviewAccuracy}%</td>
+                                  <td style={{ padding: '1rem', fontSize: '0.8rem', color: 'var(--accent-primary)', fontWeight: '700' }}>{speed}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </motion.div>
+                  )}
                   
                   {/* Continue Learning Widget Card */}
                   {activeCourse && (
@@ -1067,16 +1351,116 @@ export default function Dashboard() {
                       <h3><History size={18} style={{ color: 'var(--accent-primary)' }} /> Learning Activity Timeline</h3>
                     </div>
                     <div className="saas-timeline-list">
-                      {recentActivities.map((item, idx) => (
-                        <div key={idx} className="saas-timeline-item">
-                          <div className="saas-timeline-dot" />
-                          <div className="saas-timeline-content">
-                            <span className="time-stamp">{new Date(item.timestamp).toLocaleDateString()}</span>
-                            <h5>{item.title}</h5>
-                            <p>{item.detail}</p>
-                          </div>
-                        </div>
-                      ))}
+                      {selectedCourse !== 'All' ? (
+                        (() => {
+                          const currentCourseObj = mongoSavedHistory.find(c => c._id === selectedCourse);
+                          if (!currentCourseObj) return <p style={{ color: 'var(--text-muted)' }}>No timeline journey recorded for this course.</p>;
+                          return (
+                            <div>
+                              {/* Course Started Node */}
+                              <div className="saas-timeline-item">
+                                <div className="saas-timeline-dot" style={{ borderColor: 'var(--accent-secondary)' }} />
+                                <div className="saas-timeline-content">
+                                  <span className="time-stamp">{new Date(currentCourseObj.createdAt).toLocaleDateString()}</span>
+                                  <h5>Course Journey Initiated</h5>
+                                  <p>Started course: <strong>{currentCourseObj.title}</strong> at level <strong>{currentCourseObj.level}</strong></p>
+                                </div>
+                              </div>
+
+                              {/* Sequential Modules Map */}
+                              {currentCourseObj.modules?.map((mod, modIdx) => {
+                                const modTopicsCount = mod.topics ? mod.topics.length : 0;
+                                let completedTopicsCount = 0;
+                                mod.topics?.forEach((t, tIdx) => {
+                                  if (currentCourseObj.completedTopics?.includes(`mod-${mod.dayId}-topic-${tIdx}`)) {
+                                    completedTopicsCount++;
+                                  }
+                                });
+
+                                const isStarted = completedTopicsCount > 0;
+                                const isCompleted = modTopicsCount > 0 && completedTopicsCount === modTopicsCount;
+
+                                const hasNotes = recentActivities.some(a => a.courseId === currentCourseObj._id && Number(a.dayId) === Number(mod.dayId) && a.action.startsWith('Notes'));
+                                const quizCompleted = recentActivities.find(a => a.courseId === currentCourseObj._id && Number(a.dayId) === Number(mod.dayId) && a.action === 'Quiz Completed');
+                                const assignmentCompleted = recentActivities.find(a => a.courseId === currentCourseObj._id && Number(a.dayId) === Number(mod.dayId) && a.action === 'Assignment Reviewed');
+
+                                return (
+                                  <React.Fragment key={mod.dayId}>
+                                    <div className="saas-timeline-item">
+                                      <div className="saas-timeline-dot" style={{ borderColor: isCompleted ? 'var(--accent-secondary)' : (isStarted ? 'var(--accent-warning)' : 'var(--border-color)') }} />
+                                      <div className="saas-timeline-content">
+                                        <h5>Module {mod.dayId}: {mod.title}</h5>
+                                        <p>Progress: {completedTopicsCount}/{modTopicsCount} topics completed ({isCompleted ? 'Completed' : (isStarted ? 'In Progress' : 'Not Started')})</p>
+                                      </div>
+                                    </div>
+
+                                    {hasNotes && (
+                                      <div className="saas-timeline-item" style={{ paddingLeft: '1rem' }}>
+                                        <div className="saas-timeline-dot" style={{ borderColor: 'var(--accent-primary)', width: '12px', height: '12px', left: '-25px' }} />
+                                        <div className="saas-timeline-content">
+                                          <h5>Notes Saved</h5>
+                                          <p>Revision notes recorded in the workspace</p>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {quizCompleted && (
+                                      <div className="saas-timeline-item" style={{ paddingLeft: '1rem' }}>
+                                        <div className="saas-timeline-dot" style={{ borderColor: 'var(--accent-secondary)', width: '12px', height: '12px', left: '-25px' }} />
+                                        <div className="saas-timeline-content">
+                                          <h5>Quiz Evaluation Completed</h5>
+                                          <p>Quiz: <strong>{quizCompleted.metadata?.quizName || 'Practice Assessment'}</strong> &bull; Score: <strong>{quizCompleted.metadata?.scorePercentage}%</strong></p>
+                                        </div>
+                                      </div>
+                                    )}
+
+                                    {assignmentCompleted && (
+                                      <div className="saas-timeline-item" style={{ paddingLeft: '1rem' }}>
+                                        <div className="saas-timeline-dot" style={{ borderColor: 'var(--accent-primary)', width: '12px', height: '12px', left: '-25px' }} />
+                                        <div className="saas-timeline-content">
+                                          <h5>Assignment Reviewed</h5>
+                                          <p>AI Review Score: <strong>{assignmentCompleted.metadata?.approachScore}/100</strong></p>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </React.Fragment>
+                                );
+                              })}
+
+                              {/* Course Certificate Generated Node */}
+                              {currentCourseObj.completedTopics?.length === currentCourseObj.modules?.reduce((acc, m) => acc + (m.topics ? m.topics.length : 0), 0) && (
+                                <div className="saas-timeline-item">
+                                  <div className="saas-timeline-dot" style={{ borderColor: 'var(--accent-secondary)', background: 'var(--accent-secondary)' }} />
+                                  <div className="saas-timeline-content">
+                                    <h5>Certificate Unlocked</h5>
+                                    <p>Completed all roadmap modules for <strong>{currentCourseObj.title}</strong>.</p>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })()
+                      ) : (
+                        recentActivities.length === 0 ? (
+                          <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '1rem 0' }}>No activities matching filter criteria.</p>
+                        ) : (
+                          recentActivities.map((item, idx) => (
+                            <div key={idx} className="saas-timeline-item">
+                              <div className="saas-timeline-dot" />
+                              <div className="saas-timeline-content">
+                                <span className="time-stamp">{item.date} &bull; {item.time}</span>
+                                <h5>{item.action}</h5>
+                                <p>
+                                  Course: <strong>{item.courseTitle}</strong> | {item.moduleTitle}
+                                </p>
+                                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                                  Topic: <em>{item.topic}</em> &bull; Status: <span style={{ color: item.status === 'Completed' || item.status === 'Success' ? 'var(--accent-secondary)' : 'var(--text-muted)', fontWeight: 700 }}>{item.status}</span>
+                                </p>
+                              </div>
+                            </div>
+                          ))
+                        )
+                      )}
                     </div>
                   </div>
 

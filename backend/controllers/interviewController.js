@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Course } = require('../models/schemas'); 
 const { ScheduledInterview, InterviewSession, ProctoredLog } = require('../models/interviewSchemas');
+const { logActivity } = require('../utils/activityLogger');
 const { callGeminiAPI } = require('../utils/geminiClient');
 
 // SEPARATE DEDICATED INTERVIEW API KEY 
@@ -45,6 +46,15 @@ const interviewCtrl = {
         language: language || 'English'
       });
       await newInterview.save();
+
+      await logActivity({
+        userId: req.user.userId,
+        courseId,
+        moduleId: Number(dayId),
+        activityType: 'Interview Scheduled',
+        status: 'Scheduled',
+        metadata: { difficulty, language, selectedTopics }
+      });
 
       return res.status(201).json({ success: true, data: newInterview });
     } catch (err) {
@@ -235,7 +245,35 @@ const interviewCtrl = {
       if (totalUserRepliesCount >= 5) { // 5 Full back-and-forth turns perfectly
         session.isCompleted = true;
         await session.save();
-        await ScheduledInterview.findByIdAndUpdate(session.interviewId._id, { status: 'Completed' });
+        
+        const completedInterview = await ScheduledInterview.findByIdAndUpdate(
+          session.interviewId._id, 
+          { status: 'Completed' },
+          { new: true }
+        );
+
+        if (completedInterview) {
+          const candidateAnswers = session.conversationContext.filter(c => c.role === 'candidate');
+          let avgAccuracy = 0;
+          if (candidateAnswers.length > 0) {
+            const sum = candidateAnswers.reduce((acc, curr) => acc + (curr.accuracyScore || 0), 0);
+            avgAccuracy = Math.round(sum / candidateAnswers.length);
+          }
+
+          await logActivity({
+            userId: req.user.userId,
+            courseId: completedInterview.courseId,
+            moduleId: completedInterview.dayId,
+            activityType: 'Interview Completed',
+            status: 'Completed',
+            metadata: { 
+              difficulty: completedInterview.difficulty, 
+              language: completedInterview.language,
+              accuracyScore: avgAccuracy
+            }
+          });
+        }
+
         return res.status(200).json({ success: true, isCompleted: true });
       }
 
