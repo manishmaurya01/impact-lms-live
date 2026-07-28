@@ -147,6 +147,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   useEffect(() => {
     const syncLatestCourseProgress = async () => {
       let activeCompleted = courseData?.completedTopics || [];
+      let generatedTopicKeys = {};
       let initModId = courseData?.lastActiveModuleId || modulesArray[0]?.dayId || 1;
       let initTopicIdx = courseData?.lastActiveTopicIndex || 0;
 
@@ -158,7 +159,12 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
           });
           const json = await res.json();
           if (json.success && json.data) {
-            if (json.data.completedTopics) activeCompleted = json.data.completedTopics;
+            if (json.data.completedTopics && json.data.completedTopics.length > 0) {
+              activeCompleted = json.data.completedTopics;
+            }
+            if (json.data.generatedTopics) {
+              generatedTopicKeys = json.data.generatedTopics;
+            }
             if (json.data.lastActiveModuleId) initModId = json.data.lastActiveModuleId;
             if (json.data.lastActiveTopicIndex !== undefined) initTopicIdx = json.data.lastActiveTopicIndex;
           }
@@ -167,10 +173,11 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
         console.error("Failed fetching latest course progress:", err);
       }
 
+      // Build completedTracks: union of DB completedTopics + generatedTopics (all material-ready topics are accessible)
       const tracks = {};
-      if (activeCompleted.length > 0) {
-        activeCompleted.forEach(t => { tracks[t] = true; });
-      }
+      activeCompleted.forEach(t => { tracks[t] = true; });
+      Object.keys(generatedTopicKeys).forEach(k => { tracks[k] = true; });
+      // Always ensure first topic is accessible
       tracks[`mod-${modulesArray[0]?.dayId || 1}-topic-0`] = true;
       setCompletedTracks(tracks);
 
