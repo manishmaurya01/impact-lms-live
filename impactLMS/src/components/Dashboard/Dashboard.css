@@ -1221,6 +1221,23 @@
    ========================================================================== */
 
 @media (max-width: 768px) {
+  .dashboard-top-navbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem !important;
+  }
+  
+  .navbar-controls-group {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+  
+  .navbar-search-wrapper {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+
   .sticky-filter-bar {
     position: relative !important;
     top: 0;
