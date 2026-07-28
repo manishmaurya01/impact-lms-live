@@ -69,7 +69,7 @@ export default function Dashboard() {
   const [calendarData, setCalendarData] = useState({});
   
   // Interactive global filter states
-  const [selectedCourse, setSelectedCourse] = useState('All');
+  const [selectedCourse, setSelectedCourse] = useState('');
   const [timeRange, setTimeRange] = useState('All');
   const [courseStatus, setCourseStatus] = useState('All');
   const [difficulty, setDifficulty] = useState('All');
@@ -133,8 +133,45 @@ export default function Dashboard() {
     loadProfileFromStorage();
   }, []);
 
+  // Fetch Course List once on mount or activeTab transition
+  const fetchCourseList = async () => {
+    try {
+      const currentToken = localStorage.getItem('token');
+      if (!currentToken) return;
+
+      const headers = { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${currentToken}` 
+      };
+
+      const courseResponse = await fetch(`${window.API_URL}/api/courses`, {
+        method: 'GET',
+        headers: headers
+      });
+      const courseResult = await courseResponse.json();
+      
+      if (courseResult.success && courseResult.data) {
+        setMongoSavedHistory(courseResult.data);
+        
+        // Auto-select latest active course by default if none is selected
+        if (courseResult.data.length > 0 && !selectedCourse) {
+          const sorted = [...courseResult.data].sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+          setSelectedCourse(sorted[0]._id);
+        }
+      }
+    } catch (error) {
+      console.error("Course Sync Fault:", error);
+    }
+  };
+
   useEffect(() => {
     if (activeTab === 'dashboard') {
+      fetchCourseList();
+    }
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'dashboard' && selectedCourse) {
       fetchRealtimeDashboardData();
     }
   }, [activeTab, selectedCourse, timeRange, courseStatus, difficulty, activityType, customStartDate, customEndDate]);
@@ -204,16 +241,7 @@ export default function Dashboard() {
         }
       }
 
-      // Get Recent Active Roadmaps for History Grid fallback
-      const courseResponse = await fetch(`${window.API_URL}/api/courses`, {
-        method: 'GET',
-        headers: headers
-      });
-      const courseResult = await courseResponse.json();
-      
-      if (courseResult.success && courseResult.data) {
-        setMongoSavedHistory(courseResult.data);
-      }
+
 
     } catch (error) {
       console.error("Dashboard Sync Fault:", error);
@@ -947,7 +975,6 @@ export default function Dashboard() {
                 <div className="filter-group">
                   <label>Course Selection</label>
                   <select value={selectedCourse} onChange={(e) => setSelectedCourse(e.target.value)}>
-                    <option value="All">All Courses</option>
                     {mongoSavedHistory.map(c => (
                       <option key={c._id} value={c._id}>{c.title}</option>
                     ))}
