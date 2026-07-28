@@ -30,7 +30,14 @@ export default function AICourseIntake() {
     if (routingState?.courseId && savedCoursesList.length > 0) {
       const matchedCourse = savedCoursesList.find(c => c._id === routingState.courseId);
       if (matchedCourse) {
-        setActiveViewportCourse(matchedCourse);
+        const courseData = { ...matchedCourse };
+        if (routingState.targetModuleId !== undefined) {
+          courseData.lastActiveModuleId = routingState.targetModuleId;
+        }
+        if (routingState.targetTopicIndex !== undefined) {
+          courseData.lastActiveTopicIndex = routingState.targetTopicIndex;
+        }
+        setActiveViewportCourse(courseData);
         if (routingState.autoLaunch) {
           setIsWorkspaceActive(true);
         }

@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const { OAuth2Client } = require('google-auth-library');
 const { User, Course, Material, QuizData, QuizResults, AssignmentSubmission, Note } = require('../models/schemas');
+const { ScheduledInterview, InterviewSession, ProctoredLog } = require('../models/interviewSchemas');
 const { callGeminiAPI } = require('../utils/geminiClient');
 const { getVerifiedVideos } = require('../utils/videoSearch');
 
@@ -191,6 +192,9 @@ const dashboardCtrl = {
 
       // 1. Fetch all courses to calculate progress
       const courses = await Course.find({ userId: uid });
+      let modulesCompletedCount = 0;
+      let totalCompletedTopics = 0;
+
       const courseProgressList = courses.map(course => {
         let totalTopics = 0;
         course.modules.forEach(m => {
@@ -198,6 +202,7 @@ const dashboardCtrl = {
         });
 
         const completedTopicsCount = course.completedTopics ? course.completedTopics.length : 0;
+        totalCompletedTopics += completedTopicsCount;
         const percentProgress = totalTopics > 0 ? Math.round((completedTopicsCount / totalTopics) * 100) : 0;
 
         let completedModules = 0;
@@ -217,6 +222,7 @@ const dashboardCtrl = {
           }
         });
 
+        modulesCompletedCount += completedModules;
         const totalModules = course.modules.length;
         const remainingModules = totalModules - completedModules;
 
@@ -231,7 +237,8 @@ const dashboardCtrl = {
           totalTopics,
           completedTopicsCount,
           lastActiveModuleId: course.lastActiveModuleId || 1,
-          lastActiveTopicIndex: course.lastActiveTopicIndex || 0
+          lastActiveTopicIndex: course.lastActiveTopicIndex || 0,
+          createdAt: course.createdAt
         };
       });
 
@@ -252,7 +259,6 @@ const dashboardCtrl = {
       }));
 
       // 3. Fetch interview performance accuracy scores
-      const { ScheduledInterview, InterviewSession, ProctoredLog } = require('../models/interviewSchemas');
       const rawInterviews = await ScheduledInterview.find({ userId: uid }).sort({ createdAt: 1 });
       
       let totalInterviewsScheduled = rawInterviews.length;
@@ -290,6 +296,212 @@ const dashboardCtrl = {
         ? Math.round(gradedInterviews.reduce((acc, curr) => acc + curr.avgAccuracy, 0) / gradedInterviews.length)
         : 0;
 
+      // 4. Streak & Gamification Details
+      const activeDates = new Set();
+      const addDate = (d) => {
+        if (d) activeDates.add(new Date(d).toISOString().split('T')[0]);
+      };
+
+      courses.forEach(c => addDate(c.createdAt));
+      
+      const notes = await Note.find({ userId: uid });
+      notes.forEach(n => {
+        addDate(n.createdAt);
+        addDate(n.updatedAt);
+      });
+
+      quizResults.forEach(q => addDate(q.evaluatedAt));
+
+      const assignments = await AssignmentSubmission.find({ userId: uid });
+      assignments.forEach(a => addDate(a.submittedAt));
+      
+      rawInterviews.forEach(i => addDate(i.createdAt));
+
+      let currentStreak = 0;
+      let longestStreak = 0;
+      const today = new Date();
+
+      if (activeDates.size > 0) {
+        const todayStr = today.toISOString().split('T')[0];
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+        let checkDate = activeDates.has(todayStr) ? new Date() : (activeDates.has(yesterdayStr) ? yesterday : null);
+
+        if (checkDate) {
+          while (true) {
+            const checkStr = checkDate.toISOString().split('T')[0];
+            if (activeDates.has(checkStr)) {
+              currentStreak++;
+              checkDate.setDate(checkDate.getDate() - 1);
+            } else {
+              break;
+            }
+          }
+        }
+
+        let tempStreak = 0;
+        let allDates = Array.from(activeDates).map(d => new Date(d)).sort((a, b) => a - b);
+        if (allDates.length > 0) {
+          tempStreak = 1;
+          longestStreak = 1;
+          for (let i = 1; i < allDates.length; i++) {
+            const diffTime = Math.abs(allDates[i] - allDates[i - 1]);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays === 1) {
+              tempStreak++;
+              if (tempStreak > longestStreak) longestStreak = tempStreak;
+            } else if (diffDays > 1) {
+              tempStreak = 1;
+            }
+          }
+        }
+      }
+      longestStreak = Math.max(longestStreak, currentStreak);
+
+      // Estimate learning hours and XP
+      const xp = (totalCompletedTopics * 15) + (quizResults.length * 50) + (totalInterviewsCompleted * 100) + (evaluatedAssignments * 80);
+      const level = Math.floor(xp / 300) + 1;
+      const xpToNextLevel = 300 - (xp % 300);
+      const xpProgressPercent = Math.round(((xp % 300) / 300) * 100);
+      const learningHours = Math.round(((totalCompletedTopics * 0.5) + (quizResults.length * 0.25) + (totalInterviewsCompleted * 0.5) + (evaluatedAssignments * 1.0)) * 10) / 10;
+      
+      const certificatesCount = courseProgressList.filter(c => c.percentProgress === 100).length;
+
+      // Heatmap Data (Last 16 weeks = 112 days)
+      const heatmapData = [];
+      for (let i = 111; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+
+        let dayEventsCount = 0;
+        courses.forEach(c => { if (c.createdAt && c.createdAt.toISOString().split('T')[0] === dateStr) dayEventsCount++; });
+        notes.forEach(n => { if (n.createdAt && n.createdAt.toISOString().split('T')[0] === dateStr) dayEventsCount++; });
+        quizResults.forEach(q => { if (q.evaluatedAt && q.evaluatedAt.toISOString().split('T')[0] === dateStr) dayEventsCount++; });
+        assignments.forEach(a => { if (a.submittedAt && a.submittedAt.toISOString().split('T')[0] === dateStr) dayEventsCount++; });
+        rawInterviews.forEach(i => { if (i.createdAt && i.createdAt.toISOString().split('T')[0] === dateStr) dayEventsCount++; });
+
+        heatmapData.push({
+          date: dateStr,
+          count: dayEventsCount
+        });
+      }
+
+      // Weekly study hours
+      const weeklyStudyHours = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(today.getDate() - i);
+        const dateStr = d.toISOString().split('T')[0];
+
+        let hours = 0;
+        courses.forEach(c => { if (c.createdAt && c.createdAt.toISOString().split('T')[0] === dateStr) hours += 0.5; });
+        notes.forEach(n => { if (n.createdAt && n.createdAt.toISOString().split('T')[0] === dateStr) hours += 0.2; });
+        quizResults.forEach(q => { if (q.evaluatedAt && q.evaluatedAt.toISOString().split('T')[0] === dateStr) hours += 0.25; });
+        assignments.forEach(a => { if (a.submittedAt && a.submittedAt.toISOString().split('T')[0] === dateStr) hours += 1.0; });
+        rawInterviews.forEach(i => { if (i.createdAt && i.createdAt.toISOString().split('T')[0] === dateStr) hours += 0.5; });
+
+        const weekdayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        weeklyStudyHours.push({
+          day: weekdayNames[d.getDay()],
+          date: dateStr,
+          hours: Math.round(hours * 10) / 10
+        });
+      }
+
+      // AI Insights
+      const weakTopicsSet = new Set();
+      quizResults.forEach(q => {
+        if (q.scorePercentage < 70 && q.quizDataId?.topicName) weakTopicsSet.add(q.quizDataId.topicName);
+      });
+      const weakTopics = Array.from(weakTopicsSet).slice(0, 3);
+
+      const strongTopicsSet = new Set();
+      quizResults.forEach(q => {
+        if (q.scorePercentage >= 85 && q.quizDataId?.topicName) strongTopicsSet.add(q.quizDataId.topicName);
+      });
+      const strongTopics = Array.from(strongTopicsSet).slice(0, 3);
+
+      const revisionTopics = [...weakTopics];
+      if (revisionTopics.length === 0 && courses.length > 0 && courses[0].modules[0]?.topics) {
+        revisionTopics.push(courses[0].modules[0].topics[0]);
+      }
+
+      const user = await User.findById(uid);
+      const userDomain = user?.domain || 'Programming';
+      const userExp = user?.experience || 'Beginner';
+
+      const recommendedNextCourse = userExp === 'Beginner'
+        ? `Intermediate ${userDomain} concepts`
+        : `Advanced Masterclass in ${userDomain}`;
+
+      const completionPrediction = courseProgressList.length > 0 && courseProgressList[0].percentProgress < 100
+        ? `Completion of "${courseProgressList[0].title}" predicted in ${Math.ceil((100 - courseProgressList[0].percentProgress) / 10) || 1} days`
+        : "Ready to launch new course journey!";
+
+      const learningConsistency = currentStreak > 0
+        ? `Consistently learning! Current streak: ${currentStreak} days.`
+        : "Start a study streak by completing a lesson today!";
+
+      // Timeline activities
+      const activities = [];
+      courses.forEach(c => {
+        activities.push({
+          type: 'Course Generated',
+          title: `Generated Course Roadmap`,
+          detail: c.title,
+          timestamp: c.createdAt
+        });
+      });
+      notes.forEach(n => {
+        activities.push({
+          type: 'Notes Created',
+          title: `Saved Custom Note`,
+          detail: n.title,
+          timestamp: n.createdAt
+        });
+      });
+      quizResults.forEach(q => {
+        activities.push({
+          type: 'Quiz Completed',
+          title: `Completed Course Quiz`,
+          detail: `${q.quizDataId?.quizName || 'Syllabus Quiz'} (Score: ${q.scorePercentage}%)`,
+          timestamp: q.evaluatedAt
+        });
+      });
+      assignments.forEach(a => {
+        activities.push({
+          type: 'Assignment Submitted',
+          title: `Submitted AI Assignment`,
+          detail: `${a.topicName} (Status: ${a.status})`,
+          timestamp: a.submittedAt
+        });
+      });
+      rawInterviews.forEach(i => {
+        activities.push({
+          type: i.status === 'Completed' ? 'Interview Completed' : 'Interview Scheduled',
+          title: `${i.status === 'Completed' ? 'Completed' : 'Scheduled'} AI Interview`,
+          detail: `Difficulty: ${i.difficulty} (${i.language})`,
+          timestamp: i.createdAt
+        });
+      });
+
+      const recentActivities = activities
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+        .slice(0, 8);
+
+      // Achievements badges list
+      const allBadges = [
+        { id: 'first-course', title: 'First Course', desc: 'Generated your first learning roadmap', unlocked: courses.length >= 1, icon: 'Sparkles' },
+        { id: 'quiz-master', title: 'Quiz Master', desc: 'Score 90%+ in any module quiz', unlocked: quizResults.some(q => q.scorePercentage >= 90), icon: 'Trophy' },
+        { id: 'streak-7', title: '7 Day Streak', desc: 'Maintain learning consistency for 7 days', unlocked: longestStreak >= 7, icon: 'Flame' },
+        { id: 'streak-30', title: '30 Day Streak', desc: 'Maintain learning consistency for 30 days', unlocked: longestStreak >= 30, icon: 'Award' },
+        { id: 'interview-done', title: 'Interview Master', desc: 'Completed oral AI-proctored evaluation', unlocked: totalInterviewsCompleted >= 1, icon: 'MessageSquare' },
+        { id: 'assignment-expert', title: 'Assignment Expert', desc: 'Code submitted and evaluated by AI', unlocked: evaluatedAssignments >= 1, icon: 'CheckCircle2' }
+      ];
+
       res.status(200).json({
         success: true,
         analytics: {
@@ -300,11 +512,32 @@ const dashboardCtrl = {
           averageInterviewScore,
           totalInterviewsScheduled,
           totalInterviewsCompleted,
-          totalFlaggedInterviews
+          totalFlaggedInterviews,
+          xp,
+          level,
+          xpProgressPercent,
+          xpToNextLevel,
+          learningHours,
+          currentStreak,
+          longestStreak,
+          certificatesCount,
+          modulesCompletedCount
         },
         courseProgressList,
         quizPerformance,
-        interviewPerformance
+        interviewPerformance,
+        heatmapData,
+        weeklyStudyHours,
+        recentActivities,
+        allBadges,
+        aiInsights: {
+          weakestTopics: weakTopics,
+          strongestTopics: strongTopics,
+          suggestedRevisionTopics: revisionTopics,
+          recommendedNextCourse,
+          completionPrediction,
+          learningConsistency
+        }
       });
     } catch (err) {
       console.error('Analytics error:', err.message);

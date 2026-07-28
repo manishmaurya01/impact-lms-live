@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Database, 
   Loader2, 
@@ -16,7 +17,13 @@ import {
   Activity,
   MessageSquare,
   Sparkles,
-  BookOpenCheck
+  BookOpenCheck,
+  Flame,
+  Clock,
+  Plus,
+  Search,
+  Bell,
+  CheckCircle
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -33,6 +40,8 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   
   // Dynamic MongoDB Telemetry States
   const [mongoSavedHistory, setMongoSavedHistory] = useState([]);
@@ -44,12 +53,36 @@ export default function Dashboard() {
     averageInterviewScore: 0,
     totalInterviewsScheduled: 0,
     totalInterviewsCompleted: 0,
-    totalFlaggedInterviews: 0
+    totalFlaggedInterviews: 0,
+    xp: 0,
+    level: 1,
+    xpProgressPercent: 0,
+    xpToNextLevel: 300,
+    learningHours: 0,
+    currentStreak: 0,
+    longestStreak: 0,
+    certificatesCount: 0,
+    modulesCompletedCount: 0
   });
 
   const [courseProgressList, setCourseProgressList] = useState([]);
   const [quizHistory, setQuizHistory] = useState([]);
   const [interviewHistory, setInterviewHistory] = useState([]);
+  const [heatmapData, setHeatmapData] = useState([]);
+  const [weeklyStudyHours, setWeeklyStudyHours] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [allBadges, setAllBadges] = useState([]);
+  const [aiInsights, setAiInsights] = useState({
+    weakestTopics: [],
+    strongestTopics: [],
+    suggestedRevisionTopics: [],
+    recommendedNextCourse: '',
+    completionPrediction: '',
+    learningConsistency: ''
+  });
+
+  // Certificate Modal State
+  const [selectedCertCourse, setSelectedCertCourse] = useState(null);
 
   // Profile Edit Modal States
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -131,6 +164,21 @@ export default function Dashboard() {
         if (analyticsResult.interviewPerformance) {
           setInterviewHistory(analyticsResult.interviewPerformance);
         }
+        if (analyticsResult.heatmapData) {
+          setHeatmapData(analyticsResult.heatmapData);
+        }
+        if (analyticsResult.weeklyStudyHours) {
+          setWeeklyStudyHours(analyticsResult.weeklyStudyHours);
+        }
+        if (analyticsResult.recentActivities) {
+          setRecentActivities(analyticsResult.recentActivities);
+        }
+        if (analyticsResult.allBadges) {
+          setAllBadges(analyticsResult.allBadges);
+        }
+        if (analyticsResult.aiInsights) {
+          setAiInsights(analyticsResult.aiInsights);
+        }
       }
 
       // Get Recent Active Roadmaps for History Grid fallback
@@ -194,6 +242,42 @@ export default function Dashboard() {
     navigate('/login');
   };
 
+  const getDynamicGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 17) return 'Good afternoon';
+    return 'Good evening';
+  };
+
+  // Extract upcoming uncompleted lessons from active course modules
+  const getUpcomingLessons = () => {
+    if (!activeCourse || !mongoSavedHistory.length) return [];
+    const courseObj = mongoSavedHistory.find(c => c._id === activeCourse.courseId);
+    if (!courseObj || !courseObj.modules) return [];
+    
+    const upcoming = [];
+    const completedSet = new Set(courseObj.completedTopics || []);
+    
+    for (const mod of courseObj.modules) {
+      if (mod.topics) {
+        for (let i = 0; i < mod.topics.length; i++) {
+          const key = `mod-${mod.dayId}-topic-${i}`;
+          if (!completedSet.has(key)) {
+            upcoming.push({
+              moduleTitle: mod.title,
+              topicName: mod.topics[i],
+              dayId: mod.dayId,
+              topicIndex: i,
+              courseId: courseObj._id
+            });
+            if (upcoming.length >= 3) return upcoming;
+          }
+        }
+      }
+    }
+    return upcoming;
+  };
+
   // Render Interactive Custom SVG Area Chart for quizzes
   const renderQuizChart = () => {
     if (!quizHistory || quizHistory.length === 0) {
@@ -216,8 +300,8 @@ export default function Dashboard() {
     const chartWidth = width - paddingLeft - paddingRight;
     const chartHeight = height - paddingTop - paddingBottom;
 
-    const points = quizHistory.map((q, idx) => {
-      const x = paddingLeft + (quizHistory.length > 1 ? (idx / (quizHistory.length - 1)) * chartWidth : chartWidth / 2);
+    const points = quizHistory.slice(-6).map((q, idx) => {
+      const x = paddingLeft + (quizHistory.length > 1 ? (idx / (Math.min(6, quizHistory.length) - 1)) * chartWidth : chartWidth / 2);
       const y = paddingTop + chartHeight - (q.scorePercentage / 100) * chartHeight;
       return { x, y, ...q };
     });
@@ -287,7 +371,7 @@ export default function Dashboard() {
     );
   };
 
-  // Render Interactive Custom SVG Bar Chart for oral interview accuracy
+  // Render Interactive Custom SVG Line Chart for oral interview accuracy
   const renderInterviewChart = () => {
     const completedInterviews = interviewHistory.filter(i => i.status === 'Completed' || i.avgAccuracy > 0);
 
@@ -296,7 +380,7 @@ export default function Dashboard() {
         <div className="chart-empty-state">
           <MessageSquare size={32} style={{ color: 'var(--text-muted)' }} />
           <p>No completed interviews yet.</p>
-          <span style={{ fontSize: '0.75rem' }}>Oral evaluations will show accuracy bar charts once interviews are completed.</span>
+          <span style={{ fontSize: '0.75rem' }}>Oral evaluations will show accuracy charts once interviews are completed.</span>
         </div>
       );
     }
@@ -311,18 +395,21 @@ export default function Dashboard() {
     const chartWidth = width - paddingLeft - paddingRight;
     const chartHeight = height - paddingTop - paddingBottom;
 
-    const N = completedInterviews.length;
-    const maxBarWidth = 40;
-    const totalGapWidth = chartWidth * 0.4;
-    const barWidth = Math.min(maxBarWidth, (chartWidth - totalGapWidth) / N);
-    const gap = (chartWidth - N * barWidth) / (N + 1);
+    const points = completedInterviews.slice(-6).map((item, idx) => {
+      const x = paddingLeft + (completedInterviews.length > 1 ? (idx / (Math.min(6, completedInterviews.length) - 1)) * chartWidth : chartWidth / 2);
+      const y = paddingTop + chartHeight - (item.avgAccuracy / 100) * chartHeight;
+      return { x, y, ...item };
+    });
+
+    const lineD = `M ${points.map(p => `${p.x} ${p.y}`).join(' L ')}`;
+    const areaD = `${lineD} L ${points[points.length - 1].x} ${height - paddingBottom} L ${points[0].x} ${height - paddingBottom} Z`;
 
     return (
       <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
         <defs>
-          <linearGradient id="cyanBarGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#06b6d4" />
-            <stop offset="100%" stopColor="rgba(6, 182, 212, 0.2)" />
+          <linearGradient id="intAreaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity="0.0" />
           </linearGradient>
         </defs>
 
@@ -337,36 +424,250 @@ export default function Dashboard() {
           );
         })}
 
-        {/* Bars */}
-        {completedInterviews.map((item, idx) => {
-          const x = paddingLeft + gap + idx * (barWidth + gap);
-          const barHeight = (item.avgAccuracy / 100) * chartHeight;
-          const y = height - paddingBottom - barHeight;
+        <path d={areaD} fill="url(#intAreaGrad)" />
+        <path d={lineD} fill="none" stroke="var(--accent-primary)" strokeWidth="2.5" />
 
-          return (
-            <g key={idx}>
-              <rect 
-                x={x} 
-                y={y} 
-                width={barWidth} 
-                height={barHeight} 
-                fill="url(#cyanBarGrad)" 
-                rx="4"
-                ry="4"
-              />
-              <text x={x + barWidth / 2} y={y - 6} fill="var(--text-main)" fontSize="10" fontWeight="bold" textAnchor="middle">
-                {item.avgAccuracy}%
-              </text>
-              <text x={x + barWidth / 2} y={height - 12} fill="var(--text-muted)" fontSize="9" textAnchor="middle">
-                {`Int ${idx + 1}`}
-              </text>
-              <title>{`Interview #${idx + 1}\nDifficulty: ${item.difficulty}\nAccuracy: ${item.avgAccuracy}%`}</title>
-            </g>
-          );
-        })}
+        {/* Bars */}
+        {points.map((p, idx) => (
+          <g key={idx}>
+            <circle cx={p.x} cy={p.y} r="4" fill="var(--bg-secondary)" stroke="var(--accent-primary)" strokeWidth="2.5" />
+            <text x={p.x} y={p.y - 8} fill="var(--text-main)" fontSize="8" fontWeight="700" textAnchor="middle">{p.avgAccuracy}%</text>
+            <text x={p.x} y={height - 10} fill="var(--text-muted)" fontSize="9" textAnchor="middle">{`Int ${idx + 1}`}</text>
+          </g>
+        ))}
       </svg>
     );
   };
+
+  // Render SVG Line Chart for Weekly Study Hours
+  const renderWeeklyStudyHoursChart = () => {
+    if (!weeklyStudyHours || weeklyStudyHours.length === 0) {
+      return (
+        <div className="chart-empty-state">
+          <Activity size={32} />
+          <p>No activity tracked this week.</p>
+        </div>
+      );
+    }
+    const width = 500;
+    const height = 200;
+    const leftPad = 40;
+    const rightPad = 20;
+    const topPad = 25;
+    const bottomPad = 30;
+
+    const chartWidth = width - leftPad - rightPad;
+    const chartHeight = height - topPad - bottomPad;
+
+    const maxHours = Math.max(...weeklyStudyHours.map(d => d.hours), 4); 
+
+    const points = weeklyStudyHours.map((d, idx) => {
+      const x = leftPad + (idx / (weeklyStudyHours.length - 1)) * chartWidth;
+      const y = topPad + chartHeight - (d.hours / maxHours) * chartHeight;
+      return { x, y, ...d };
+    });
+
+    const lineD = `M ${points.map(p => `${p.x} ${p.y}`).join(' L ')}`;
+    const areaD = `${lineD} L ${points[points.length - 1].x} ${height - bottomPad} L ${points[0].x} ${height - bottomPad} Z`;
+
+    return (
+      <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="100%">
+        <defs>
+          <linearGradient id="studyAreaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="var(--accent-primary)" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="var(--accent-primary)" stopOpacity="0.0" />
+          </linearGradient>
+        </defs>
+        {[0, 25, 50, 75, 100].map(pct => {
+          const val = Math.round((pct / 100) * maxHours * 10) / 10;
+          const y = topPad + chartHeight - (pct / 100) * chartHeight;
+          return (
+            <g key={pct}>
+              <line x1={leftPad} y1={y} x2={width - rightPad} y2={y} stroke="rgba(255,255,255,0.06)" strokeDasharray="2 2" />
+              <text x={leftPad - 8} y={y + 3} fill="var(--text-muted)" fontSize="9" textAnchor="end">{val}h</text>
+            </g>
+          );
+        })}
+        <path d={areaD} fill="url(#studyAreaGrad)" />
+        <path d={lineD} fill="none" stroke="var(--accent-primary)" strokeWidth="2.5" />
+        {points.map((p, idx) => (
+          <g key={idx}>
+            <circle cx={p.x} cy={p.y} r="4" fill="var(--bg-secondary)" stroke="var(--accent-primary)" strokeWidth="2.5" />
+            <text x={p.x} y={p.y - 8} fill="var(--text-main)" fontSize="8" fontWeight="700" textAnchor="middle">{p.hours}h</text>
+            <text x={p.x} y={height - 10} fill="var(--text-muted)" fontSize="9" textAnchor="middle">{p.day}</text>
+          </g>
+        ))}
+      </svg>
+    );
+  };
+
+  // Render SVG Skills Donut Chart
+  const renderSkillsDonutChart = () => {
+    const beginnerCount = courseProgressList.filter(c => c.level?.toLowerCase() === 'beginner').length;
+    const intermediateCount = courseProgressList.filter(c => c.level?.toLowerCase() === 'intermediate').length;
+    const advancedCount = courseProgressList.filter(c => c.level?.toLowerCase() === 'advanced' || c.level?.toLowerCase() === 'expert').length;
+    const total = beginnerCount + intermediateCount + advancedCount;
+
+    if (total === 0) {
+      return (
+        <div className="chart-empty-state">
+          <Layers size={32} style={{ color: 'var(--text-muted)' }} />
+          <p>No skills data available.</p>
+          <span style={{ fontSize: '0.75rem' }}>Create dynamic courses to populate skills stats.</span>
+        </div>
+      );
+    }
+
+    const segments = [
+      { label: 'Beginner', count: beginnerCount, color: 'var(--accent-primary)' },
+      { label: 'Intermediate', count: intermediateCount, color: 'var(--accent-secondary)' },
+      { label: 'Advanced', count: advancedCount, color: 'var(--accent-warning)' }
+    ].filter(s => s.count > 0);
+
+    let accumulatedPercent = 0;
+    const radius = 50;
+    const circumference = 2 * Math.PI * radius;
+
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', justifyContent: 'center', width: '100%' }}>
+        <svg viewBox="0 0 160 160" width="120" height="120">
+          <g transform="rotate(-90 80 80)">
+            {segments.map((seg, idx) => {
+              const percent = seg.count / total;
+              const strokeLength = percent * circumference;
+              const strokeOffset = circumference - (accumulatedPercent * circumference);
+              accumulatedPercent += percent;
+
+              return (
+                <circle
+                  key={idx}
+                  cx="80"
+                  cy="80"
+                  r={radius}
+                  fill="transparent"
+                  stroke={seg.color}
+                  strokeWidth="16"
+                  strokeDasharray={`${strokeLength} ${circumference - strokeLength}`}
+                  strokeDashoffset={strokeOffset}
+                  strokeLinecap="round"
+                  style={{ transition: 'stroke-dashoffset 0.5s ease-out' }}
+                >
+                  <title>{`${seg.label}: ${seg.count} courses (${Math.round(percent * 100)}%)`}</title>
+                </circle>
+              );
+            })}
+            <circle cx="80" cy="80" r="36" fill="var(--bg-secondary)" />
+          </g>
+          <text x="80" y="84" textAnchor="middle" fill="var(--text-main)" fontSize="11" fontWeight="800">
+            {total} Courses
+          </text>
+        </svg>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem' }}>
+          {segments.map((seg, idx) => (
+            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: seg.color }} />
+              <span style={{ fontWeight: '600' }}>{seg.label}:</span>
+              <span style={{ color: 'var(--text-muted)' }}>{seg.count} ({Math.round((seg.count / total) * 100)}%)</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  // GitHub contribution-style Heatmap Grid
+  const renderHeatmap = () => {
+    if (!heatmapData || heatmapData.length === 0) return null;
+    
+    return (
+      <div className="heatmap-scroll-outer">
+        <div className="heatmap-grid-layout">
+          {heatmapData.map((day, idx) => {
+            let colorClass = 'heatmap-color-0';
+            if (day.count === 1) colorClass = 'heatmap-color-1';
+            else if (day.count === 2) colorClass = 'heatmap-color-2';
+            else if (day.count === 3) colorClass = 'heatmap-color-3';
+            else if (day.count >= 4) colorClass = 'heatmap-color-4';
+
+            return (
+              <div 
+                key={idx} 
+                className={`heatmap-cell-node ${colorClass}`}
+                title={`${day.date}: ${day.count} activities`}
+              />
+            );
+          })}
+        </div>
+        <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.5rem', alignItems: 'center' }}>
+          <span>Less</span>
+          <div className="heatmap-cell-node heatmap-color-0" />
+          <div className="heatmap-cell-node heatmap-color-1" />
+          <div className="heatmap-cell-node heatmap-color-2" />
+          <div className="heatmap-cell-node heatmap-color-3" />
+          <div className="heatmap-cell-node heatmap-color-4" />
+          <span>More</span>
+        </div>
+      </div>
+    );
+  };
+
+  // Render Mini Calendar
+  const renderMiniCalendar = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    
+    const firstDayIdx = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    
+    const weekdayHeaders = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    const calendarDays = [];
+    
+    for (let i = 0; i < firstDayIdx; i++) {
+      calendarDays.push({ dayNum: '', activeStudy: false, isToday: false });
+    }
+    
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateObj = new Date(year, month, d);
+      const dateStr = dateObj.toISOString().split('T')[0];
+      
+      const isToday = d === today.getDate();
+      const hasStudyActivity = heatmapData.some(h => h.date === dateStr && h.count > 0);
+      
+      calendarDays.push({
+        dayNum: d,
+        activeStudy: hasStudyActivity,
+        isToday
+      });
+    }
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: '800', marginBottom: '0.25rem' }}>
+          <span>{today.toLocaleString('default', { month: 'long' })} {year}</span>
+        </div>
+        <div className="saas-calendar-grid">
+          {weekdayHeaders.map((w, idx) => (
+            <div key={idx} className="calendar-day-header">{w}</div>
+          ))}
+          {calendarDays.map((day, idx) => (
+            <div 
+              key={idx} 
+              className={`calendar-day-node ${day.activeStudy ? 'active-study' : ''} ${day.isToday ? 'today-highlight' : ''}`}
+            >
+              {day.dayNum}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const filteredCourses = courseProgressList.filter(course => 
+    course.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const activeCourse = courseProgressList.length > 0 ? courseProgressList[0] : null;
 
   return (
     <div className="lms-premium-viewport">
@@ -410,182 +711,537 @@ export default function Dashboard() {
           {activeTab === 'dashboard' && (
             <div className="dashboard-layout-wrapper">
               
-              {/* Welcome Hero Card with profile editor trigger */}
-              <div className="welcome-hero-card">
-                <div className="ambient-glow-sphere"></div>
-                <div className="welcome-row-container">
-                  <div className="hero-text-content">
-                    <h2>Welcome back, {profileFormData.fullName || 'Learner'}</h2>
-                    <p>Track your courses, quizzes, and AI evaluations in one centralized place.</p>
+              {/* TOP HEADER CONTROLS SECTION */}
+              <div className="dashboard-top-navbar">
+                <div className="navbar-brand-section">
+                  <h1>Workspace Dashboard</h1>
+                  <p>{getDynamicGreeting()}, {profileFormData.fullName || 'Student'}</p>
+                </div>
+                <div className="navbar-controls-group">
+                  
+                  {/* Search Engine */}
+                  <div className="navbar-search-wrapper">
+                    <Search size={16} className="search-leading-icon" />
+                    <input 
+                      type="text" 
+                      placeholder="Search courses..." 
+                      className="navbar-search-input"
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                    />
                   </div>
-                  <button 
-                    className="dashboard-edit-profile-btn"
+
+                  {/* Notifications bell */}
+                  <div className="navbar-btn-circle" onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}>
+                    <Bell size={18} />
+                    {recentActivities.length > 0 && <div className="notification-badge-dot" />}
+                    
+                    <AnimatePresence>
+                      {isNotificationsOpen && (
+                        <motion.div 
+                          className="notifications-dropdown-menu"
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                          transition={{ duration: 0.15 }}
+                          onClick={e => e.stopPropagation()}
+                        >
+                          <div className="dropdown-header-bar">
+                            <h4>Recent Activities</h4>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Latest updates</span>
+                          </div>
+                          <div className="dropdown-list-scroller">
+                            {recentActivities.length === 0 ? (
+                              <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+                                No recent notifications
+                              </div>
+                            ) : (
+                              recentActivities.map((act, idx) => (
+                                <div key={idx} className="dropdown-item-row">
+                                  <span className="item-title">{act.title}</span>
+                                  <span className="item-desc">{act.detail}</span>
+                                  <span className="item-time">{new Date(act.timestamp).toLocaleDateString()}</span>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Profile Edit Trigger */}
+                  <div 
+                    className="navbar-btn-circle" 
+                    title="Profile Settings"
                     onClick={() => {
                       loadProfileFromStorage();
                       setIsProfileModalOpen(true);
                     }}
                   >
-                    <Settings size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} /> Edit Profile
+                    <Settings size={18} />
+                  </div>
+
+                </div>
+              </div>
+
+              {/* REDESIGNED SAAS HERO BANNER */}
+              <div className="premium-hero-card-container">
+                <div className="premium-hero-glow-underlay" />
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <Sparkles size={20} style={{ color: 'var(--accent-secondary)' }} />
+                    <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800', color: 'rgba(255,255,255,0.85)' }}>AI-Powered Learning Workspace</span>
+                  </div>
+                  <h2>{profileFormData.fullName}</h2>
+                  <p>Master complex topics, test your skills in oral interviews, and track your daily learning streak.</p>
+                  
+                  <div className="hero-stats-ribbon">
+                    <div className="ribbon-stat-item">
+                      <Flame size={14} style={{ color: '#ffb800' }} />
+                      <span>{stats.currentStreak} Day Streak</span>
+                    </div>
+                    <div className="ribbon-stat-item">
+                      <Trophy size={14} style={{ color: '#00c896' }} />
+                      <span>Level {stats.level} ({stats.xp} XP)</span>
+                    </div>
+                    <div className="ribbon-stat-item">
+                      <Clock size={14} style={{ color: '#a855f7' }} />
+                      <span>{stats.learningHours} Hrs Learned</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="hero-resume-action-box">
+                  <div className="resume-header-row">
+                    <span>Continue Learning</span>
+                    <Clock size={14} style={{ color: 'rgba(255,255,255,0.7)' }} />
+                  </div>
+                  <h4 className="hero-course-title">
+                    {activeCourse ? activeCourse.title : 'No active courses yet'}
+                  </h4>
+                  <button 
+                    className="hero-btn-resume"
+                    disabled={!activeCourse}
+                    onClick={() => navigate('/courses', { state: { courseId: activeCourse.courseId, autoLaunch: true } })}
+                  >
+                    Resume Lesson &rarr;
                   </button>
                 </div>
               </div>
 
-              {/* METRICS COUNTER PANELS */}
-              <div className="analytics-metrics-grid">
+              {/* SAAS METRICS GRID */}
+              <div className="premium-metrics-grid">
                 
-                <div className="metric-data-card">
-                  <div className="metric-header">
-                    <span className="metric-title">Courses</span>
-                    <BookOpen className="icon-blue" size={22} />
+                <div className="saas-metric-card">
+                  <div className="saas-metric-header">
+                    <span className="saas-metric-title">Courses</span>
+                    <div className="icon-box icon-purple-bg"><BookOpenCheck size={18} /></div>
                   </div>
-                  <h2 className="metric-number">{stats.totalCourses}</h2>
-                  <p className="metric-footer-text">Roadmaps generated</p>
+                  <h2 className="saas-metric-value">{stats.totalCourses}</h2>
+                  <span className="saas-metric-footer">Roadmaps generated</span>
                 </div>
 
-                <div className="metric-data-card">
-                  <div className="metric-header">
-                    <span className="metric-title">Notes</span>
-                    <FileText className="icon-amber" size={22} />
+                <div className="saas-metric-card">
+                  <div className="saas-metric-header">
+                    <span className="saas-metric-title">Modules Complete</span>
+                    <div className="icon-box icon-teal-bg"><CheckCircle size={18} /></div>
                   </div>
-                  <h2 className="metric-number">{stats.totalNotes}</h2>
-                  <p className="metric-footer-text">Saved notes</p>
+                  <h2 className="saas-metric-value">{stats.modulesCompletedCount}</h2>
+                  <span className="saas-metric-footer">Fully completed</span>
                 </div>
 
-                <div className="metric-data-card">
-                  <div className="metric-header">
-                    <span className="metric-title">Assignments</span>
-                    <CheckCircle2 className="icon-green" size={22} />
+                <div className="saas-metric-card">
+                  <div className="saas-metric-header">
+                    <span className="saas-metric-title">Assignments</span>
+                    <div className="icon-box icon-amber-bg"><FileText size={18} /></div>
                   </div>
-                  <h2 className="metric-number">{stats.evaluatedAssignments}</h2>
-                  <p className="metric-footer-text">Assignments reviewed</p>
+                  <h2 className="saas-metric-value">{stats.evaluatedAssignments}</h2>
+                  <span className="saas-metric-footer">AI reviews evaluated</span>
                 </div>
 
-                <div className="metric-data-card">
-                  <div className="metric-header">
-                    <span className="metric-title">Average Quiz Score</span>
-                    <TrendingUp className="icon-purple" size={22} />
+                <div className="saas-metric-card">
+                  <div className="saas-metric-header">
+                    <span className="saas-metric-title">Quiz Average</span>
+                    <div className="icon-box icon-purple-bg"><TrendingUp size={18} /></div>
                   </div>
-                  <h2 className="metric-number">{stats.averageQuizScore}%</h2>
-                  <p className="metric-footer-text">Overall quiz performance</p>
+                  <h2 className="saas-metric-value">{stats.averageQuizScore}%</h2>
+                  <span className="saas-metric-footer">Practice evaluations</span>
                 </div>
 
-                <div className="metric-data-card">
-                  <div className="metric-header">
-                    <span className="metric-title">Oral Interview Score</span>
-                    <Award className="icon-blue" size={22} style={{ color: '#06b6d4' }} />
+                <div className="saas-metric-card">
+                  <div className="saas-metric-header">
+                    <span className="saas-metric-title">Oral Accuracy</span>
+                    <div className="icon-box icon-teal-bg"><Award size={18} /></div>
                   </div>
-                  <h2 className="metric-number">{stats.averageInterviewScore}%</h2>
-                  <p className="metric-footer-text">Avg candidate accuracy</p>
+                  <h2 className="saas-metric-value">{stats.averageInterviewScore}%</h2>
+                  <span className="saas-metric-footer">Oral speech accuracy</span>
                 </div>
 
               </div>
 
-              {/* DETAILED STATS GRID */}
-              <div className="dashboard-detailed-grid">
+              {/* DASHBOARD COLUMNS: 70% LEFT, 30% RIGHT */}
+              <div className="dashboard-columns-grid">
                 
-                {/* Course-wise Progress card list */}
-                <div className="dashboard-panel-card">
-                  <div className="panel-card-header">
-                    <h3><BookOpenCheck size={18} style={{ color: 'var(--accent-secondary)' }} /> Course Progress Analysis</h3>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Realtime database telemetry</span>
-                  </div>
-                  <div className="progress-list-container">
-                    {isLoading ? (
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '3rem', color: 'var(--text-muted)', gap: '0.5rem' }}>
-                        <Loader2 className="spinner-icon" size={32} style={{ animation: 'spin 1s linear infinite' }} />
-                        <span>Fetching progress details...</span>
+                {/* LEFT 70% PANEL */}
+                <div className="dashboard-left-panel">
+                  
+                  {/* Continue Learning Widget Card */}
+                  {activeCourse && (
+                    <motion.div 
+                      className="saas-panel-card"
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div className="saas-card-header">
+                        <h3><Clock size={18} style={{ color: 'var(--accent-primary)' }} /> Continue Learning</h3>
+                        <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Estimated completion in {Math.ceil((100 - activeCourse.percentProgress) / 15) || 1} days</span>
                       </div>
-                    ) : courseProgressList.length === 0 ? (
-                      <div className="chart-empty-state">
-                        <Layers size={36} style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }} />
-                        <p>No active courses found.</p>
+                      
+                      <div className="active-course-highlight-card">
+                        <div className="active-highlight-meta">
+                          <div>
+                            <h4>{activeCourse.title}</h4>
+                            <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                              Modules completed: <strong>{activeCourse.completedModules} of {activeCourse.totalModules}</strong>
+                            </span>
+                          </div>
+                          <span className="course-difficulty-badge">{activeCourse.level}</span>
+                        </div>
+
+                        <div className="progress-bar-wrapper">
+                          <div className="progress-bar-bg">
+                            <div className="progress-bar-fill" style={{ width: `${activeCourse.percentProgress}%` }} />
+                          </div>
+                          <span className="progress-percent-label">{activeCourse.percentProgress}%</span>
+                        </div>
+
                         <button 
-                          className="btn-resume-course-inline" 
-                          style={{ alignSelf: 'center', marginTop: '0.5rem' }}
-                          onClick={() => navigate('/assignments')}
+                          className="btn-resume-course-inline"
+                          onClick={() => navigate('/courses', { state: { courseId: activeCourse.courseId, autoLaunch: true } })}
                         >
-                          Generate a Course &rarr;
+                          Resume Active Workspace &rarr;
                         </button>
                       </div>
-                    ) : (
-                      courseProgressList.map(course => (
-                        <div key={course.courseId} className="progress-item-card">
-                          <div className="progress-item-header">
-                            <div style={{ flex: 1 }}>
-                              <h4>{course.title}</h4>
-                              <div className="progress-stats-row" style={{ marginTop: '0.4rem' }}>
-                                <span>Modules: <strong>{course.completedModules} / {course.totalModules} Complete</strong></span>
-                                <span>Remaining: <strong>{course.remainingModules}</strong></span>
+                    </motion.div>
+                  )}
+
+                  {/* Upcoming Lessons Widget */}
+                  {activeCourse && (
+                    <motion.div 
+                      className="saas-panel-card"
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.05 }}
+                    >
+                      <div className="saas-card-header">
+                        <h3><BookOpenCheck size={18} style={{ color: 'var(--accent-primary)' }} /> Upcoming Lessons</h3>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Next in your syllabus</span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {getUpcomingLessons().length === 0 ? (
+                          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', padding: '1rem', textAlign: 'center' }}>
+                            No upcoming lessons. You've completed all topics in this course! 🎉
+                          </div>
+                        ) : (
+                          getUpcomingLessons().map((lesson, idx) => (
+                            <div 
+                              key={idx} 
+                              style={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between', 
+                                alignItems: 'center', 
+                                padding: '1rem', 
+                                border: '1px solid var(--border-color)', 
+                                borderRadius: 'var(--radius-md)',
+                                background: 'rgba(255,255,255,0.01)',
+                                gap: '1rem'
+                              }}
+                            >
+                              <div style={{ flex: 1 }}>
+                                <span style={{ fontSize: '0.72rem', color: 'var(--accent-primary)', fontWeight: '800', textTransform: 'uppercase' }}>
+                                  Module {lesson.dayId}
+                                </span>
+                                <h5 style={{ margin: '0.1rem 0 0 0', fontSize: '0.9rem', fontWeight: '800' }}>{lesson.topicName}</h5>
+                                <p style={{ margin: '0.1rem 0 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>{lesson.moduleTitle}</p>
                               </div>
+                              <button 
+                                className="btn-resume-course-inline"
+                                style={{ padding: '0.4rem 0.85rem', fontSize: '0.8rem' }}
+                                onClick={() => navigate('/courses', { 
+                                  state: { 
+                                    courseId: lesson.courseId, 
+                                    autoLaunch: true,
+                                    targetModuleId: lesson.dayId,
+                                    targetTopicIndex: lesson.topicIndex
+                                  } 
+                                })}
+                              >
+                                Start &rarr;
+                              </button>
                             </div>
-                            <span className="course-difficulty-badge">{course.level}</span>
-                          </div>
+                          ))
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
 
-                          <div className="progress-bar-wrapper">
-                            <div className="progress-bar-bg">
-                              <div className="progress-bar-fill" style={{ width: `${course.percentProgress}%` }} />
-                            </div>
-                            <span className="progress-percent-label">{course.percentProgress}%</span>
-                          </div>
-
-                          <button 
-                            className="btn-resume-course-inline"
-                            onClick={() => navigate('/courses', { state: { courseId: course.courseId, autoLaunch: true } })}
-                          >
-                            Resume Course →
+                  {/* Course Progress List */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><BookOpenCheck size={18} style={{ color: 'var(--accent-secondary)' }} /> Course Roadmaps & Progress</h3>
+                    </div>
+                    <div className="saas-courses-grid">
+                      {isLoading ? (
+                        <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>
+                          <Loader2 className="spinner-icon" style={{ animation: 'spin 1s linear infinite', margin: '0 auto 1rem auto' }} />
+                          <span>Syncing course roadmaps...</span>
+                        </div>
+                      ) : filteredCourses.length === 0 ? (
+                        <div className="chart-empty-state">
+                          <Layers size={36} style={{ color: 'var(--text-muted)' }} />
+                          <p>No matching courses generated yet.</p>
+                          <button className="btn-resume-course-inline" style={{ alignSelf: 'center', marginTop: '0.5rem' }} onClick={() => navigate('/assignments')}>
+                            Generate roadmap now
                           </button>
                         </div>
-                      ))
-                    )}
+                      ) : (
+                        filteredCourses.map(course => (
+                          <div key={course.courseId} className="saas-course-row">
+                            <div className="saas-course-row-info">
+                              <h4>{course.title}</h4>
+                              <div style={{ display: 'flex', gap: '1rem', fontSize: '0.8rem', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
+                                <span>Level: <strong>{course.level}</strong></span>
+                                <span>Modules: <strong>{course.completedModules} / {course.totalModules}</strong></span>
+                              </div>
+                            </div>
+                            
+                            <div className="saas-course-row-progress-col">
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem' }}>
+                                <span>Progress</span>
+                                <span style={{ fontWeight: '800', color: 'var(--accent-primary)' }}>{course.percentProgress}%</span>
+                              </div>
+                              <div className="progress-bar-bg" style={{ height: '6px' }}>
+                                <div className="progress-bar-fill" style={{ width: `${course.percentProgress}%` }} />
+                              </div>
+                            </div>
+
+                            <div className="saas-course-row-actions">
+                              <button 
+                                className="btn-resume-course-inline"
+                                onClick={() => navigate('/courses', { state: { courseId: course.courseId, autoLaunch: true } })}
+                              >
+                                Study
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
                   </div>
+
+                  {/* Weekly Study Hours Line Chart */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><Activity size={18} style={{ color: 'var(--accent-primary)' }} /> Weekly Learning Hours</h3>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Monday to Sunday study hours</span>
+                    </div>
+                    <div className="saas-chart-wrapper">
+                      {renderWeeklyStudyHoursChart()}
+                    </div>
+                  </div>
+
+                  {/* Heatmap Contribution Graph */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><Layers size={18} style={{ color: 'var(--accent-secondary)' }} /> Learning Activity Heatmap</h3>
+                      <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>GitHub style contribution tracker</span>
+                    </div>
+                    {renderHeatmap()}
+                  </div>
+
+                  {/* Timeline Activities List */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><History size={18} style={{ color: 'var(--accent-primary)' }} /> Learning Activity Timeline</h3>
+                    </div>
+                    <div className="saas-timeline-list">
+                      {recentActivities.map((item, idx) => (
+                        <div key={idx} className="saas-timeline-item">
+                          <div className="saas-timeline-dot" />
+                          <div className="saas-timeline-content">
+                            <span className="time-stamp">{new Date(item.timestamp).toLocaleDateString()}</span>
+                            <h5>{item.title}</h5>
+                            <p>{item.detail}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                 </div>
 
-                {/* System Info Box & Quick metrics stack */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  <div className="quick-stats-container-upgraded" style={{ margin: 0, height: 'auto', flex: 1 }}>
-                    <div className="system-status-header">
-                      <h4>Learning Platform Status</h4>
+                {/* RIGHT 30% PANEL */}
+                <div className="dashboard-right-panel">
+                  
+                  {/* AI Coach Banner */}
+                  <div className="ai-coach-banner">
+                    <div className="ai-coach-avatar-circle">
+                      <Sparkles size={20} />
                     </div>
-                    <div className="status-item-line">
-                      <span className="status-bullet green"></span>
-                      <p>AI Core: Active (Gemini-2.5)</p>
-                    </div>
-                    <div className="status-item-line">
-                      <span className="status-bullet blue"></span>
-                      <p>Database: Connected (MongoDB Cloud)</p>
-                    </div>
-                    <div className="status-item-line">
-                      <span className="status-bullet purple"></span>
-                      <p>Access Security: SSL & JWT Enabled</p>
+                    <div className="ai-coach-bubble">
+                      <h4>AI Recommendation Coach</h4>
+                      <p>
+                        {aiInsights.weakestTopics.length > 0 
+                          ? `Hey! Based on your scores, I suggest revising the topic: "${aiInsights.weakestTopics[0]}".`
+                          : "Great progress! Start your next syllabus module to maintain your momentum."}
+                      </p>
                     </div>
                   </div>
 
-                  <div className="dashboard-panel-card" style={{ flex: 2 }}>
-                    <div className="panel-card-header">
-                      <h3><Award size={18} style={{ color: 'var(--accent-secondary)' }} /> Achievements Summary</h3>
+                  {/* AI Insights Card */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><Sparkles size={18} style={{ color: 'var(--accent-primary)' }} /> AI Knowledge Insights</h3>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0.5rem 0' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{ background: 'rgba(6, 182, 212, 0.1)', padding: '0.5rem', borderRadius: '8px', color: '#06b6d4' }}>
-                          <MessageSquare size={20} />
-                        </div>
-                        <div>
-                          <h5 style={{ margin: '0 0 0.1rem 0', fontSize: '0.9rem', fontWeight: '700' }}>Interviews Scheduled</h5>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{stats.totalInterviewsScheduled} scheduled / {stats.totalInterviewsCompleted} completed</span>
-                        </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                      <div>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem', fontWeight: '700' }}>WEAKEST TOPICS</span>
+                        {aiInsights.weakestTopics.length > 0 ? (
+                          <div className="insights-topics-list">
+                            {aiInsights.weakestTopics.map((t, i) => (
+                              <span key={i} className="topic-pill pill-danger">{t}</span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-main)', fontWeight: '600' }}>No weak topics identified! Keep it up.</span>
+                        )}
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '8px', color: 'var(--accent-danger)' }}>
-                          <Activity size={20} />
+                      <div>
+                        <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem', fontWeight: '700' }}>STRONGEST AREAS</span>
+                        {aiInsights.strongestTopics.length > 0 ? (
+                          <div className="insights-topics-list">
+                            {aiInsights.strongestTopics.map((t, i) => (
+                              <span key={i} className="topic-pill pill-success">{t}</span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Attempt more quizzes to calculate strong areas.</span>
+                        )}
+                      </div>
+
+                      <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        <div>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', fontWeight: '700' }}>COMPLETION FORECAST</span>
+                          <span style={{ fontSize: '0.85rem', fontWeight: '700' }}>{aiInsights.completionPrediction}</span>
                         </div>
                         <div>
-                          <h5 style={{ margin: '0 0 0.1rem 0', fontSize: '0.9rem', fontWeight: '700' }}>Flagged Warnings</h5>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{stats.totalFlaggedInterviews} security warnings flagged</span>
+                          <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'block', fontWeight: '700' }}>RECOMMENDED NEXT ROADMAP</span>
+                          <span style={{ fontSize: '0.85rem', fontWeight: '700' }}>{aiInsights.recommendedNextCourse}</span>
                         </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Gamification Level Box */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><Award size={18} style={{ color: '#ffb800' }} /> Gamified Level progress</h3>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontWeight: '800', fontSize: '1rem' }}>Level {stats.level}</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{stats.xpToNextLevel} XP to Level {stats.level + 1}</span>
+                      </div>
+                      <div className="progress-bar-bg" style={{ height: '8px' }}>
+                        <div className="progress-bar-fill" style={{ width: `${stats.xpProgressPercent}%`, background: 'var(--accent-warning)', boxShadow: '0 0 8px var(--accent-warning)' }} />
+                      </div>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Current Streak: {stats.currentStreak} days (Longest: {stats.longestStreak} days)</span>
+                    </div>
+                  </div>
+
+                  {/* Skills distribution donut chart */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><Layers size={18} style={{ color: 'var(--accent-secondary)' }} /> Skills Distribution</h3>
+                    </div>
+                    {renderSkillsDonutChart()}
+                  </div>
+
+                  {/* Mini Calendar widget */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><Award size={18} style={{ color: 'var(--accent-primary)' }} /> Learning Calendar</h3>
+                    </div>
+                    {renderMiniCalendar()}
+                  </div>
+
+                  {/* Achievements badges card */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><Trophy size={18} style={{ color: '#ffb800' }} /> Achievements Badges</h3>
+                    </div>
+                    <div className="saas-badges-grid">
+                      {allBadges.map((badge, idx) => {
+                        let IconComp = Sparkles;
+                        if (badge.icon === 'Trophy') IconComp = Trophy;
+                        else if (badge.icon === 'Flame') IconComp = Flame;
+                        else if (badge.icon === 'Award') IconComp = Award;
+                        else if (badge.icon === 'MessageSquare') IconComp = MessageSquare;
+                        else if (badge.icon === 'CheckCircle2') IconComp = CheckCircle2;
+
+                        return (
+                          <div key={idx} className={`saas-badge-node ${badge.unlocked ? 'unlocked' : ''}`} title={badge.desc}>
+                            <div className="saas-badge-icon-ring">
+                              <IconComp size={18} />
+                            </div>
+                            <span className="saas-badge-title">{badge.title}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Recent Certificates Widget */}
+                  {stats.certificatesCount > 0 && (
+                    <div className="saas-panel-card">
+                      <div className="saas-card-header">
+                        <h3><Trophy size={18} style={{ color: 'var(--accent-secondary)' }} /> Certificates Earned</h3>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {courseProgressList.filter(c => c.percentProgress === 100).map(c => (
+                          <div 
+                            key={c.courseId} 
+                            style={{ padding: '0.85rem', border: '1px solid var(--border-color)', borderRadius: '8px', background: 'rgba(255,255,255,0.02)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                            onClick={() => setSelectedCertCourse(c)}
+                          >
+                            <span style={{ fontSize: '0.85rem', fontWeight: '700' }}>{c.title}</span>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--accent-secondary)', fontWeight: '800' }}>View &rarr;</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Quick Actions widget */}
+                  <div className="saas-panel-card">
+                    <div className="saas-card-header">
+                      <h3><Plus size={18} style={{ color: 'var(--text-main)' }} /> Quick Actions</h3>
+                    </div>
+                    <div className="saas-quick-actions-row">
+                      <button className="saas-action-btn" onClick={() => navigate('/assignments')}>
+                        <Plus size={18} className="btn-icon" />
+                        <span>Build Roadmap</span>
+                      </button>
+                      <button className="saas-action-btn" onClick={() => navigate('/interview')}>
+                        <MessageSquare size={18} className="btn-icon" />
+                        <span>Mock Interview</span>
+                      </button>
+                    </div>
+                  </div>
+
                 </div>
 
               </div>
@@ -599,7 +1255,7 @@ export default function Dashboard() {
                     <h3><Trophy size={18} style={{ color: 'var(--accent-secondary)' }} /> Quiz Performance History</h3>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Interactive progress timeline</span>
                   </div>
-                  <div className="svg-chart-container">
+                  <div className="saas-chart-wrapper">
                     {renderQuizChart()}
                   </div>
                 </div>
@@ -607,10 +1263,10 @@ export default function Dashboard() {
                 {/* INTERVIEW ACCURACY CHART */}
                 <div className="dashboard-panel-card">
                   <div className="panel-card-header">
-                    <h3><MessageSquare size={18} style={{ color: '#06b6d4' }} /> AI Interview Accuracy Score</h3>
+                    <h3><MessageSquare size={18} style={{ color: 'var(--accent-primary)' }} /> AI Interview Accuracy Score</h3>
                     <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Speech evaluation benchmarks</span>
                   </div>
-                  <div className="svg-chart-container">
+                  <div className="saas-chart-wrapper">
                     {renderInterviewChart()}
                   </div>
                 </div>
@@ -735,6 +1391,37 @@ export default function Dashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Certificate Viewer Modal */}
+      {selectedCertCourse && (
+        <div className="profile-modal-overlay" onClick={() => setSelectedCertCourse(null)}>
+          <div className="certificate-modal-card" onClick={e => e.stopPropagation()}>
+            <button 
+              className="close-modal-btn" 
+              style={{ position: 'absolute', top: '1rem', right: '1.5rem', color: '#fff' }} 
+              onClick={() => setSelectedCertCourse(null)}
+            >
+              &times;
+            </button>
+            <div className="cert-border-ring">
+              <div className="cert-stamp">
+                <Trophy size={32} />
+              </div>
+              <h2 style={{ fontSize: '1.8rem', fontFamily: 'serif', margin: '0 0 1rem 0', color: '#fff' }}>Certificate of Completion</h2>
+              <p style={{ fontStyle: 'italic', color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem', margin: '0 0 1.5rem 0' }}>This is proudly presented to</p>
+              <h3 style={{ fontSize: '1.6rem', fontWeight: '800', margin: '0 0 1rem 0', color: 'var(--accent-secondary)' }}>{profileFormData.fullName}</h3>
+              <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem', margin: '0 auto 2rem auto', maxWidth: '400px' }}>
+                for successfully mastering the curriculum and evaluations of the course
+              </p>
+              <h4 style={{ fontSize: '1.25rem', fontWeight: '800', color: '#fff', margin: '0 0 2rem 0' }}>{selectedCertCourse.title}</h4>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '1.5rem', fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.5)' }}>
+                <span>Date: {new Date(selectedCertCourse.createdAt).toLocaleDateString()}</span>
+                <span>Credential ID: IMP-{selectedCertCourse.courseId.substring(18).toUpperCase()}</span>
+              </div>
+            </div>
           </div>
         </div>
       )}
