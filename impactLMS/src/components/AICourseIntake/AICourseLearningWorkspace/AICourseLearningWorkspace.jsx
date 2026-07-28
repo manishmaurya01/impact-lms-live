@@ -135,14 +135,47 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   };
 
   useEffect(() => {
+    const syncLatestCourseProgress = async () => {
+      let activeCompleted = courseData?.completedTopics || [];
+      let initModId = courseData?.lastActiveModuleId || modulesArray[0]?.dayId || 1;
+      let initTopicIdx = courseData?.lastActiveTopicIndex || 0;
+
+      try {
+        const token = localStorage.getItem('token');
+        if (courseData?._id && token) {
+          const res = await fetch(`${window.API_URL}/api/courses/${courseData._id}`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          const json = await res.json();
+          if (json.success && json.data) {
+            if (json.data.completedTopics) activeCompleted = json.data.completedTopics;
+            if (json.data.lastActiveModuleId) initModId = json.data.lastActiveModuleId;
+            if (json.data.lastActiveTopicIndex !== undefined) initTopicIdx = json.data.lastActiveTopicIndex;
+          }
+        }
+      } catch (err) {
+        console.error("Failed fetching latest course progress:", err);
+      }
+
+      const tracks = {};
+      if (activeCompleted.length > 0) {
+        activeCompleted.forEach(t => { tracks[t] = true; });
+      }
+      tracks[`mod-${modulesArray[0]?.dayId || 1}-topic-0`] = true;
+      setCompletedTracks(tracks);
+
+      setActiveModuleId(initModId);
+      setActiveTopicIndex(initTopicIdx);
+
+      const targetModule = modulesArray.find(m => m.dayId === initModId) || modulesArray[0];
+      const targetTopicName = targetModule?.topics?.[initTopicIdx] || "";
+      loadTopicMaterialOnDemand(initModId, initTopicIdx, targetTopicName);
+    };
+
     if (modulesArray.length > 0) {
-      const initialModuleId = courseData?.lastActiveModuleId || modulesArray[0]?.dayId || 1;
-      const initialTopicIdx = courseData?.lastActiveTopicIndex || 0;
-      const initialModule = modulesArray.find(m => m.dayId === initialModuleId) || modulesArray[0];
-      const initialTopicName = initialModule?.topics?.[initialTopicIdx] || "";
-      loadTopicMaterialOnDemand(initialModuleId, initialTopicIdx, initialTopicName);
+      syncLatestCourseProgress();
     }
-  }, []);
+  }, [courseData?._id]);
 
   const handleTopicSelection = (modId, topicIdx) => {
     setActiveTab('video');
@@ -222,7 +255,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100vw', height: '100vh', background: '#02040a', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100vw', height: '100vh', background: 'var(--bg-primary)', color: 'var(--text-main)', overflow: 'hidden' }}>
       <style>{`
         @keyframes workspaceCoreSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @media (max-width: 1024px) {
@@ -234,7 +267,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
             height: 100% !important;
             z-index: 100 !important;
             transition: left 0.3s cubic-bezier(0.25, 1, 0.5, 1) !important;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.5) !important;
+            box-shadow: var(--shadow-md) !important;
           }
         }
         @media (min-width: 1025px) {
@@ -257,7 +290,7 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
         {isSidebarOpen && (
           <div 
             onClick={() => setIsSidebarOpen(false)}
-            style={{ position: 'absolute', inset: 0, background: 'rgba(2, 4, 10, 0.75)', backdropFilter: 'blur(3px)', zIndex: 98 }}
+            style={{ position: 'absolute', inset: 0, background: 'rgba(0, 0, 0, 0.5)', backdropFilter: 'blur(3px)', zIndex: 98 }}
           />
         )}
 
@@ -273,13 +306,13 @@ export default function AICourseLearningWorkspace({ courseData, onBack }) {
         />
 
         {isSyncingMaterial && (
-          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(2, 4, 10, 0.85)', backdropFilter: 'blur(8px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 99999 }}>
-            <div style={{ width: '90%', maxWidth: '400px', background: '#070a12', border: '1px solid rgba(6, 182, 212, 0.25)', padding: '2.5rem 2rem', borderRadius: '1rem', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.8)', textAlign: 'center', boxSizing: 'border-box' }}>
-              <div style={{ margin: '0 auto 1.5rem auto', width: '44px', height: '44px', border: '3px solid rgba(6, 182, 212, 0.1)', borderTop: '3px solid #06b6d4', borderRadius: '50%', animation: 'workspaceCoreSpin 0.85s linear infinite' }} />
-              <h3 style={{ margin: '0 0 0.6rem 0', color: '#fff', fontSize: '1.1rem', fontWeight: '600' }}>Syncing Study Data ({syncProgress}%)</h3>
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.65)', backdropFilter: 'blur(6px)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', zIndex: 99999 }}>
+            <div style={{ width: '90%', maxWidth: '400px', background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', padding: '2.5rem 2rem', borderRadius: '1rem', boxShadow: 'var(--shadow-lg)', textAlign: 'center', boxSizing: 'border-box' }}>
+              <div style={{ margin: '0 auto 1.5rem auto', width: '44px', height: '44px', border: '3px solid rgba(139, 92, 246, 0.1)', borderTop: '3px solid var(--accent-primary)', borderRadius: '50%', animation: 'workspaceCoreSpin 0.85s linear infinite' }} />
+              <h3 style={{ margin: '0 0 0.6rem 0', color: 'var(--text-main)', fontSize: '1.1rem', fontWeight: '600' }}>Syncing Study Data ({syncProgress}%)</h3>
               
-              <div style={{ width: '100%', height: '6px', background: '#1e293b', borderRadius: '3px', overflow: 'hidden', margin: '1rem 0 1.5rem 0' }}>
-                <div style={{ width: `${syncProgress}%`, height: '100%', background: '#06b6d4', transition: 'width 0.2s ease-out', boxShadow: '0 0 10px #06b6d4' }} />
+              <div style={{ width: '100%', height: '6px', background: 'var(--bg-surface)', borderRadius: '3px', overflow: 'hidden', margin: '1rem 0 1.5rem 0' }}>
+                <div style={{ width: `${syncProgress}%`, height: '100%', background: 'var(--accent-primary)', transition: 'width 0.2s ease-out' }} />
               </div>
 
               <p style={{ color: '#64748b', fontSize: '0.82rem', margin: '0', lineHeight: '1.4' }}>Loading learning path and verified topic guides...</p>

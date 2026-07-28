@@ -20,8 +20,8 @@ export default function WorkspaceHeader({ courseTitle, modules = [], completedTr
   return (
     <header className="workspace-nav-header" style={{
       display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      padding: '0.85rem 1.5rem', background: '#090d16', borderBottom: '1px solid rgba(255,255,255,0.05)',
-      fontFamily: '"Inter", sans-serif', flexWrap: 'wrap', gap: '1rem', width: '100%', boxSizing: 'border-box'
+      padding: '0.85rem 1.5rem', background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-color)',
+      fontFamily: 'var(--font-sans)', flexWrap: 'wrap', gap: '1rem', width: '100%', boxSizing: 'border-box'
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
         <button
@@ -29,7 +29,7 @@ export default function WorkspaceHeader({ courseTitle, modules = [], completedTr
           className="workspace-sidebar-toggle-btn block lg:hidden"
           style={{
             padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            color: '#94a3b8', background: 'transparent', border: '1px solid #1e293b',
+            color: 'var(--text-muted)', background: 'transparent', border: '1px solid var(--border-color)',
             borderRadius: '0.5rem', cursor: 'pointer', transition: 'all 200ms ease'
           }}
         >
@@ -40,38 +40,38 @@ export default function WorkspaceHeader({ courseTitle, modules = [], completedTr
           onClick={onBack} 
           style={{ 
             padding: '0.4rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem', 
-            color: '#94a3b8', background: 'transparent', border: '1px solid #1e293b', 
+            color: 'var(--text-muted)', background: 'transparent', border: '1px solid var(--border-color)', 
             borderRadius: '0.5rem', cursor: 'pointer', transition: 'all 200ms ease', fontSize: '0.85rem'
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#06b6d4'; e.currentTarget.style.color = '#fff'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#1e293b'; e.currentTarget.style.color = '#94a3b8'; }}
+          onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--accent-primary)'; e.currentTarget.style.color = 'var(--text-main)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-color)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
         >
           <ArrowLeft size={14} /> Back
         </button>
         <div>
-          <h1 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#fff', margin: 0, letterSpacing: '-0.02em', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <h1 style={{ fontSize: '1.05rem', fontWeight: 800, color: 'var(--text-main)', margin: 0, letterSpacing: '-0.02em', maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
             {courseTitle || "Course Study Guide"}
           </h1>
-          <span style={{ fontSize: '0.7rem', color: '#64748b' }}>Study Workspace</span>
+          <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Study Workspace</span>
         </div>
       </div>
 
       <div className="header-progress-panel" style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: '600', marginBottom: '0.15rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
+          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '0.15rem', textTransform: 'uppercase', letterSpacing: '0.02em' }}>
             Course Progress
           </div>
-          <div style={{ width: '120px', height: '5px', background: '#1e293b', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
+          <div style={{ width: '120px', height: '5px', background: 'var(--bg-surface)', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
             <div style={{ 
               width: `${progressPercent}%`, 
               height: '100%', 
-              background: 'linear-gradient(90deg, #06b6d4, #8b5cf6)', 
+              background: 'linear-gradient(90deg, var(--accent-secondary), var(--accent-primary))', 
               transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)' 
             }}></div>
           </div>
         </div>
 
-        <span style={{ fontSize: '0.75rem', color: '#06b6d4', fontWeight: '700', background: 'rgba(6,182,212,0.04)', padding: '0.35rem 0.65rem', borderRadius: '6px', border: '1px solid rgba(6,182,212,0.15)', fontFamily: 'monospace' }}>
+        <span style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: '700', background: 'rgba(var(--accent-primary-rgb), 0.08)', padding: '0.35rem 0.65rem', borderRadius: '6px', border: '1px solid rgba(var(--accent-primary-rgb), 0.18)', fontFamily: 'monospace' }}>
           {completedTopicsCount} / {totalTopicsCount} Completed ({progressPercent}%)
         </span>
       </div>

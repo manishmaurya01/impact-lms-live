@@ -158,66 +158,64 @@ export default function MainResourceCanvas({
   const accuracyPercentage = activeQuizResult?.percentage || 0;
 
   return (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#02040a', padding: '2rem', overflowY: 'auto', color: '#fff', fontFamily: '"Inter", sans-serif', position: 'relative' }}>
+    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)', padding: '2rem', overflowY: 'auto', color: 'var(--text-main)', fontFamily: 'var(--font-sans)', position: 'relative' }}>
       
       {/* 🚀 Dynamic Navigation Tabs Navbar Header Element */}
-      <div className="canvas-tabs-header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '1rem', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="canvas-tabs-header-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div className="canvas-tabs-buttons-row" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button onClick={() => setActiveTab('video')} style={{ background: activeTab === 'video' ? 'rgba(6,182,212,0.05)' : 'transparent', border: 'none', color: activeTab === 'video' ? '#06b6d4' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
+          <button onClick={() => setActiveTab('video')} style={{ background: activeTab === 'video' ? 'rgba(var(--accent-primary-rgb), 0.08)' : 'transparent', border: 'none', color: activeTab === 'video' ? 'var(--accent-primary)' : 'var(--text-muted)', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
             Lesson Guide
           </button>
-          <button onClick={() => setActiveTab('quiz')} style={{ background: activeTab === 'quiz' ? 'rgba(245,158,11,0.05)' : 'transparent', border: 'none', color: activeTab === 'quiz' ? '#f59e0b' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
+          <button onClick={() => setActiveTab('quiz')} style={{ background: activeTab === 'quiz' ? 'rgba(245,158,11,0.08)' : 'transparent', border: 'none', color: activeTab === 'quiz' ? 'var(--accent-warning)' : 'var(--text-muted)', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
             ⚡ Quiz
           </button>
           {assignment && assignment.assignmentObjective && assignment.assignmentObjective.trim() !== "" && assignment.assignmentObjective !== "Implement concepts learned today." && (
-            <button onClick={() => setActiveTab('assignment')} style={{ background: activeTab === 'assignment' ? 'rgba(16,185,129,0.05)' : 'transparent', border: 'none', color: activeTab === 'assignment' ? '#10b981' : '#64748b', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
+            <button onClick={() => setActiveTab('assignment')} style={{ background: activeTab === 'assignment' ? 'rgba(16,185,129,0.08)' : 'transparent', border: 'none', color: activeTab === 'assignment' ? 'var(--accent-success)' : 'var(--text-muted)', padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 'bold', borderRadius: '4px', fontSize: '0.85rem' }}>
               🛠️ Assignment
             </button>
           )}
         </div>
 
-        {/* 📚 NEW POPUP TRIGGER: Is button par click karte hi popup open ho jayega */}
+        {/* Workspace Notes trigger */}
         <button 
           onClick={() => setIsNotesPopupOpen(true)} 
           style={{ 
-            background: 'rgba(6,182,212,0.1)', border: '1px solid rgba(6,182,212,0.4)', 
-            color: '#06b6d4', padding: '0.45rem 1rem', cursor: 'pointer', 
+            background: 'rgba(var(--accent-primary-rgb), 0.1)', border: '1px solid rgba(var(--accent-primary-rgb), 0.3)', 
+            color: 'var(--accent-primary)', padding: '0.45rem 1rem', cursor: 'pointer', 
             fontWeight: 'bold', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '0.5rem',
             transition: 'all 200ms ease', fontSize: '0.85rem'
           }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = '#06b6d4'; e.currentTarget.style.color = '#000'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(6,182,212,0.1)'; e.currentTarget.style.color = '#06b6d4'; }}
         >
           <BookOpen size={14} /> My Workspace Notes
         </button>
       </div>
 
       {/* Main Control Console Canvas Board */}
-      <div style={{ flex: 1, background: '#070a12', border: '1px solid rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '1rem' }}>
+      <div style={{ flex: 1, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', padding: '2rem', borderRadius: '1rem' }}>
         
         {/* 📺 TAB 1: SMART MASTERCLASS LECTURES */}
         {activeTab === 'video' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', width: '100%', boxSizing: 'border-box' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #1e293b', paddingBottom: '0.5rem' }}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
                 Active Topic: {topicName}
               </h2>
             </div>
             
             {/* AI Classroom Panel */}
-            <div className="ai-classroom-panel" style={{ background: 'linear-gradient(180deg, #090d16 0%, #030509 100%)', border: '1px solid #1e293b', borderRadius: '12px', display: 'flex', overflow: 'hidden', position: 'relative' }}>
+            <div className="ai-classroom-panel" style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', borderRadius: '12px', display: 'flex', overflow: 'hidden', position: 'relative' }}>
 
               {/* Left Column: Avatar Graphic Box */}
-              <div className="ai-avatar-column" style={{ width: '30%', borderRight: '1px solid rgba(30, 41, 59, 0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#040710', position: 'relative', padding: '1.5rem 1rem', boxSizing: 'border-box' }}>
+              <div className="ai-avatar-column" style={{ width: '30%', borderRight: '1px solid var(--border-color)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(var(--accent-primary-rgb), 0.02)', position: 'relative', padding: '1.5rem 1rem', boxSizing: 'border-box' }}>
                 <div style={{ position: 'absolute', top: '10px', left: '12px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  <span style={{ width: '8px', height: '8px', background: isPlaying ? '#10b981' : '#64748b', borderRadius: '50%', display: 'inline-block', animation: isPlaying ? 'pulse 1.5s infinite' : 'none' }} />
-                  <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase' }}>{isPlaying ? 'READING' : 'PAUSED'}</span>
+                  <span style={{ width: '8px', height: '8px', background: isPlaying ? 'var(--accent-success)' : 'var(--text-muted)', borderRadius: '50%', display: 'inline-block', animation: isPlaying ? 'pulse 1.5s infinite' : 'none' }} />
+                  <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 'bold', textTransform: 'uppercase' }}>{isPlaying ? 'READING' : 'PAUSED'}</span>
                 </div>
 
-                <div style={{ width: '90px', height: '90px', borderRadius: '50%', background: 'linear-gradient(135deg, #1e1b4b 0%, #311042 100%)', border: isPlaying ? '2px solid #06b6d4' : '2px solid #1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', transform: avatarExpression !== 'idle' ? 'scale(1.04)' : 'scale(1)', transition: 'all 0.3s ease' }}>
-                  <div style={{ width: '30px', height: '12px', border: '2px solid rgba(6, 182, 212, 0.4)', borderRadius: '4px', position: 'absolute', top: '28px', display: 'flex', justifyContent: 'space-between' }}>
-                    <div style={{ width: '10px', height: '8px', background: isPlaying ? 'rgba(6,182,212,0.2)' : 'transparent' }} />
-                    <div style={{ width: '10px', height: '8px', background: isPlaying ? 'rgba(6,182,212,0.2)' : 'transparent' }} />
+                <div style={{ width: '90px', height: '90px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--bg-surface) 0%, rgba(var(--accent-primary-rgb), 0.15) 100%)', border: isPlaying ? '2px solid var(--accent-primary)' : '2px solid var(--border-color)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', transform: avatarExpression !== 'idle' ? 'scale(1.04)' : 'scale(1)', transition: 'all 0.3s ease' }}>
+                  <div style={{ width: '30px', height: '12px', border: '2px solid rgba(var(--accent-primary-rgb), 0.4)', borderRadius: '4px', position: 'absolute', top: '28px', display: 'flex', justifyContent: 'space-between' }}>
+                    <div style={{ width: '10px', height: '8px', background: isPlaying ? 'rgba(var(--accent-primary-rgb), 0.2)' : 'transparent' }} />
+                    <div style={{ width: '10px', height: '8px', background: isPlaying ? 'rgba(var(--accent-primary-rgb), 0.2)' : 'transparent' }} />
                   </div>
                   <div style={{ 
                     width: avatarExpression === 'idle' ? '20px' : '26px', 
@@ -228,23 +226,23 @@ export default function MainResourceCanvas({
                     top: '55px', 
                     animation: isPlaying ? 'lipSyncAction 0.22s infinite alternate ease-in-out' : 'none'
                   }} />
-                  <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, rgba(2,4,10,0.4) 100%)' }} />
+                  <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 40%, rgba(0,0,0,0.1) 100%)' }} />
                 </div>
 
-                <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', fontWeight: 'bold', color: '#fff' }}>AI Voice Guide</div>
-                <div style={{ fontSize: '0.65rem', color: '#06b6d4', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Explanation Reader</div>
+                <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--text-main)' }}>AI Voice Guide</div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--accent-primary)', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Explanation Reader</div>
               </div>
 
               {/* Right Column: Audio Blackboard Display */}
-              <div className="ai-blackboard-column" style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: '#020408', boxSizing: 'border-box' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#64748b', fontSize: '0.7rem', borderBottom: '1px solid rgba(30,41,59,0.4)', paddingBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <div className="ai-blackboard-column" style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', background: 'var(--bg-secondary)', boxSizing: 'border-box' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: 'var(--text-muted)', fontSize: '0.7rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><span>AI VOICE READOUT</span></div>
                   <div>Sentence {currentPhraseIndex + 1} / {phrases.length}</div>
                 </div>
                 
                 {/* Active Sentence Visual Highlight Panel Box */}
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem 0.5rem' }}>
-                  <p style={{ fontSize: '1.05rem', color: isPlaying ? '#f8fafc' : '#94a3b8', textAlign: 'center', fontWeight: '500', lineHeight: '1.5', margin: 0 }}>
+                  <p style={{ fontSize: '1.05rem', color: isPlaying ? 'var(--text-main)' : 'var(--text-muted)', textAlign: 'center', fontWeight: '500', lineHeight: '1.5', margin: 0 }}>
                     "{phrases[currentPhraseIndex] || 'Loading explanation text...'}"
                   </p>
                 </div>
@@ -256,9 +254,9 @@ export default function MainResourceCanvas({
                     max={phrases.length > 0 ? phrases.length - 1 : 0} 
                     value={currentPhraseIndex} 
                     onChange={handleProgressBarScrub}
-                    style={{ width: '100%', cursor: 'pointer', accentColor: '#06b6d4', background: '#1e293b', height: '6px', borderRadius: '4px' }}
+                    style={{ width: '100%', cursor: 'pointer', accentColor: 'var(--accent-primary)', background: 'var(--bg-surface)', height: '6px', borderRadius: '4px' }}
                   />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: '#475569', fontWeight: 'bold' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 'bold' }}>
                     <span>BACK</span>
                     <span>DRAG SLIDER TO REPEAT SECTION</span>
                     <span>NEXT</span>
@@ -266,22 +264,22 @@ export default function MainResourceCanvas({
                 </div>
 
                 {/* Deck Interactive Control Array Panel row */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#070a12', padding: '0.6rem 1.25rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.02)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-surface)', padding: '0.6rem 1.25rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <button onClick={handleSkipBackward} title="Peeche Jayein" style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer' }}>
+                    <button onClick={handleSkipBackward} title="Peeche Jayein" style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
                       <SkipBack size={18}/>
                     </button>
                     
-                    <button onClick={togglePlaybackPlayPause} style={{ background: '#06b6d4', border: 'none', width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#000' }}>
-                      {isPlaying ? <Pause size={16} fill="#000"/> : <Play size={16} fill="#000" style={{ marginLeft: '2px' }}/>}
+                    <button onClick={togglePlaybackPlayPause} style={{ background: 'var(--accent-primary)', border: 'none', width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}>
+                      {isPlaying ? <Pause size={16} fill="#fff"/> : <Play size={16} fill="#fff" style={{ marginLeft: '2px' }}/>}
                     </button>
 
-                    <button onClick={handleSkipForward} title="Aage Jayein" style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer' }}>
+                    <button onClick={handleSkipForward} title="Aage Jayein" style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
                       <SkipForward size={18}/>
                     </button>
 
-                    <button onClick={() => setIsMuted(!isMuted)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', marginLeft: '0.5rem' }}>
-                      {isMuted ? <VolumeX size={20} style={{ color: '#ef4444' }}/> : <Volume2 size={20} style={{ color: '#06b6d4' }}/>}
+                    <button onClick={() => setIsMuted(!isMuted)} style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', marginLeft: '0.5rem' }}>
+                      {isMuted ? <VolumeX size={20} style={{ color: 'var(--accent-danger)' }}/> : <Volume2 size={20} style={{ color: 'var(--accent-primary)' }}/>}
                     </button>
                   </div>
                   
@@ -290,7 +288,7 @@ export default function MainResourceCanvas({
                     {[1, 2, 3, 4, 5, 6, 7, 8].map(bar => (
                       <div key={bar} style={{ 
                         width: '3px', 
-                        background: isPlaying ? '#06b6d4' : '#1e293b', 
+                        background: isPlaying ? 'var(--accent-primary)' : 'var(--border-color)', 
                         borderRadius: '10px',
                         height: isPlaying ? '100%' : '4px',
                         animation: isPlaying ? `waveformAudioDance 0.5s infinite alternate ease-in-out` : 'none',
@@ -305,18 +303,18 @@ export default function MainResourceCanvas({
 
             {/* Reading Board Scripts Display Canvas */}
             {materialNotes?.htmlContent ? (
-              <div style={{ background: '#04060a', padding: '1.5rem', borderRadius: '8px', border: '1px solid #1e293b', position: 'relative', width: '100%', boxSizing: 'border-box' }}>
-                <div style={{ fontSize: '0.75rem', color: '#06b6d4', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ background: 'var(--bg-surface)', padding: '1.5rem', borderRadius: '8px', border: '1px solid var(--border-color)', position: 'relative', width: '100%', boxSizing: 'border-box' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--accent-primary)', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <BookOpen size={14}/> <span>Lesson Notes</span>
                 </div>
                 <div 
                   className="dynamic-rich-article" 
-                  style={{ fontSize: '0.95rem', color: '#cbd5e1', lineHeight: '1.7', display: 'flex', flexDirection: 'column', gap: '1rem', boxSizing: 'border-box', width: '100%', overflowX: 'auto' }} 
+                  style={{ fontSize: '0.95rem', color: 'var(--text-main)', lineHeight: '1.7', display: 'flex', flexDirection: 'column', gap: '1rem', boxSizing: 'border-box', width: '100%', overflowX: 'auto' }} 
                   dangerouslySetInnerHTML={{ __html: materialNotes.htmlContent }} 
                 />
               </div>
             ) : (
-              <div style={{ color: '#475569', textAlign: 'center', padding: '3rem', border: '1px dashed #1e293b', borderRadius: '8px', width: '100%', boxSizing: 'border-box' }}>
+              <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '3rem', border: '1px dashed var(--border-color)', borderRadius: '8px', width: '100%', boxSizing: 'border-box' }}>
                 📖 Loading lesson content...
               </div>
             )}
@@ -414,32 +412,32 @@ export default function MainResourceCanvas({
         {/* TAB 2: QUIZ */}
         {activeTab === 'quiz' && (
           <div style={{ maxWidth: '700px', width: '100%', boxSizing: 'border-box' }}>
-            <h3 style={{ color: '#f59e0b', fontSize: '1.2rem', fontWeight: '700', letterSpacing: '-0.01em' }}>
+            <h3 style={{ color: 'var(--accent-warning)', fontSize: '1.2rem', fontWeight: '700', letterSpacing: '-0.01em' }}>
               ⚡ Topic Quiz: {quiz?.name || "Concept Check Quiz"}
             </h3>
-            <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.25rem' }}>
               Test your understanding of the concepts covered in this topic.
             </p>
 
-            <div style={{ background: '#020617', border: activeQuizResult ? '1px solid rgba(6, 182, 212, 0.25)' : '1px solid #1e293b', padding: '1.5rem', borderRadius: '12px', marginTop: '1.5rem', position: 'relative', boxShadow: '0 20px 40px rgba(0,0,0,0.5)', boxSizing: 'border-box', width: '100%' }}>
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: '12px', marginTop: '1.5rem', position: 'relative', boxShadow: 'var(--shadow-md)', boxSizing: 'border-box', width: '100%' }}>
               {activeQuizResult && (
-                <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', color: '#f87171', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.35rem', textTransform: 'uppercase' }}>
+                <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', color: 'var(--accent-danger)', background: 'rgba(239,68,68,0.05)', border: '1px solid rgba(239,68,68,0.1)', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.35rem', textTransform: 'uppercase' }}>
                   <Lock size={12}/> LOCKED
                 </div>
               )}
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.02)', boxSizing: 'border-box', width: '100%' }}>
-                <div style={{ fontSize: '0.85rem', color: '#cbd5e1' }}><strong>📚 Topic Area:</strong> <span style={{ color: '#06b6d4' }}>{quiz?.quizTopic || "Module Concepts"}</span></div>
-                <div style={{ fontSize: '0.85rem', color: '#cbd5e1' }}><strong>⏳ Standard Duration:</strong> <span>{quiz?.duration || "10 minutes"}</span></div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem', background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', boxSizing: 'border-box', width: '100%' }}>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-main)' }}><strong>📚 Topic Area:</strong> <span style={{ color: 'var(--accent-primary)' }}>{quiz?.quizTopic || "Module Concepts"}</span></div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-main)' }}><strong>⏳ Standard Duration:</strong> <span>{quiz?.duration || "10 minutes"}</span></div>
               </div>
 
               <button 
                 onClick={onLaunchQuiz} 
                 disabled={!!activeQuizResult} 
                 style={{ 
-                  background: activeQuizResult ? 'rgba(255,255,255,0.02)' : 'linear-gradient(135deg, #f59e0b, #d97706)', 
-                  color: activeQuizResult ? '#475569' : '#000', 
-                  border: activeQuizResult ? '1px solid #1e293b' : 'none',
+                  background: activeQuizResult ? 'var(--bg-surface)' : 'linear-gradient(135deg, var(--accent-warning), #d97706)', 
+                  color: activeQuizResult ? 'var(--text-muted)' : '#ffffff', 
+                  border: activeQuizResult ? '1px solid var(--border-color)' : 'none',
                   padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: '800', fontSize: '0.85rem',
                   cursor: activeQuizResult ? 'not-allowed' : 'pointer', transition: 'all 200ms ease'
                 }}
@@ -448,30 +446,30 @@ export default function MainResourceCanvas({
               </button>
               
               {activeQuizResult && (
-                <div style={{ marginTop: '2rem', borderTop: '1px solid #1e293b', paddingTop: '1.5rem' }}>
-                  <div style={{ color: '#06b6d4', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem' }}>
+                <div style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+                  <div style={{ color: 'var(--accent-primary)', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '1rem' }}>
                     <BarChart3 size={14} style={{ display: 'inline', marginRight: '0.4rem', verticalAlign: 'text-bottom' }}/> Result Details
                   </div>
                   
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-                      <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: '700' }}>ACCURACY</div>
-                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: accuracyPercentage >= 70 ? '#10b981' : '#f59e0b', marginTop: '0.15rem', fontFamily: 'monospace' }}>{accuracyPercentage.toFixed(0)}%</div>
+                    <div style={{ background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: '700' }}>ACCURACY</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: accuracyPercentage >= 70 ? 'var(--accent-success)' : 'var(--accent-warning)', marginTop: '0.15rem', fontFamily: 'monospace' }}>{accuracyPercentage.toFixed(0)}%</div>
                     </div>
-                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid #1e293b' }}>
-                      <div style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: '700' }}>TOTAL QUESTIONS</div>
-                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: '#06b6d4', marginTop: '0.15rem', fontFamily: 'monospace' }}>{totalQuestions}</div>
+                    <div style={{ background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: '700' }}>TOTAL QUESTIONS</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--accent-primary)', marginTop: '0.15rem', fontFamily: 'monospace' }}>{totalQuestions}</div>
                     </div>
                   </div>
                   
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                      <div style={{ fontSize: '0.65rem', color: '#10b981', fontWeight: '700' }}>CORRECT ANSWERS</div>
-                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: '#10b981', marginTop: '0.15rem', fontFamily: 'monospace' }}>{correctAnswers}</div>
+                    <div style={{ background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--accent-success)', fontWeight: '700' }}>CORRECT ANSWERS</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--accent-success)', marginTop: '0.15rem', fontFamily: 'monospace' }}>{correctAnswers}</div>
                     </div>
-                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                      <div style={{ fontSize: '0.65rem', color: '#ef4444', fontWeight: '700' }}>INCORRECT ANSWERS</div>
-                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: '#ef4444', marginTop: '0.15rem', fontFamily: 'monospace' }}>{wrongAnswers}</div>
+                    <div style={{ background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                      <div style={{ fontSize: '0.65rem', color: 'var(--accent-danger)', fontWeight: '700' }}>INCORRECT ANSWERS</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--accent-danger)', marginTop: '0.15rem', fontFamily: 'monospace' }}>{wrongAnswers}</div>
                     </div>
                   </div>
                 </div>
@@ -483,23 +481,23 @@ export default function MainResourceCanvas({
         {/* TAB 3: ASSIGNMENT */}
         {activeTab === 'assignment' && (
           <div style={{ maxWidth: '750px', width: '100%', boxSizing: 'border-box' }}>
-            <h3 style={{ color: '#10b981', fontSize: '1.2rem', fontWeight: '700', letterSpacing: '-0.01em' }}>
+            <h3 style={{ color: 'var(--accent-success)', fontSize: '1.2rem', fontWeight: '700', letterSpacing: '-0.01em' }}>
               🛠️ Assignment Challenge
             </h3>
-            <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.25rem', lineHeight: '1.4' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.25rem', lineHeight: '1.4' }}>
               Complete the assignment task and get AI-powered feedback.
             </p>
 
-            <div style={{ background: '#020617', border: activeAssignmentResult ? '1px solid rgba(16, 185, 129, 0.25)' : '1px solid #1e293b', padding: '1.5rem', borderRadius: '12px', marginTop: '1.5rem', position: 'relative', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', boxSizing: 'border-box', width: '100%' }}>
+            <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-color)', padding: '1.5rem', borderRadius: '12px', marginTop: '1.5rem', position: 'relative', boxShadow: 'var(--shadow-md)', boxSizing: 'border-box', width: '100%' }}>
               {activeAssignmentResult && (
-                <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', color: '#10b981', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.35rem', textTransform: 'uppercase' }}>
+                <div style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', color: 'var(--accent-success)', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', padding: '0.35rem 0.75rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '0.35rem', textTransform: 'uppercase' }}>
                   <Lock size={12}/> LOCKED
                 </div>
               )}
               
-              <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', marginBottom: '1.5rem', boxSizing: 'border-box', width: '100%' }}>
-                <div style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: '1.5' }}>
-                  <strong style={{ color: '#fff', display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem' }}>🎯 Assignment Objective:</strong> 
+              <div style={{ background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', marginBottom: '1.5rem', boxSizing: 'border-box', width: '100%' }}>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-main)', lineHeight: '1.5' }}>
+                  <strong style={{ color: 'var(--text-main)', display: 'block', marginBottom: '0.4rem', fontSize: '0.9rem' }}>🎯 Assignment Objective:</strong> 
                   {assignment?.assignmentObjective || "Complete the practice exercise."}
                 </div>
               </div>
@@ -508,42 +506,42 @@ export default function MainResourceCanvas({
                 onClick={onLaunchAssignment}
                 disabled={!!activeAssignmentResult}
                 style={{ 
-                  background: activeAssignmentResult ? 'rgba(255,255,255,0.02)' : 'linear-gradient(135deg, #10b981, #059669)', 
-                  color: activeAssignmentResult ? '#475569' : '#fff', 
-                  border: activeAssignmentResult ? '1px solid #1e293b' : 'none',
+                  background: activeAssignmentResult ? 'var(--bg-surface)' : 'linear-gradient(135deg, var(--accent-success), #059669)', 
+                  color: activeAssignmentResult ? 'var(--text-muted)' : '#ffffff', 
+                  border: activeAssignmentResult ? '1px solid var(--border-color)' : 'none',
                   padding: '0.75rem 1.5rem', borderRadius: '8px', fontWeight: '800', fontSize: '0.85rem',
                   cursor: activeAssignmentResult ? 'not-allowed' : 'pointer',
-                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem', boxShadow: activeAssignmentResult ? 'none' : '0 8px 16px rgba(16, 185, 129, 0.15)'
+                  display: 'inline-flex', alignItems: 'center', gap: '0.5rem'
                 }}
               >
                 <Terminal size={14}/> {activeAssignmentResult ? "Completed" : "Start Assignment"}
               </button>
 
               {activeAssignmentResult && (
-                <div style={{ marginTop: '2rem', borderTop: '1px solid #1e293b', paddingTop: '1.5rem', width: '100%', boxSizing: 'border-box' }}>
+                <div style={{ marginTop: '2rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem', width: '100%', boxSizing: 'border-box' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                    <div style={{ color: '#06b6d4', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <div style={{ color: 'var(--accent-primary)', fontSize: '0.7rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       <Sparkles size={14} style={{ display: 'inline', marginRight: '0.4rem', verticalAlign: 'text-bottom' }}/> AI Evaluation Results
                     </div>
-                    <div style={{ background: '#070a12', padding: '0.4rem 0.85rem', borderRadius: '6px', border: '1px solid #1e293b', fontSize: '0.8rem', fontFamily: 'monospace' }}>
-                      SCORE: <span style={{ color: '#10b981', fontWeight: '800' }}>{activeAssignmentResult.approachScore} / 100</span>
+                    <div style={{ background: 'var(--bg-primary)', padding: '0.4rem 0.85rem', borderRadius: '6px', border: '1px solid var(--border-color)', fontSize: '0.8rem', fontFamily: 'monospace' }}>
+                      SCORE: <span style={{ color: 'var(--accent-success)', fontWeight: '800' }}>{activeAssignmentResult.approachScore} / 100</span>
                     </div>
                   </div>
                   
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.85rem', color: '#cbd5e1', width: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', lineHeight: '1.5' }}>
-                      <strong style={{ color: '#8b5cf6', display: 'block', marginBottom: '0.25rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>📊 Complexity Analysis:</strong>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '0.85rem', color: 'var(--text-main)', width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', lineHeight: '1.5' }}>
+                      <strong style={{ color: 'var(--accent-primary)', display: 'block', marginBottom: '0.25rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>📊 Complexity Analysis:</strong>
                       {activeAssignmentResult.complexityAnalysis}
                     </div>
                     
-                    <div style={{ background: '#070a12', padding: '1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.01)', lineHeight: '1.5' }}>
-                      <strong style={{ color: '#f59e0b', display: 'block', marginBottom: '0.25rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>💡 Review Feedback:</strong>
+                    <div style={{ background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', lineHeight: '1.5' }}>
+                      <strong style={{ color: 'var(--accent-warning)', display: 'block', marginBottom: '0.25rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>💡 Review Feedback:</strong>
                       {activeAssignmentResult.architecturalCritique}
                     </div>
                     
-                    <div style={{ background: '#02040a', padding: '1rem', borderRadius: '8px', border: '1px solid #1e293b', boxSizing: 'border-box', width: '100%', overflowX: 'hidden' }}>
-                      <strong style={{ color: '#34d399', display: 'block', marginBottom: '0.5rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>Alternative Solution:</strong>
-                      <pre style={{ color: '#a7f3d0', fontFamily: '"Fira Code", monospace', fontSize: '0.8rem', marginTop: '0.5rem', overflowX: 'auto', lineHeight: '1.4', background: '#070a12', padding: '0.75rem', borderRadius: '6px', boxSizing: 'border-box', width: '100%' }}>
+                    <div style={{ background: 'var(--bg-primary)', padding: '1rem', borderRadius: '8px', border: '1px solid var(--border-color)', boxSizing: 'border-box', width: '100%', overflowX: 'hidden' }}>
+                      <strong style={{ color: 'var(--accent-secondary)', display: 'block', marginBottom: '0.5rem', fontSize: '0.7rem', textTransform: 'uppercase' }}>Alternative Solution:</strong>
+                      <pre style={{ color: 'var(--text-main)', fontFamily: 'var(--font-mono)', fontSize: '0.8rem', marginTop: '0.5rem', overflowX: 'auto', lineHeight: '1.4', background: 'var(--bg-surface)', padding: '0.75rem', borderRadius: '6px', boxSizing: 'border-box', width: '100%' }}>
                         {activeAssignmentResult.betterAlternativeTemplate}
                       </pre>
                     </div>
